@@ -1,6 +1,6 @@
 <?php
 
-namespace Dfp\Api;
+namespace Report\Api;
 
 class ReportService
 {

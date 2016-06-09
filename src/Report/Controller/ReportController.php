@@ -3,7 +3,7 @@
 namespace Report\Controller;
 
 use Common\Controller\Controller;
-use Dfp\Api\ReportService;
+use Report\Api\ReportService;
 use Silex\Application;
 
 class ReportController extends Controller
