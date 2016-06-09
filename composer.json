@@ -1,0 +1,12 @@
+{
+    "require": {
+        "googleads/googleads-php-lib": "^9.1",
+        "silex/silex": "~2.0"
+    },
+    "autoload": {
+        "classmap": [
+            "src",
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605"
+        ]
+    }
+}

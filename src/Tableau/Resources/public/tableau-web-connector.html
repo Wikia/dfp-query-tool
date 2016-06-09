@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Wikia DFP-Tableau web data connector</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
+		<style>
+			.btn-wikia {
+				background: none;
+				border-radius: 1px;
+				color: #00b7e0;
+				font-size: 0.9em;
+				font-weight: 500;
+				margin-left: 8px;
+				padding: 7px 12px;
+			}
+
+			.btn-wikia:hover, .btn-wikia:focus, .btn-wikia:active {
+				background: #09d3bf;
+				color: #ffffff;
+			}
+
+			.navbar-inverse .navbar-brand:hover {
+				color: #9d9d9d;
+			}
+
+			.report-id-input {
+				border-radius: 1px;
+				font-size: 0.9em;
+			}
+
+			.has-error {
+				border-color: #a94442;
+			}
+
+			.report-group {
+				display: flex;
+				flex: 1 0 auto;
+			}
+
+			.tabs-group {
+				width: 100%;
+			}
+
+			.tabs-group > li > a {
+				border-radius: 1px 1px 0 0;
+				color: #a1a1a1;
+				font-size: 0.9em;
+				font-weight: 500;
+				padding: 8px 15px;
+			}
+
+			.tab-content {
+				padding: 18px 12px;
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="navbar navbar-static-top navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<div class="navbar-brand">
+						Wikia DFP connector
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-12">
+					<ul class="nav nav-tabs tabs-group" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#report" aria-controls="report" role="tab" data-toggle="tab">
+								Existing report
+							</a>
+						</li>
+						<li role="presentation">
+							<a href="#query" aria-controls="query" role="tab" data-toggle="tab">
+								Query builder
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active row" id="report">
+					<div class="col-sm-4 report-group">
+						<input id="report-id"
+							   class="form-control report-id-input"
+							   placeholder="DFP report ID"
+							   type="text" />
+						<div id="report-submit"
+							 class="btn btn-wikia">SUBMIT</div>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane row" id="query">
+					<div class="col-sm-4 query-group">
+						<em>Work in progress...</em>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="https://connectors.tableau.com/libs/tableauwdc-1.1.1.js" type="text/javascript"></script>
+		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+		<script type="text/javascript">
+			(function() {
+				var connector = tableau.makeConnector(),
+					response;
+
+				connector.getColumnHeaders = function() {
+					var fieldColumns = [],
+						fieldTypes = [];
+
+					var data = JSON.parse(tableau.connectionData),
+						url = "http://localhost/dfp-tableau/web/api/reports/" + data.reportId;
+
+					$.get(url, function (data) {
+						response = data;
+						Object.keys(response[0]).forEach(function (key) {
+							fieldColumns.push(key);
+							fieldTypes.push('string');
+						});
+
+						tableau.headersCallback(fieldColumns, fieldTypes);
+					});
+				};
+
+				connector.getTableData = function(lastRecordToken) {
+					tableau.dataCallback(response, lastRecordToken, false);
+				};
+
+				tableau.registerConnector(connector);
+
+				$('#report-submit').on('click', function () {
+					var reportId = $('#report-id').val();
+
+					if (reportId === '') {
+						$('#report-id').addClass('has-error');
+						return;
+					}
+
+					tableau.connectionData = JSON.stringify({
+						reportId: reportId
+					});
+					tableau.submit();
+				});
+			})();
+
+			$(document).ready(function () {
+				$('.tabs-group').click(function (e) {
+					e.preventDefault();
+					$(this).tab('show')
+				})
+			})
+		</script>
+	</body>
+</html>
