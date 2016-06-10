@@ -12,4 +12,11 @@ class Controller
 	{
 		$this->app = $app;
 	}
+
+	protected function render($namespace) {
+		list($bundle, $template) = explode(':', $namespace);
+		$path = __DIR__ . '/../../' . $bundle . '/Resources/public/' . $template . '.html';
+
+		return file_get_contents($path);
+	}
 }
