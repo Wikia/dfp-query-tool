@@ -18,6 +18,4 @@ $app->get('/tableau', function () use ($tableauController) {
 	return $tableauController->renderWebConnector();
 });
 
-$app['debug'] = true;
-
 $app->run();

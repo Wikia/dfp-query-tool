@@ -8,7 +8,6 @@ class Authenticator
 
 	static public function getUser() {
 		$user = new \DfpUser(self::$credentailsPath);
-		$user->LogDefaults();
 
 		return $user;
 	}
