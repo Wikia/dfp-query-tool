@@ -15,7 +15,7 @@ class Controller
 
 	protected function render($namespace) {
 		list($bundle, $template) = explode(':', $namespace);
-		$path = __DIR__ . '/../../' . $bundle . '/Resources/public/' . $template . '.html';
+		$path = __DIR__ . '/../../' . $bundle . '/Resources/templates/' . $template . '.html';
 
 		return file_get_contents($path);
 	}
