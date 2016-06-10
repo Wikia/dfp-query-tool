@@ -70,21 +70,26 @@
 				<div class="col-sm-12">
 					<ul class="nav nav-tabs tabs-group" role="tablist">
 						<li role="presentation" class="active">
-							<a href="#report" aria-controls="report" role="tab" data-toggle="tab">
-								Existing report
+							<a href="#query" aria-controls="query" role="tab" data-toggle="tab">
+								Query builder
 							</a>
 						</li>
 						<li role="presentation">
-							<a href="#query" aria-controls="query" role="tab" data-toggle="tab">
-								Query builder
+							<a href="#report" aria-controls="report" role="tab" data-toggle="tab">
+								Existing report
 							</a>
 						</li>
 					</ul>
 				</div>
 			</div>
 			<div class="tab-content">
-				<div role="tabpanel" class="tab-pane active row" id="report">
-					<div class="col-sm-4 report-group">
+				<div role="tabpanel" class="tab-pane active row" id="query">
+					<div class="col-sm-4 query-group">
+						<em>Work in progress...</em>
+					</div>
+				</div>
+				<div role="tabpanel" class="tab-pane row" id="report">
+					<div class="col-sm-4 report-group form-inline">
 						<input id="report-id"
 							   class="form-control report-id-input"
 							   placeholder="DFP report ID"
@@ -93,12 +98,8 @@
 							 class="btn btn-wikia">SUBMIT</div>
 					</div>
 				</div>
-				<div role="tabpanel" class="tab-pane row" id="query">
-					<div class="col-sm-4 query-group">
-						<em>Work in progress...</em>
-					</div>
-				</div>
 			</div>
+			<div id="debug"></div>
 		</div>
 		<script src="https://connectors.tableau.com/libs/tableauwdc-1.1.1.js" type="text/javascript"></script>
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
@@ -151,7 +152,7 @@
 				$('.tabs-group').click(function (e) {
 					e.preventDefault();
 					$(this).tab('show')
-				})
+				});
 			})
 		</script>
 	</body>
