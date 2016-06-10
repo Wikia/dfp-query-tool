@@ -20,11 +20,18 @@
 				color: #ffffff;
 			}
 
+			#filter-add {
+				float: right;
+				font-size: 0.7em;
+				margin-top: -10px;
+				margin-right: 15px;
+			}
+
 			.navbar-inverse .navbar-brand:hover {
 				color: #9d9d9d;
 			}
 
-			.report-id-input {
+			.form-control {
 				border-radius: 1px;
 				font-size: 0.9em;
 			}
@@ -52,6 +59,34 @@
 
 			.tab-content {
 				padding: 18px 12px;
+			}
+
+			.filter {
+				margin-top: 4px;
+			}
+
+			.filter-remove {
+				float: right;
+			}
+
+			.checkbox {
+				padding: 8px 0;
+			}
+
+			.checkbox label {
+				width: 100%;
+			}
+
+			.checkbox.active {
+				background: #eee;
+			}
+
+			.checkbox.active label {
+				font-weight: 700;
+			}
+
+			.checkbox input {
+				display: none;
 			}
 		</style>
 	</head>
@@ -84,18 +119,206 @@
 			</div>
 			<div class="tab-content">
 				<div role="tabpanel" class="tab-pane active row" id="query">
-					<div class="col-sm-4 query-group">
-						<em>Work in progress...</em>
-					</div>
+					<form id="query-form">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6 query-group">
+									<h4>
+										Filters:
+										<div id="filter-add" class="btn btn-wikia">ADD</div>
+									</h4>
+									<div class="col-sm-12 form-group form-inline form-filters"></div>
+								</div>
+								<div class="col-md-6 query-group">
+									<h4>Date range:</h4>
+									<div class="col-sm-12 form-group">
+										<input id="startDate"
+											   name="startDate"
+											   class="form-control"
+											   type="date" />
+									</div>
+									<div class="col-sm-12 form-group">
+										<input id="endDate"
+											   name="endDate"
+											   class="form-control"
+											   type="date" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 query-group">
+									<h4>Dimensions:</h4>
+									<div class="col-sm-12">
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   checked="checked"
+													   value="adUnitName"
+													   type="checkbox" />
+												Ad Unit name
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="country"
+													   type="checkbox" />
+												Country
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="creativeId"
+													   type="checkbox" />
+												Creative ID
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="creativeName"
+													   type="checkbox" />
+												Creative name
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="creativeSize"
+													   type="checkbox" />
+												Creative size
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="date"
+													   type="checkbox" />
+												Date
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="deviceCategory"
+													   type="checkbox" />
+												Device category
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="keyValues"
+													   type="checkbox" />
+												Key-values
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="lineItemId"
+													   type="checkbox" />
+												Line item ID
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="lineItemName"
+													   type="checkbox" />
+												Line item name
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="orderId"
+													   type="checkbox" />
+												Order ID
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="dimensions[]"
+													   value="orderName"
+													   type="checkbox" />
+												Order name
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="col-md-6 query-group">
+									<h4>Metrics:</h4>
+									<div class="col-sm-12">
+										<div class="checkbox">
+											<label>
+												<input name="metrics[]"
+													   checked="checked"
+													   value="totalActiveViewEligibleImpressions"
+													   type="checkbox" />
+												Total Active View eligible impressions
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="metrics[]"
+													   checked="checked"
+													   value="totalActiveViewMeasurableImpressions"
+													   type="checkbox" />
+												Total Active View measurable impressions
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="metrics[]"
+													   checked="checked"
+													   value="totalActiveViewViewableImpressions"
+													   type="checkbox" />
+												Total Active View viewable impressions
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="metrics[]"
+													   checked="checked"
+													   value="totalActiveViewMeasurableImpressionsRate"
+													   type="checkbox" />
+												Total Active View % measurable impressions
+											</label>
+										</div>
+										<div class="checkbox">
+											<label>
+												<input name="metrics[]"
+													   checked="checked"
+													   value="totalActiveViewViewableImpressionsRate"
+													   type="checkbox" />
+												Total Active View % viewable impressions
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 text-right">
+										<div id="query-submit" class="btn btn-wikia">SUBMIT</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
 				</div>
 				<div role="tabpanel" class="tab-pane row" id="report">
-					<div class="col-sm-4 report-group form-inline">
-						<input id="report-id"
-							   class="form-control report-id-input"
-							   placeholder="DFP report ID"
-							   type="text" />
-						<div id="report-submit"
-							 class="btn btn-wikia">SUBMIT</div>
+					<div class="container">
+						<div class="row">
+							<div class="col-sm-offset-4 col-sm-4 report-group form-inline">
+								<input id="report-id"
+									   class="form-control report-id-input"
+									   placeholder="DFP report ID"
+									   type="text" />
+								<div id="report-submit"
+									 class="btn btn-wikia">SUBMIT</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -104,27 +327,77 @@
 		<script src="https://connectors.tableau.com/libs/tableauwdc-1.1.1.js" type="text/javascript"></script>
 		<script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
+		<script id="filter-template" type="text/template">
+			<div class="filter">
+				<select name="filterTypes[]"
+						class="form-control">
+					<option value="adUnitName">Ad Unit name</option>
+					<option value="country">Country</option>
+					<option value="creativeId">Creative ID</option>
+					<option value="creativeName">Creative name</option>
+					<option value="deviceCategory">Device category</option>
+					<option value="linteItemId">Line item ID</option>
+					<option value="linteItemName">Line item name</option>
+					<option value="orderId">Order ID</option>
+					<option value="orderName">Order name</option>
+				</select>
+				<select name="filterOperators[]"
+						class="form-control">
+					<option value="is">is</option>
+				</select>
+				<input name="filterValues[]"
+					   class="form-control"
+					   value=""
+					   type="text" />
+				<div class="btn btn-wikia filter-remove">REMOVE</div>
+			</div>
+		</script>
+		<script>
+			window.typesMap = {
+				TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS: 'int',
+				TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS: 'int',
+				TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE: 'int',
+				TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS: 'int',
+				TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE: 'int',
+				CREATIVE_ID: 'int',
+				LINE_ITEM_ID: 'int',
+				ORDER_ID: 'int',
+				DATE: 'date'
+			};
+		</script>
 		<script type="text/javascript">
 			(function() {
 				var connector = tableau.makeConnector(),
 					response;
 
-				connector.getColumnHeaders = function() {
+				function getResponse(data) {
 					var fieldColumns = [],
 						fieldTypes = [];
 
-					var data = JSON.parse(tableau.connectionData),
-						url = "api/reports/" + data.reportId;
-
-					$.get(url, function (data) {
-						response = data;
-						Object.keys(response[0]).forEach(function (key) {
-							fieldColumns.push(key);
-							fieldTypes.push('string');
-						});
-
-						tableau.headersCallback(fieldColumns, fieldTypes);
+					response = data;
+					Object.keys(response[0]).forEach(function (key) {
+						fieldColumns.push(key);
+						fieldTypes.push(typesMap[key] || 'string');
 					});
+
+					tableau.headersCallback(fieldColumns, fieldTypes);
+				}
+
+				connector.getColumnHeaders = function() {
+
+					var data = JSON.parse(tableau.connectionData);
+
+					if (data.reportId) {
+						$.get('api/reports/' + data.reportId, function (data) {
+							getResponse(data);
+						});
+					}
+
+					if (data.queryData) {
+						$.post('api/query', data.queryData, function (data) {
+							getResponse(data);
+						});
+					}
 				};
 
 				connector.getTableData = function(lastRecordToken) {
@@ -146,6 +419,14 @@
 					});
 					tableau.submit();
 				});
+
+				$('#query-submit').on('click', function () {
+					tableau.connectionData = JSON.stringify({
+						queryData: $('#query-form').serialize()
+					});
+					tableau.connectionName = 'DFP Query';
+					tableau.submit();
+				});
 			})();
 
 			$(document).ready(function () {
@@ -153,7 +434,36 @@
 					e.preventDefault();
 					$(this).tab('show')
 				});
-			})
+
+				$('#startDate').val('2016-06-07');
+				$('#endDate').val('2016-06-09');
+
+				$('#filter-add').on('click', function () {
+					$('.form-filters').append($('#filter-template').html());
+				});
+				$('.form-filters').append($('#filter-template').html());
+
+				$('.form-filters').on('click', '.filter-remove', function () {
+					$(this).parent().remove();
+				});
+
+				$('#query-form').on('click', '.checkbox', function () {
+					var checkbox = $(this).find('input');
+
+					if (checkbox.prop('checked')) {
+						$(this).addClass('active');
+					} else {
+						$(this).removeClass('active');
+					}
+				});
+
+				$('.checkbox input').each(function () {
+					if ($(this).prop('checked')) {
+						$(this).parent().parent().addClass('active');
+					}
+				});
+			});
+
 		</script>
 	</body>
 </html>

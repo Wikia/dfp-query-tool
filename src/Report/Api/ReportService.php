@@ -2,70 +2,109 @@
 
 namespace Report\Api;
 
+use Symfony\Component\HttpFoundation\ParameterBag;
+
 class ReportService
 {
-	public function generate() {
-		$id = 386164332;
+	const COLUMN_MAPPING = [
+		'totalActiveViewEligibleImpressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
+		'totalActiveViewMeasurableImpressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
+		'totalActiveViewViewableImpressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
+		'totalActiveViewMeasurableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
+		'totalActiveViewViewableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE'
+	];
+	const DIMENSION_MAPPING = [
+		'adUnitName' => 'AD_UNIT_NAME',
+		'country' => 'COUNTRY_NAME',
+		'creativeId' => 'CREATIVE_ID',
+		'creativeName' => 'CREATIVE_NAME',
+		'creativeSize' => 'CREATIVE_SIZE',
+		'date' => 'DATE',
+		'deviceCategory' => 'DEVICE_CATEGORY_NAME',
+		'keyValues' => 'AD_REQUEST_CUSTOM_CRITERIA',
+		'lineItemId' => 'LINE_ITEM_ID',
+		'lineItemName' => 'LINE_ITEM_NAME',
+		'orderId' => 'ORDER_ID',
+		'orderName' => 'ORDER_NAME'
+	];
+
+	public function postQuery(ParameterBag $request) {
 		$user = Authenticator::getUser();
+
+		$columns = array_map(function ($key) {
+			return self::COLUMN_MAPPING[$key];
+		}, $request->get('metrics'));
+
+		$dimensions = array_map(function ($key) {
+			return self::DIMENSION_MAPPING[$key];
+		}, $request->get('dimensions'));
+
+		$filterValues = $request->get('filterValues');
+		$filterTypes = $request->get('filterTypes');
+		$statements = [];
+		foreach ($filterValues as $key => $value) {
+			if ($value === '') {
+				continue;
+			}
+			$type = $filterTypes[$key];
+			$filter = self::DIMENSION_MAPPING[$type];
+			$statements[] = $filter . ' in (:' . $type . $key . ')';
+		}
 
 		try {
 			$reportService = $user->GetService('ReportService', 'v201605');
-			// Create report query.
+
 			$reportQuery = new \ReportQuery();
-			$reportQuery->dimensions = array('ORDER_ID', 'ORDER_NAME');
-			$reportQuery->dimensionAttributes = array('ORDER_TRAFFICKER',
-				'ORDER_START_DATE_TIME', 'ORDER_END_DATE_TIME');
-			$reportQuery->columns = array('AD_SERVER_IMPRESSIONS', 'AD_SERVER_CLICKS',
-				'AD_SERVER_CTR', 'AD_SERVER_CPM_AND_CPC_REVENUE',
-				'AD_SERVER_WITHOUT_CPD_AVERAGE_ECPM');
-			// Create statement to filter for an order.
+			$reportQuery->dimensions = $dimensions;
+			$reportQuery->columns = $columns;
+
 			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where('order_id = :orderId')->WithBindVariableValue(
-				'orderId', intval($id));
-			// Set the filter statement.
+			$statementBuilder->Where(implode(' and ', $statements));
+
+			foreach ($filterValues as $key => $value) {
+				if ($value === '') {
+					continue;
+				}
+				$type = $filterTypes[$key];
+				if (strpos($type, 'Id') !== false) {
+					$value = intval($value);
+				}
+				$statementBuilder->WithBindVariableValue($type . $key, $value);
+			}
+
 			$reportQuery->statement = $statementBuilder->ToStatement();
-			// Set the start and end dates or choose a dynamic date range type.
 			$reportQuery->dateRangeType = 'CUSTOM_DATE';
 			$reportQuery->startDate = \DateTimeUtils::ToDfpDateTime(
-				new \DateTime('-10 days', new \DateTimeZone('America/New_York')))->date;
+				new \DateTime($request->get('startDate'), new \DateTimeZone('America/New_York')))->date;
 			$reportQuery->endDate = \DateTimeUtils::ToDfpDateTime(
-				new \DateTime('now', new \DateTimeZone('America/New_York')))->date;
-			// Create report job.
+				new \DateTime($request->get('endDate'), new \DateTimeZone('America/New_York')))->date;
+
 			$reportJob = new \ReportJob();
 			$reportJob->reportQuery = $reportQuery;
-			// Run report job.
 			$reportJob = $reportService->runReportJob($reportJob);
 
-			// Create report downloader.
-			$reportDownloader = new \ReportDownloader($reportService, $reportJob->id);
-			// Wait for the report to be ready.
-			$reportDownloader->waitForReportReady();
-
-			return $this->parseCsvData(gzdecode($reportDownloader->downloadReport('CSV_DUMP')));
-		} catch (\OAuth2Exception $e) {
-			return sprintf("%s\n", $e->getMessage());
-		} catch (\ValidationException $e) {
-			return sprintf("%s\n", $e->getMessage());
+			return $this->downloadReport($reportService, $reportJob->id);
 		} catch (\Exception $e) {
 			return sprintf("%s\n", $e->getMessage());
 		}
 	}
 
-	public function get($id) {
+	public function getReport($id) {
 		try {
 			$user = Authenticator::getUser();
 			$reportService = $user->GetService('ReportService', 'v201605');
-			$reportDownloader = new \ReportDownloader($reportService, $id);
-			$reportDownloader->waitForReportReady();
 
-			return $this->parseCsvData(gzdecode($reportDownloader->downloadReport('CSV_DUMP')));
-		} catch (\OAuth2Exception $e) {
-			return sprintf("%s\n", $e->getMessage());
-		} catch (\ValidationException $e) {
-			return sprintf("%s\n", $e->getMessage());
+			return $this->downloadReport($reportService, $id);
 		} catch (\Exception $e) {
 			return sprintf("%s\n", $e->getMessage());
 		}
+	}
+
+	private function downloadReport($reportService, $id) {
+		$reportDownloader = new \ReportDownloader($reportService, $id);
+		$reportDownloader->waitForReportReady();
+
+		return $this->parseCsvData(gzdecode($reportDownloader->downloadReport('CSV_DUMP')));
 	}
 
 	private function parseCsvData($csv) {

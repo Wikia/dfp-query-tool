@@ -5,8 +5,9 @@ namespace Report\Controller;
 use Common\Controller\Controller;
 use Report\Api\ReportService;
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
-class ReportController extends Controller
+class QueryController extends Controller
 {
 	protected $reportService;
 
@@ -16,7 +17,7 @@ class ReportController extends Controller
 		$this->reportService = new ReportService();
 	}
 
-	public function get($id) {
-		return $this->reportService->getReport($id);
+	public function post(Request $request) {
+		return $this->reportService->postQuery($request->request);
 	}
 }
