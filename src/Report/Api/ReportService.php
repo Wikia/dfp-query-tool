@@ -48,7 +48,7 @@ class ReportService
 			}
 			$type = $filterTypes[$key];
 			$filter = self::DIMENSION_MAPPING[$type];
-			$statements[] = $filter . ' in (:' . $type . $key . ')';
+			$statements[] = $filter . ' = :' . $type . $key;
 		}
 
 		try {
