@@ -1,0 +1,10 @@
+queries:
+  viewability_in_poland:
+    dimensions:
+      - country
+      - creative_size
+    metrics:
+      - total_active_view_eligible_impressions
+      - total_active_view_viewable_impressions
+    filters:
+      country: Poland

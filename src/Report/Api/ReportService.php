@@ -11,7 +11,13 @@ class ReportService
 		'totalActiveViewMeasurableImpressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'totalActiveViewViewableImpressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
 		'totalActiveViewMeasurableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
-		'totalActiveViewViewableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE'
+		'totalActiveViewViewableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
+
+		'total_active_view_eligible_impressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
+		'total_active_view_measurable_impressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
+		'total_active_view_viewable_impressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
+		'total_active_view_measurable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
+		'total_active_view_viewable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE'
 	];
 	const DIMENSION_MAPPING = [
 		'adUnitName' => 'AD_UNIT_NAME',
@@ -25,31 +31,29 @@ class ReportService
 		'lineItemId' => 'LINE_ITEM_ID',
 		'lineItemName' => 'LINE_ITEM_NAME',
 		'orderId' => 'ORDER_ID',
-		'orderName' => 'ORDER_NAME'
+		'orderName' => 'ORDER_NAME',
+
+		'ad_unit_name' => 'AD_UNIT_NAME',
+		'creative_id' => 'CREATIVE_ID',
+		'creative_name' => 'CREATIVE_NAME',
+		'creative_size' => 'CREATIVE_SIZE',
+		'device_category' => 'DEVICE_CATEGORY_NAME',
+		'key_values' => 'AD_REQUEST_CUSTOM_CRITERIA',
+		'line_item_id' => 'LINE_ITEM_ID',
+		'line_item_name' => 'LINE_ITEM_NAME',
+		'order_id' => 'ORDER_ID',
+		'order_name' => 'ORDER_NAME'
 	];
 
-	public function postQuery(ParameterBag $request) {
+	public function query(ParameterBag $parameters) {
 		$user = Authenticator::getUser();
 
-		$columns = array_map(function ($key) {
-			return self::COLUMN_MAPPING[$key];
-		}, $request->get('metrics'));
-
-		$dimensions = array_map(function ($key) {
-			return self::DIMENSION_MAPPING[$key];
-		}, $request->get('dimensions'));
-
-		$filterValues = $request->get('filterValues');
-		$filterTypes = $request->get('filterTypes');
-		$statements = [];
-		foreach ($filterValues as $key => $value) {
-			if ($value === '') {
-				continue;
-			}
-			$type = $filterTypes[$key];
-			$filter = self::DIMENSION_MAPPING[$type];
-			$statements[] = $filter . ' = :' . $type . $key;
-		}
+		$columns = $this->getColumns($parameters);
+		$dimensions = $this->getDimensions($parameters);
+		$startDate = new \DateTime('-1 day', new \DateTimeZone('Europe/Warsaw'));
+		$endDate = new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
+		$startDate->setTime(0, 0, 0);
+		$endDate->setTime(0, 0, 0);
 
 		try {
 			$reportService = $user->GetService('ReportService', 'v201605');
@@ -57,36 +61,28 @@ class ReportService
 			$reportQuery = new \ReportQuery();
 			$reportQuery->dimensions = $dimensions;
 			$reportQuery->columns = $columns;
-
-			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where(implode(' and ', $statements));
-
-			foreach ($filterValues as $key => $value) {
-				if ($value === '') {
-					continue;
-				}
-				$type = $filterTypes[$key];
-				if (strpos($type, 'Id') !== false) {
-					$value = intval($value);
-				}
-				$statementBuilder->WithBindVariableValue($type . $key, $value);
-			}
-
-			$reportQuery->statement = $statementBuilder->ToStatement();
+			$reportQuery->statement = StatementBuilder::build($parameters);
 			$reportQuery->dateRangeType = 'CUSTOM_DATE';
-			$reportQuery->startDate = \DateTimeUtils::ToDfpDateTime(
-				new \DateTime($request->get('startDate'), new \DateTimeZone('America/New_York')))->date;
-			$reportQuery->endDate = \DateTimeUtils::ToDfpDateTime(
-				new \DateTime($request->get('endDate'), new \DateTimeZone('America/New_York')))->date;
+			$reportQuery->startDate = \DateTimeUtils::ToDfpDateTime($startDate)->date;
+			$reportQuery->endDate = \DateTimeUtils::ToDfpDateTime($endDate)->date;
 
-			$reportJob = new \ReportJob();
-			$reportJob->reportQuery = $reportQuery;
-			$reportJob = $reportService->runReportJob($reportJob);
-
-			return $this->downloadReport($reportService, $reportJob->id);
+			return $this->run($reportService, $reportQuery);
 		} catch (\Exception $e) {
 			return sprintf("%s\n", $e->getMessage());
 		}
+	}
+
+	public function postQuery(ParameterBag $parameters) {
+		$filters = [];
+		$filterValues = $parameters->get('filterValues');
+		$filterTypes = $parameters->get('filterTypes');
+		foreach ($filterValues as $key => $value) {
+			$type = $type = $filterTypes[$key];
+			$filters[$type] = $value;
+		}
+		$parameters->set('filters', $filters);
+
+		return $this->query($parameters);
 	}
 
 	public function getReport($id) {
@@ -98,6 +94,14 @@ class ReportService
 		} catch (\Exception $e) {
 			return sprintf("%s\n", $e->getMessage());
 		}
+	}
+
+	private function run($reportService, $reportQuery) {
+		$reportJob = new \ReportJob();
+		$reportJob->reportQuery = $reportQuery;
+		$reportJob = $reportService->runReportJob($reportJob);
+
+		return $this->downloadReport($reportService, $reportJob->id);
 	}
 
 	private function downloadReport($reportService, $id) {
@@ -134,5 +138,17 @@ class ReportService
 		}
 
 		return $data;
+	}
+
+	private function getColumns(ParameterBag $parameters) {
+		return array_map(function ($key) {
+			return self::COLUMN_MAPPING[$key];
+		}, $parameters->get('metrics'));
+	}
+
+	private function getDimensions(ParameterBag $parameters) {
+		return array_map(function ($key) {
+			return self::DIMENSION_MAPPING[$key];
+		}, $parameters->get('dimensions'));
 	}
 }

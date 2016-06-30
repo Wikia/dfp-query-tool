@@ -1,7 +1,9 @@
 {
     "require": {
         "googleads/googleads-php-lib": "^9.1",
-        "silex/silex": "~2.0"
+        "silex/silex": "~2.0",
+        "knplabs/console-service-provider": "^2.0",
+        "symfony/yaml": "^3.1"
     },
     "autoload": {
         "classmap": [
