@@ -89,7 +89,6 @@ EOT;
 		$dateString = $date->format('Y-m-d');
 		$placeholdersString = implode(',', $placeholders);
 		$sql = sprintf('INSERT INTO %s (%s) VALUES (%s);', $name, $columnsString, $placeholdersString);
-		var_dump($results);
 		foreach ($results as $result) {
 			$values = [ $dateString ];
 			for ($i = 1; $i < count($columns); $i++) {
