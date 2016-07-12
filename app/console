@@ -6,6 +6,7 @@ set_time_limit(0);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = new Silex\Application();
+$config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . '/../config/queries.yml'));
 
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
     'console.name'              => 'DfpTableau',
@@ -13,8 +14,20 @@ $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
     'console.project_directory' => __DIR__.'/..'
 ));
 
+$app->register(new Silex\Provider\DoctrineServiceProvider, array(
+	'db.options' => array(
+		'driver'    => 'pdo_mysql',
+		'host'      => $config['database']['host'],
+		'port'      => $config['database']['port'],
+		'dbname'    => $config['database']['name'],
+		'user'      => $config['database']['user'],
+		'password'  => $config['database']['password'],
+		'charset'   => 'utf8mb4',
+	),
+));
+
 $console = $app['console'];
 
-$console->add(new Report\Command\ReportCommand());
+$console->add(new Report\Command\ReportCommand($app));
 
 $console->run();

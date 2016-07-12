@@ -4,6 +4,7 @@ namespace Report\Command;
 
 use Knp\Command\Command;
 use Report\Api\ReportService;
+use Report\Database\Database;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,10 +15,12 @@ class ReportCommand extends Command
 {
 	private static $queriesConfig = __DIR__ . '/../../../config/queries.yml';
 	private $config;
+	private $database;
 
-	public function __construct($name = null) {
+	public function __construct($app, $name = null) {
 		parent::__construct($name);
 
+		$this->database = new Database($app);
 		$this->config = $this->getConfig();
 	}
 
@@ -45,8 +48,10 @@ class ReportCommand extends Command
 		}
 
 		foreach ($queries as $queryId => $query) {
+			$this->database->updateTable($queryId, $query);
 			$results = $this->runQuery($queryId);
 			printf("\t- rows: %d\n", count($results));
+			$this->database->insertResults($queryId, $query, $results);
 		}
 	}
 

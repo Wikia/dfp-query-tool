@@ -11,18 +11,30 @@ class StatementBuilder
 		$statements = [];
 		$i = 1;
 		foreach ($parameters->get('filters') as $type => $value) {
-			$filter = ReportService::DIMENSION_MAPPING[$type];
-			$key = $type . '_' . $i;
-			$statements[] = $filter . ' = :' . $key;
 			if ($value === '') {
 				continue;
 			}
-			$statementBuilder->WithBindVariableValue($key, self::parseValue($type, $value));
+			$filter = ReportService::DIMENSION_MAPPING[$type];
+			$statements[] = self::buildStatement($statementBuilder, $i, $filter, $type, $value);
 			$i++;
 		}
 		$statementBuilder->Where(implode(' and ', $statements));
 
 		return $statementBuilder->ToStatement();
+	}
+
+	private static function buildStatement($statementBuilder, $index, $filter, $type, $valueString) {
+		$values = explode(',', $valueString);
+		$keys = [];
+		$i = 1;
+		foreach ($values as $value) {
+			$key = sprintf('%s_%d_%d', $type, $index, $i);
+			$keys[] = ':' . $key;
+			$statementBuilder->WithBindVariableValue($key, self::parseValue($type, trim($value)));
+			$i++;
+		}
+
+		return sprintf('%s in (%s)', $filter, implode(',', $keys));
 	}
 
 	private static function parseValue($type, $value) {
