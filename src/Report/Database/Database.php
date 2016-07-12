@@ -3,6 +3,7 @@
 namespace Report\Database;
 
 use Doctrine\DBAL\Exception\NonUniqueFieldNameException;
+use Doctrine\Instantiator\Exception\InvalidArgumentException;
 use Report\Api\ReportService;
 
 class Database
@@ -13,6 +14,7 @@ class Database
 		'creative_name' => 'TEXT',
 		'creative_size' => 'TEXT',
 		'country' => 'TEXT',
+		'custom_criteria' => 'TEXT',
 		'date' => 'TEXT',
 		'device_category' => 'TEXT',
 		'key_values' => 'TEXT',
@@ -20,6 +22,7 @@ class Database
 		'line_item_name' => 'TEXT',
 		'order_id' => 'LONG',
 		'order_name' => 'TEXT',
+		'targeting_value_id' => 'LONG',
 		'total_active_view_eligible_impressions' => 'LONG',
 		'total_active_view_measurable_impressions' => 'LONG',
 		'total_active_view_viewable_impressions' => 'LONG',
@@ -68,6 +71,10 @@ EOT;
 	}
 
 	public function insertResults($name, $query, $results) {
+		if (!is_array($results)) {
+			throw new InvalidArgumentException($results);
+		}
+
 		$date = new \DateTime('-1 day');
 		$date->setTime(0, 0, 0);
 		$this->removeDuplicates($name, $date);
@@ -89,6 +96,7 @@ EOT;
 		$dateString = $date->format('Y-m-d');
 		$placeholdersString = implode(',', $placeholders);
 		$sql = sprintf('INSERT INTO %s (%s) VALUES (%s);', $name, $columnsString, $placeholdersString);
+
 		foreach ($results as $result) {
 			$values = [ $dateString ];
 			for ($i = 1; $i < count($columns); $i++) {

@@ -23,8 +23,10 @@ class StatementBuilder
 		return $statementBuilder->ToStatement();
 	}
 
-	private static function buildStatement($statementBuilder, $index, $filter, $type, $valueString) {
-		$values = explode(',', $valueString);
+	private static function buildStatement($statementBuilder, $index, $filter, $type, $values) {
+		if (!is_array($values)) {
+			$values = explode(',', $values);
+		}
 		$keys = [];
 		$i = 1;
 		foreach ($values as $value) {

@@ -25,6 +25,7 @@ class ReportService
 		'creativeId' => 'CREATIVE_ID',
 		'creativeName' => 'CREATIVE_NAME',
 		'creativeSize' => 'CREATIVE_SIZE',
+		'customCriteria' => 'CUSTOM_CRITERIA',
 		'date' => 'DATE',
 		'deviceCategory' => 'DEVICE_CATEGORY_NAME',
 		'keyValues' => 'AD_REQUEST_CUSTOM_CRITERIA',
@@ -32,17 +33,20 @@ class ReportService
 		'lineItemName' => 'LINE_ITEM_NAME',
 		'orderId' => 'ORDER_ID',
 		'orderName' => 'ORDER_NAME',
+		'targetingValueId' => 'CUSTOM_TARGETING_VALUE_ID',
 
 		'ad_unit_name' => 'AD_UNIT_NAME',
 		'creative_id' => 'CREATIVE_ID',
 		'creative_name' => 'CREATIVE_NAME',
 		'creative_size' => 'CREATIVE_SIZE',
+		'custom_criteria' => 'CUSTOM_CRITERIA',
 		'device_category' => 'DEVICE_CATEGORY_NAME',
 		'key_values' => 'AD_REQUEST_CUSTOM_CRITERIA',
 		'line_item_id' => 'LINE_ITEM_ID',
 		'line_item_name' => 'LINE_ITEM_NAME',
 		'order_id' => 'ORDER_ID',
-		'order_name' => 'ORDER_NAME'
+		'order_name' => 'ORDER_NAME',
+		'targeting_value_id' => 'CUSTOM_TARGETING_VALUE_ID'
 	];
 
 	public function query(ParameterBag $parameters) {
