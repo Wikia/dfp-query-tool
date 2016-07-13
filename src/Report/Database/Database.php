@@ -10,7 +10,7 @@ class Database
 {
 	const TYPE_MAPPING = [
 		'ad_unit_name' => 'TEXT',
-		'creative_id' => 'LONG',
+		'creative_id' => 'BIGINT',
 		'creative_name' => 'TEXT',
 		'creative_size' => 'TEXT',
 		'country' => 'TEXT',
@@ -18,14 +18,14 @@ class Database
 		'date' => 'TEXT',
 		'device_category' => 'TEXT',
 		'key_values' => 'TEXT',
-		'line_item_id' => 'LONG',
+		'line_item_id' => 'BIGINT',
 		'line_item_name' => 'TEXT',
-		'order_id' => 'LONG',
+		'order_id' => 'BIGINT',
 		'order_name' => 'TEXT',
-		'targeting_value_id' => 'LONG',
-		'total_active_view_eligible_impressions' => 'LONG',
-		'total_active_view_measurable_impressions' => 'LONG',
-		'total_active_view_viewable_impressions' => 'LONG',
+		'targeting_value_id' => 'BIGINT',
+		'total_active_view_eligible_impressions' => 'BIGINT',
+		'total_active_view_measurable_impressions' => 'BIGINT',
+		'total_active_view_viewable_impressions' => 'BIGINT',
 		'total_active_view_measurable_impressions_rate' => 'FLOAT',
 		'total_active_view_viewable_impressions_rate' => 'FLOAT'
 	];
@@ -101,7 +101,7 @@ EOT;
 			$values = [ $dateString ];
 			for ($i = 1; $i < count($columns); $i++) {
 				$value = $result[$columns[$i]];
-				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'LONG') {
+				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'BIGINT') {
 					$value = (int) $value;
 				}
 				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'FLOAT') {
