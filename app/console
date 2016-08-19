@@ -6,7 +6,7 @@ set_time_limit(0);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = new Silex\Application();
-$config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . '/../config/queries.yml'));
+$config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . '/../config/hourly-queries.yml'));
 
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
     'console.name'              => 'DfpTableau',
@@ -18,7 +18,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 	'db.options' => array(
 		'driver'    => 'pdo_mysql',
 		'host'      => $config['database']['host'],
-		'port'      => $config['database']['port'],
+//		'port'      => $config['database']['port'],
 		'dbname'    => $config['database']['name'],
 		'user'      => $config['database']['user'],
 		'password'  => $config['database']['password'],
@@ -29,5 +29,6 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 $console = $app['console'];
 
 $console->add(new Report\Command\ReportCommand($app));
+$console->add(new Report\Command\HourlyReportCommand($app));
 
 $console->run();
