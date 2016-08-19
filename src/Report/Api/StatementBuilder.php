@@ -15,7 +15,11 @@ class StatementBuilder
 				continue;
 			}
 			$filter = ReportService::DIMENSION_MAPPING[$type];
-			$statements[] = self::buildStatement($statementBuilder, $i, $filter, $type, $value);
+			if (is_array( $value ) && !empty($value["not"])) {
+				$statements[] = self::buildNotStatement($statementBuilder, $i, $filter, $type, $value['not']);
+			} else {
+				$statements[] = self::buildStatement($statementBuilder, $i, $filter, $type, $value);
+			}
 			$i++;
 		}
 		$statementBuilder->Where(implode(' and ', $statements));
@@ -45,5 +49,25 @@ class StatementBuilder
 		}
 
 		return $value;
+	}
+
+	/**
+	 * @param $statementBuilder
+	 * @param $index
+	 * @param $filter
+	 * @param $type
+	 * @param $values
+	 * @return string
+	 *
+	 * @TODO currently there is no support for multiple values in not statement
+	 */
+	private static function buildNotStatement( $statementBuilder, $index, $filter, $type, $values ) {
+		$value = is_array($values) ? $values[0] : $values;
+		$key = sprintf('%s_%d_%d', $type, $index, 1);
+		$keyFormatted = ':' . $key;
+
+		$statementBuilder->WithBindVariableValue($key, self::parseValue($type, trim($value)));
+
+		return sprintf('%s != %s', $filter, $keyFormatted);
 	}
 }
