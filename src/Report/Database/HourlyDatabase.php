@@ -16,6 +16,7 @@ class HourlyDatabase
 		'country' => 'TEXT',
 		'custom_criteria' => 'TEXT',
 		'date' => 'TEXT',
+		'ord' => 'int',
 		'device_category' => 'TEXT',
 		'key_values' => 'TEXT',
 		'line_item_id' => 'BIGINT',
@@ -38,7 +39,7 @@ class HourlyDatabase
 
 	public function updateTable($name, $query) {
 		$createTableSql = sprintf(
-			'CREATE TABLE IF NOT EXISTS %s (DATE DATETIME NOT NULL) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;',
+			'CREATE TABLE IF NOT EXISTS %s (DATE DATETIME NOT NULL, ORD INT NOT NULL) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB;',
 			$name
 		);
 		$this->db->exec($createTableSql);
@@ -77,8 +78,8 @@ EOT;
 
 		$date = new \DateTime('now', new \DateTimeZone('America/New_York'));
 		$this->removeDuplicates($name, $date);
-		$columnsCanonical = [ 'date' ];
-		$columns = [ 'DATE' ];
+		$columnsCanonical = [ 'date', 'ord' ];
+		$columns = [ 'DATE', 'ORD' ];
 		$placeholders = [ '?' ];
 		foreach ($query['dimensions'] as $dimension) {
 			$columns[] = ReportService::DIMENSION_MAPPING[$dimension];
@@ -88,17 +89,18 @@ EOT;
 		foreach ($query['metrics'] as $metric) {
 			$columns[] = ReportService::COLUMN_MAPPING[$metric];
 			$columnsCanonical[] = $metric;
-			$placeholders[] = '?';
+			$placeholders[] = '?,?';
 		}
 
 		$columnsString = implode(',', $columns);
 		$dateString = $date->format('Y-m-d H');
+		$ord = (int) $date->format('H');
 		$placeholdersString = implode(',', $placeholders);
 		$sql = sprintf('INSERT INTO %s (%s) VALUES (%s);', $name, $columnsString, $placeholdersString);
 
 		foreach ($results as $result) {
-			$values = [ $dateString ];
-			for ($i = 1; $i < count($columns); $i++) {
+			$values = [ $dateString, $ord ];
+			for ($i = 2; $i < count($columns); $i++) {
 				$value = $result[$columns[$i]];
 				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'BIGINT') {
 					$value = (int) $value;
