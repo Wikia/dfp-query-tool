@@ -57,6 +57,17 @@ EOT;
 				$this->db->exec($sql);
 			} catch (NonUniqueFieldNameException $ignore) {}
 		}
+		foreach ($query['custom_field_ids'] as $column) {
+			$sql = sprintf(
+				$columnSql,
+				$name,
+				'CF_' . $column,
+				'TEXT'
+			);
+			try {
+				$this->db->exec($sql);
+			} catch (NonUniqueFieldNameException $ignore) {}
+		}
 		foreach ($query['metrics'] as $column) {
 			$sql = sprintf(
 				$columnSql,
@@ -86,6 +97,11 @@ EOT;
 			$columnsCanonical[] = $dimension;
 			$placeholders[] = '?';
 		}
+		foreach ($query['custom_field_ids'] as $customField) {
+			$columns[] = 'CF_' . $customField;
+			$columnsCanonical[] = 'CF_' . $customField;
+			$placeholders[] = '?';
+		}
 		foreach ($query['metrics'] as $metric) {
 			$columns[] = ReportService::COLUMN_MAPPING[$metric];
 			$columnsCanonical[] = $metric;
@@ -101,11 +117,13 @@ EOT;
 			$values = [ $dateString ];
 			for ($i = 1; $i < count($columns); $i++) {
 				$value = $result[$columns[$i]];
-				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'BIGINT') {
-					$value = (int) $value;
-				}
-				if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'FLOAT') {
-					$value = (float) $value;
+				if (array_key_exists($columnsCanonical[$i], self::TYPE_MAPPING)) {
+					if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'BIGINT') {
+						$value = (int) $value;
+					}
+					if (self::TYPE_MAPPING[$columnsCanonical[$i]] === 'FLOAT') {
+						$value = (float) $value;
+					}
 				}
 				$values[] = $value;
 			}

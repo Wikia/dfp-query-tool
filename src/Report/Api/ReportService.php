@@ -66,6 +66,9 @@ class ReportService
 			$reportQuery->dimensions = $dimensions;
 			$reportQuery->columns = $columns;
 			$reportQuery->statement = StatementBuilder::build($parameters);
+			if ($parameters->has('custom_field_ids')) {
+				$reportQuery->customFieldIds = $parameters->get('custom_field_ids');
+			}
 			$reportQuery->dateRangeType = 'CUSTOM_DATE';
 			$reportQuery->startDate = \DateTimeUtils::ToDfpDateTime($startDate)->date;
 			$reportQuery->endDate = \DateTimeUtils::ToDfpDateTime($endDate)->date;
@@ -128,16 +131,30 @@ class ReportService
 			$values = explode(',', $line);
 			if ($header) {
 				foreach ($values as $value) {
-					list($key, $enum) = explode('.', $value);
+					$enum = $value;
+					if (strpos($value, '.') !== false) {
+						list($key, $enum) = explode('.', $value);
+					} else if (strpos($value, 'CF[') !== false) {
+						$enum = strtr($value, [
+							'[' => '_',
+							']_Value' => ''
+						]);
+					}
 					$columns[] = $enum;
 				}
 				$header = false;
 			} else {
 				$row = [];
+				$skip = false;
 				foreach ($values as $key => $value) {
 					$row[$columns[$key]] = $value;
+					if ($value === '-') {
+						$skip = true;
+					}
 				}
-				$data[] = $row;
+				if (!$skip) {
+					$data[] = $row;
+				}
 			}
 		}
 
