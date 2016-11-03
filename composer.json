@@ -1,6 +1,6 @@
 {
     "require": {
-        "googleads/googleads-php-lib": "^9.1",
+        "googleads/googleads-php-lib": "^14.0",
         "silex/silex": "~2.0",
         "knplabs/console-service-provider": "^2.0",
         "symfony/yaml": "^3.1",
@@ -9,7 +9,7 @@
     "autoload": {
         "classmap": [
             "src",
-            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201605"
+            "vendor/googleads/googleads-php-lib/src/Google/Api/Ads/Dfp/Util/v201608"
         ]
     }
 }
