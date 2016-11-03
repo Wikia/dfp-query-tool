@@ -65,153 +65,32 @@
 								<div class="col-md-6 query-group">
 									<h4>Dimensions:</h4>
 									<div class="col-sm-12">
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   checked="checked"
-													   value="adUnitName"
-													   type="checkbox" />
-												Ad Unit name
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="country"
-													   type="checkbox" />
-												Country
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="creativeId"
-													   type="checkbox" />
-												Creative ID
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="creativeName"
-													   type="checkbox" />
-												Creative name
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="creativeSize"
-													   type="checkbox" />
-												Creative size
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="date"
-													   type="checkbox" />
-												Date
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="deviceCategory"
-													   type="checkbox" />
-												Device category
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="keyValues"
-													   type="checkbox" />
-												Key-values
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="lineItemId"
-													   type="checkbox" />
-												Line item ID
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="lineItemName"
-													   type="checkbox" />
-												Line item name
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="orderId"
-													   type="checkbox" />
-												Order ID
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="dimensions[]"
-													   value="orderName"
-													   type="checkbox" />
-												Order name
-											</label>
-										</div>
+										{% for key, label in dimensions %}
+											<div class="checkbox">
+												<label>
+													<input name="dimensions[]"
+														   value="{{ key }}"
+														   type="checkbox" />
+													{{ label }}
+												</label>
+											</div>
+										{% endfor %}
 									</div>
 								</div>
 								<div class="col-md-6 query-group">
 									<h4>Metrics:</h4>
 									<div class="col-sm-12">
-										<div class="checkbox">
-											<label>
-												<input name="metrics[]"
-													   checked="checked"
-													   value="totalActiveViewEligibleImpressions"
-													   type="checkbox" />
-												Total Active View eligible impressions
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="metrics[]"
-													   checked="checked"
-													   value="totalActiveViewMeasurableImpressions"
-													   type="checkbox" />
-												Total Active View measurable impressions
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="metrics[]"
-													   checked="checked"
-													   value="totalActiveViewViewableImpressions"
-													   type="checkbox" />
-												Total Active View viewable impressions
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="metrics[]"
-													   checked="checked"
-													   value="totalActiveViewMeasurableImpressionsRate"
-													   type="checkbox" />
-												Total Active View % measurable impressions
-											</label>
-										</div>
-										<div class="checkbox">
-											<label>
-												<input name="metrics[]"
-													   checked="checked"
-													   value="totalActiveViewViewableImpressionsRate"
-													   type="checkbox" />
-												Total Active View % viewable impressions
-											</label>
-										</div>
+										{% for key, label in metrics %}
+											<div class="checkbox">
+												<label>
+													<input name="metrics[]"
+														   checked="checked"
+														   value="{{ key }}"
+														   type="checkbox" />
+													{{ label }}
+												</label>
+											</div>
+										{% endfor %}
 									</div>
 								</div>
 								<div class="row">
