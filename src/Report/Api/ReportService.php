@@ -2,6 +2,7 @@
 
 namespace Report\Api;
 
+use Common\Api\Authenticator;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ReportService
