@@ -6,5 +6,7 @@ queries:
     metrics:
       - total_active_view_eligible_impressions
       - total_active_view_viewable_impressions
+    custom_field_ids:
+      - 25332
     filters:
       country: Poland
