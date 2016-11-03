@@ -4,7 +4,7 @@ $(document).ready(function () {
 	var $typeLevel = $('.type-level');
 
 	$('.add-pair').on('click', function () {
-		$('.key-value-pairs').append($('#pair-template').html());
+		$('.add-pair-container').before($('#pair-template').html());
 	});
 
 	$('.key-value-pairs').on('click', '.remove-pair', function () {
@@ -34,13 +34,11 @@ $(document).ready(function () {
 
 	if (window.submittedForm.keys) {
 		for (var i = 0; i < window.submittedForm.keys.length; i++) {
-			var pair = $('#pair-template').html();
-
 			if (window.submittedForm.keys[i] === '') {
 				continue;
 			}
 
-			$('.key-value-pairs').append(pair);
+			$('.add-pair-container').before($('#pair-template').html());
 
 			$('.key-value-pairs .key').last().val(window.submittedForm.keys[i]);
 			$('.key-value-pairs .value').last().val(window.submittedForm.values[i]);
