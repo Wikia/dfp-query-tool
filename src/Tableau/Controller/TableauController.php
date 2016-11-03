@@ -7,6 +7,6 @@ use Common\Controller\Controller;
 class TableauController extends Controller
 {
 	public function renderWebConnector() {
-		return $this->render('Tableau:tableau-web-connector');
+		return $this->render('tableau-web-connector');
 	}
 }

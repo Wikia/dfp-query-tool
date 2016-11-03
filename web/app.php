@@ -7,6 +7,20 @@ $reportController = new \Report\Controller\ReportController($app);
 $queryController = new \Report\Controller\QueryController($app);
 $tableauController = new \Tableau\Controller\TableauController($app);
 
+$app['debug'] = true;
+
+$app->register(new Silex\Provider\TwigServiceProvider(), [
+	'twig.path' => [
+		__DIR__ . '/../src/Tableau/Resources/templates'
+	]
+]);
+
+$app->extend('twig', function($twig, $app) {
+	$twig->addExtension(new \Common\TwigExtension\TwigExtension());
+
+	return $twig;
+});
+
 $app->post('/api/query', function(\Symfony\Component\HttpFoundation\Request $request) use ($app, $queryController) {
 	return $app->json($queryController->post($request));
 });

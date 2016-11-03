@@ -3,6 +3,7 @@
 namespace Common\Controller;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 class Controller
 {
@@ -13,10 +14,14 @@ class Controller
 		$this->app = $app;
 	}
 
-	protected function render($namespace) {
-		list($bundle, $template) = explode(':', $namespace);
-		$path = __DIR__ . '/../../' . $bundle . '/Resources/templates/' . $template . '.html';
+	protected function render($template, $parameters = []) {
+		$request = Request::createFromGlobals();
 
-		return file_get_contents($path);
+		return $this->app['twig']->render($template . '.twig', array_merge(
+			$parameters,
+			[
+				'request' => $request
+			]
+		));
 	}
 }

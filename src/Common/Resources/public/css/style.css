@@ -1,0 +1,83 @@
+.btn-wikia {
+	background: none;
+	border-radius: 1px;
+	color: #00b7e0;
+	font-size: 0.9em;
+	font-weight: 500;
+	margin-left: 8px;
+	padding: 7px 12px;
+}
+
+.btn-wikia:hover, .btn-wikia:focus, .btn-wikia:active {
+	background: #09d3bf;
+	color: #ffffff;
+}
+
+#filter-add {
+	float: right;
+	font-size: 0.7em;
+	margin-top: -10px;
+	margin-right: 15px;
+}
+
+.navbar-inverse .navbar-brand:hover {
+	color: #9d9d9d;
+}
+
+.form-control {
+	border-radius: 1px;
+	font-size: 0.9em;
+}
+
+.has-error {
+	border-color: #a94442;
+}
+
+.report-group {
+	display: flex;
+	flex: 1 0 auto;
+}
+
+.tabs-group {
+	width: 100%;
+}
+
+.tabs-group > li > a {
+	border-radius: 1px 1px 0 0;
+	color: #a1a1a1;
+	font-size: 0.9em;
+	font-weight: 500;
+	padding: 8px 15px;
+}
+
+.tab-content {
+	padding: 18px 12px;
+}
+
+.filter {
+	margin-top: 4px;
+}
+
+.filter-remove {
+	float: right;
+}
+
+.checkbox {
+	padding: 8px 0;
+}
+
+.checkbox label {
+	width: 100%;
+}
+
+.checkbox.active {
+	background: #eee;
+}
+
+.checkbox.active label {
+	font-weight: 700;
+}
+
+.checkbox input {
+	display: none;
+}
