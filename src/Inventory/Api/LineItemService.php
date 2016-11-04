@@ -6,6 +6,12 @@ use Common\Api\Authenticator;
 
 class LineItemService
 {
+	private $customTargetingService;
+
+	public function __construct() {
+		$this->customTargetingService = new CustomTargetingService();
+	}
+
 	public function create($form) {
 		$this->validateForm($form);
 
@@ -19,6 +25,7 @@ class LineItemService
 
 			$targeting = new \Targeting();
 			$targeting->inventoryTargeting = $inventoryTargeting;
+			$targeting->customTargeting = $this->getCustomTargeting($form);
 
 			$orderId = $form['orderId'];
 			$lineItem = new \LineItem();
@@ -52,8 +59,10 @@ class LineItemService
 					];
 				}
 			}
-		} catch (\Exception $e) {
+		} catch (CustomTargetingException $e) {
 			throw new LineItemException($e->getMessage());
+		} catch (\Exception $e) {
+			throw new LineItemException('Line item error: ' . $e->getMessage());
 		}
 	}
 
@@ -84,6 +93,33 @@ class LineItemService
 		$adUnit->includeDescendants = true;
 
 		return $adUnit;
+	}
+
+	private function getCustomTargeting($form) {
+		if (!isset($form['keys']) || count($form['keys']) < 1) {
+			return null;
+		}
+
+		$set = new \CustomCriteriaSet();
+		$set->logicalOperator = 'AND';
+		$targetingCriteria = [];
+
+		$keyIds = $this->customTargetingService->getKeyIds($form['keys']);
+
+		for ($i = 0; $i < count($form['values']); $i++) {
+			$keyId = $keyIds[$i];
+			$values = explode(',', $form['values'][$i]);
+			$valueIds = $this->customTargetingService->getValueIds($keyId, $values);
+
+			$criteria = new \CustomCriteria();
+			$criteria->keyId = $keyId;
+			$criteria->valueIds = $valueIds;
+			$criteria->operator = 'IS';
+			$targetingCriteria[] = $criteria;
+		}
+		$set->children = $targetingCriteria;
+
+		return $set;
 	}
 
 	private function getCreativePlaceholders($sizeList) {
