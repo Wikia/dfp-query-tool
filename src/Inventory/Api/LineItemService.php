@@ -114,7 +114,7 @@ class LineItemService
 			$criteria = new \CustomCriteria();
 			$criteria->keyId = $keyId;
 			$criteria->valueIds = $valueIds;
-			$criteria->operator = 'IS';
+			$criteria->operator = $form['operators'][$i];
 			$targetingCriteria[] = $criteria;
 		}
 		$set->children = $targetingCriteria;

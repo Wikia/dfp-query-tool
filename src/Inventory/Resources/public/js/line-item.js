@@ -28,6 +28,7 @@ $(document).ready(function () {
 			$('.add-pair-container').before($('#pair-template').html());
 
 			$('.key-value-pairs .key').last().val(window.submittedForm.keys[i]);
+			$('.key-value-pairs .operator').last().val(window.submittedForm.operators[i]);
 			$('.key-value-pairs .value').last().val(window.submittedForm.values[i]);
 		}
 	}
