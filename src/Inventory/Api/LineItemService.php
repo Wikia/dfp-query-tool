@@ -106,7 +106,8 @@ class LineItemService
 
 		$keyIds = $this->customTargetingService->getKeyIds($form['keys']);
 
-		for ($i = 0; $i < count($form['values']); $i++) {
+		$countValues = count($form['values']);
+		for ($i = 0; $i < $countValues; $i++) {
 			$keyId = $keyIds[$i];
 			$values = explode(',', $form['values'][$i]);
 			$valueIds = $this->customTargetingService->getValueIds($keyId, $values);
