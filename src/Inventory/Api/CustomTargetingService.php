@@ -59,14 +59,12 @@ class CustomTargetingService
 					foreach ($page->results as $customTargetingValue) {
 						$ids[] = $customTargetingValue->id;
 					}
+				} else {
+					throw new \Exception(sprintf('Value not found (<strong>%s</strong>).', $value));
 				}
 			}
 		} catch (\Exception $e) {
 			throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
-		}
-
-		if (count($ids) !== count($values)) {
-			throw new CustomTargetingException(sprintf('Custom targeting error: At least one value does not exist (<strong>%s</strong>).', implode(',', $values)));
 		}
 
 		return $ids;
