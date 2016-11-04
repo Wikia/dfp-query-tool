@@ -3,10 +3,10 @@
 namespace Inventory\Controller;
 
 use Common\Controller\Controller;
+use Inventory\Api\LineItemException;
 use Inventory\Api\LineItemService;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class LineItemController extends Controller
 {
@@ -29,7 +29,7 @@ class LineItemController extends Controller
 				$this->lineItemService->create($form);
 				$messageType = 'success';
 				$message = 'Line item successfully created';
-			} catch (RuntimeException $exception) {
+			} catch (LineItemException $exception) {
 				$message = $exception->getMessage();
 				$messageType = 'danger';
 			}

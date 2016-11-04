@@ -14,6 +14,13 @@
 						DFP inventory
 					</div>
 				</div>
+				<ul class="nav navbar-nav navbar-right">
+					<li>
+						<a href="https://developers.google.com/doubleclick-publishers/docs/reference/v201608/LineItemService" target="_blank">
+							API reference (includes list of errors)
+						</a>
+					</li>
+				</ul>
 			</div>
 		</nav>
 		<div class="container" style="margin-bottom: 20px;">
@@ -25,7 +32,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-offset-1 col-sm-10">
-						<div class="alert alert-{{ messageType }}" role="alert">{{ message }}</div>
+						<div class="alert alert-{{ messageType }}" role="alert">{{ message|raw }}</div>
 					</div>
 				</div>
 			</div>
@@ -85,13 +92,13 @@
 						</div>
 						<div class="form-group">
 							<div class="form-group">
-								<label for="start">Start time</label>
+								<label for="start">Start time (UTC)</label>
 								<input type="text" class="form-control" id="start" name="start" placeholder="Leave empty for immediately run" />
 							</div>
 						</div>
 						<div class="form-group">
 							<div class="form-group">
-								<label for="start">End time</label>
+								<label for="start">End time (UTC)</label>
 								<input type="text" class="form-control" id="end" name="end" placeholder="Leave empty for unlimited" />
 							</div>
 						</div>

@@ -3,11 +3,12 @@
 namespace Inventory\Api;
 
 use Common\Api\Authenticator;
-use Symfony\Component\Yaml\Exception\RuntimeException;
 
 class LineItemService
 {
 	public function create($form) {
+		$this->validateForm($form);
+
 		try {
 			$user = Authenticator::getUser();
 
@@ -19,34 +20,29 @@ class LineItemService
 			$targeting = new \Targeting();
 			$targeting->inventoryTargeting = $inventoryTargeting;
 
-			$orderId = '552241452';
+			$orderId = $form['orderId'];
 			$lineItem = new \LineItem();
-			$lineItem->name = $form['sizes'];
+			$lineItem->name = $form['lineItemName'];
 			$lineItem->orderId = $orderId;
 			$lineItem->targeting = $targeting;
-			$lineItem->lineItemType = 'STANDARD';
 			$lineItem->allowOverbook = true;
 
-			$lineItem->creativePlaceholders = $this->getCreativePlaceholders($form['sizes']);
-			// Set the creative rotation type to even.
-			$lineItem->creativeRotationType = 'EVEN';
-			// Set the length of the line item to run.
-			$lineItem->startDateTimeType = 'IMMEDIATELY';
-			$lineItem->endDateTime = \DateTimeUtils::ToDfpDateTime(
-				new \DateTime('+1 month', new \DateTimeZone('America/New_York')));
-			// Set the cost per unit to $2.
+			$lineItem->disableSameAdvertiserCompetitiveExclusion = false;
+			if (isset($form['sameAdvertiser'])) {
+				$lineItem->disableSameAdvertiserCompetitiveExclusion = true;
+			}
+
+			$this->setupType($lineItem, $form);
+			$this->setupTimeRange($lineItem, $form);
+
 			$lineItem->costType = 'CPM';
-			$lineItem->costPerUnit = new \Money('USD', 2000000);
-			// Set the number of units bought to 500,000 so that the budget is
-			// $1,000.
-			$goal = new \Goal();
-			$goal->units = 500000;
-			$goal->unitType = 'IMPRESSIONS';
-			$goal->goalType = 'LIFETIME';
-			$lineItem->primaryGoal = $goal;
-			// Create the line items on the server.
+			$lineItem->costPerUnit = new \Money('USD', floatval($form['rate']) * 1000000);
+
+			$lineItem->creativePlaceholders = $this->getCreativePlaceholders($form['sizes']);
+			$lineItem->creativeRotationType = 'OPTIMIZED';
+
 			$lineItems = $lineItemService->createLineItems([ $lineItem ]);
-			// Display results.
+
 			if (isset($lineItems)) {
 				foreach ($lineItems as $lineItem) {
 					printf("A line item with with ID %d, belonging to order ID %d, and name "
@@ -55,7 +51,24 @@ class LineItemService
 				}
 			}
 		} catch (\Exception $e) {
-			throw new RuntimeException($e->getMessage());
+			throw new LineItemException($e->getMessage());
+		}
+	}
+
+	private function validateForm($form) {
+		$requiredFields = [
+			'orderId',
+			'lineItemName',
+			'sizes',
+			'type',
+			'priority',
+			'rate'
+		];
+
+		foreach ($requiredFields as $field) {
+			if (!isset($form[$field]) || $form[$field] === '') {
+				throw new LineItemException(sprintf('Invalid form data (<strong>%s</strong>).', $field));
+			}
 		}
 	}
 
@@ -83,5 +96,44 @@ class LineItemService
 		}
 
 		return $placeholders;
+	}
+
+	private function setupType($lineItem, $form) {
+		$lineItem->lineItemType = $form['type'];
+		$lineItem->priority = $form['priority'];
+		switch ($form['type']) {
+			case 'STANDARD':
+				$goal = new \Goal();
+				$goal->units = 500000;
+				$goal->unitType = 'IMPRESSIONS';
+				$goal->goalType = 'LIFETIME';
+				$lineItem->primaryGoal = $goal;
+				return;
+			case 'PRICE_PRIORITY':
+				$goal = new \Goal();
+				$goal->goalType = 'NONE';
+				$lineItem->primaryGoal = $goal;
+				return;
+			case 'SPONSORSHIP':
+			case 'NETWORK':
+			case 'HOUSE':
+				$goal = new \Goal();
+				$goal->units = 100;
+				$lineItem->primaryGoal = $goal;
+				return;
+		}
+	}
+
+	private function setupTimeRange($lineItem, $form) {
+		if ($form['start'] !== '') {
+			$lineItem->startDateTime = \DateTimeUtils::ToDfpDateTime(new \DateTime($form['start'], new \DateTimeZone('UTC')));
+		} else {
+			$lineItem->startDateTimeType = 'IMMEDIATELY';
+		}
+		if ($form['end'] !== '') {
+			$lineItem->endDateTime = \DateTimeUtils::ToDfpDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC')));
+		} else {
+			$lineItem->unlimitedEndDateTime = true;
+		}
 	}
 }
