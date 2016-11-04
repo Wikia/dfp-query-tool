@@ -32,7 +32,21 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-sm-offset-1 col-sm-10">
-						<div class="alert alert-{{ messageType }}" role="alert">{{ message|raw }}</div>
+						<div class="alert alert-{{ messageType }}" role="alert">
+							<p>{{ message|raw }}</p>
+							{% if lineItem is not null %}
+								<p>
+									<ul>
+										<li>
+											<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ lineItem.id }}" target="_blank">
+												{{ lineItem.name }}
+											</a><br />
+											<small>id: {{ lineItem.id }}, order: {{ lineItem.orderId }}</small>
+										</li>
+									</ul>
+								</p>
+							{% endif %}
+						</div>
 					</div>
 				</div>
 			</div>

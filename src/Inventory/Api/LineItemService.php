@@ -45,9 +45,11 @@ class LineItemService
 
 			if (isset($lineItems)) {
 				foreach ($lineItems as $lineItem) {
-					printf("A line item with with ID %d, belonging to order ID %d, and name "
-						. "%s was created\n", $lineItem->id, $lineItem->orderId,
-						$lineItem->name);
+					return [
+						'id' => $lineItem->id,
+						'name' => $lineItem->name,
+						'orderId' => $lineItem->orderId
+					];
 				}
 			}
 		} catch (\Exception $e) {

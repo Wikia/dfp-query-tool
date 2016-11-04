@@ -19,6 +19,7 @@ class LineItemController extends Controller
 	}
 
 	public function createLineItem(Request $request) {
+		$lineItem = null;
 		$message = null;
 		$messageType = 'info';
 		$form = [];
@@ -26,9 +27,9 @@ class LineItemController extends Controller
 		if ($request->isMethod('POST')) {
 			$form = $request->request->all();
 			try {
-				$this->lineItemService->create($form);
+				$lineItem = $this->lineItemService->create($form);
 				$messageType = 'success';
-				$message = 'Line item successfully created';
+				$message = 'Line items successfully created.';
 			} catch (LineItemException $exception) {
 				$message = $exception->getMessage();
 				$messageType = 'danger';
@@ -36,6 +37,7 @@ class LineItemController extends Controller
 		}
 
 		return $this->render('line-item', [
+			'lineItem' => $lineItem,
 			'message' => $message,
 			'messageType' => $messageType,
 			'form' => json_encode($form)
