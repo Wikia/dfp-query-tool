@@ -127,9 +127,9 @@ class LineItemService
 		$sizes = explode(',', $sizeList);
 
 		foreach ($sizes as $size) {
-			list($width, $height) = explode('x', $size);
+			list($width, $height) = explode('x', trim($size));
 			$creativePlaceholder = new \CreativePlaceholder();
-			$creativePlaceholder->size = new \Size($width, $height, false);
+			$creativePlaceholder->size = new \Size(intval($width), intval($height), false);
 			$placeholders[] = $creativePlaceholder;
 		}
 
