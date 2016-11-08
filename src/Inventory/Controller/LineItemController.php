@@ -37,6 +37,7 @@ class LineItemController extends Controller
 		}
 
 		return $this->render('line-item', [
+			'action' => $request->getUri(),
 			'lineItem' => $lineItem,
 			'message' => $message,
 			'messageType' => $messageType,
