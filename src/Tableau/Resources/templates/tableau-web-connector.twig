@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>DFP-Tableau web data connector</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<link rel="stylesheet" href="{{ getResourcePath('Common:css/bootstrap.min.css') }}" />
+		<link rel="stylesheet" href="{{ getResourcePath('Common:css/style.css') }}" />
+	</head>
+	<body>
+		<nav class="navbar navbar-static-top navbar-inverse">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<div class="navbar-brand">
+						DFP connector
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-12">
+					<ul class="nav nav-tabs tabs-group" role="tablist">
+						<li role="presentation" class="active">
+							<a href="#query" aria-controls="query" role="tab" data-toggle="tab">
+								Query builder
+							</a>
+						</li>
+						<li role="presentation">
+							<a href="#report" aria-controls="report" role="tab" data-toggle="tab">
+								Existing report
+							</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active row" id="query">
+					<form id="query-form">
+						<div class="container">
+							<div class="row">
+								<div class="col-md-6 query-group">
+									<h4>
+										Filters:
+										<div id="filter-add" class="btn btn-wikia">ADD</div>
+									</h4>
+									<div class="col-sm-12 form-group form-inline form-filters"></div>
+								</div>
+								<div class="col-md-6 query-group">
+									<h4>Date range:</h4>
+									<div class="col-sm-12 form-group">
+										<input id="startDate"
+											   name="startDate"
+											   class="form-control"
+											   type="date" />
+									</div>
+									<div class="col-sm-12 form-group">
+										<input id="endDate"
+											   name="endDate"
+											   class="form-control"
+											   type="date" />
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 query-group">
+									<h4>Dimensions:</h4>
+									<div class="col-sm-12">
+										{% for key, label in dimensions %}
+											<div class="checkbox">
+												<label>
+													<input name="dimensions[]"
+														   value="{{ key }}"
+														   type="checkbox" />
+													{{ label }}
+												</label>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+								<div class="col-md-6 query-group">
+									<h4>Metrics:</h4>
+									<div class="col-sm-12">
+										{% for key, label in metrics %}
+											<div class="checkbox">
+												<label>
+													<input name="metrics[]"
+														   checked="checked"
+														   value="{{ key }}"
+														   type="checkbox" />
+													{{ label }}
+												</label>
+											</div>
+										{% endfor %}
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-12 text-right">
+										<div id="query-submit" class="btn btn-wikia">SUBMIT</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+				<div role="tabpanel" class="tab-pane row" id="report">
+					<div class="container">
+						<div class="row">
+							<div class="col-sm-offset-4 col-sm-4 report-group form-inline">
+								<input id="report-id"
+									   class="form-control report-id-input"
+									   placeholder="DFP report ID"
+									   type="text" />
+								<div id="report-submit"
+									 class="btn btn-wikia">SUBMIT</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="debug"></div>
+		</div>
+		<script src="https://connectors.tableau.com/libs/tableauwdc-1.1.1.js" type="text/javascript"></script>
+		<script src="{{ getResourcePath('Common:js/jquery.min.js') }}" type="text/javascript"></script>
+		<script src="{{ getResourcePath('Common:js/bootstrap.min.js') }}" type="text/javascript"></script>
+		<script id="filter-template" type="text/template">
+			<div class="filter">
+				<select name="filterTypes[]"
+						class="form-control">
+					<option value="adUnitName">Ad Unit name</option>
+					<option value="country">Country</option>
+					<option value="creativeId">Creative ID</option>
+					<option value="creativeName">Creative name</option>
+					<option value="deviceCategory">Device category</option>
+					<option value="linteItemId">Line item ID</option>
+					<option value="linteItemName">Line item name</option>
+					<option value="orderId">Order ID</option>
+					<option value="orderName">Order name</option>
+				</select>
+				<select name="filterOperators[]"
+						class="form-control">
+					<option value="is">is</option>
+				</select>
+				<input name="filterValues[]"
+					   class="form-control"
+					   value=""
+					   type="text" />
+				<div class="btn btn-wikia filter-remove">REMOVE</div>
+			</div>
+		</script>
+		<script src="{{ getResourcePath('Tableau:js/tableau-form.js') }}" type="text/javascript"></script>
+	</body>
+</html>
