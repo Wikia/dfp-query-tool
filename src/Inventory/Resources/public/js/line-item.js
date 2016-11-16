@@ -18,6 +18,7 @@ $(document).ready(function () {
 	$('#start').val(window.submittedForm.start);
 	$('#end').val(window.submittedForm.end);
 	$('#rate').val(window.submittedForm.rate);
+	$('#creativeId').val(window.submittedForm.creativeId);
 
 	if (window.submittedForm.keys) {
 		for (var i = 0; i < window.submittedForm.keys.length; i++) {
