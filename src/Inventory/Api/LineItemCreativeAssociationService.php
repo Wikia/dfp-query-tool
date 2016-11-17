@@ -29,8 +29,7 @@ class LineItemCreativeAssociationService {
 			$user = Authenticator::getUser();
 
 			if ( empty($lineItemId) ) {
-				$response['success'] = false;
-				$response['message'] = 'Line item ID is empty - unable to associate creative';
+				return $this->getIncorrectLineItemResult();
 			} else {
 				$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
 
@@ -50,5 +49,13 @@ class LineItemCreativeAssociationService {
 		}
 
 		return $response;
+	}
+
+	public function getIncorrectLineItemResult() {
+		return [
+			'success' => false,
+			'message' => 'Line item creation failed - unable to associate creative',
+			'creativeSet' => false
+		];
 	}
 }

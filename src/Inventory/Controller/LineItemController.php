@@ -38,6 +38,7 @@ class LineItemController extends Controller
 			} catch (LineItemException $exception) {
 				$message = $exception->getMessage();
 				$messageType = 'danger';
+				$lineItemCreativeAssociation = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
 			}
 		}
 
