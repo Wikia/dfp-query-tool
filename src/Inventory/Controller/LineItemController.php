@@ -22,7 +22,6 @@ class LineItemController extends Controller {
 	public function createLineItem( Request $request ) {
 		$lineItem = null;
 		$lineItemCreativeAssociation = [];
-		$hasCreative = false;
 		$message = null;
 		$messageType = 'info';
 		$form = [ ];
@@ -31,12 +30,7 @@ class LineItemController extends Controller {
 			$form = $request->request->all();
 			try {
 				$lineItem = $this->lineItemService->create( $form );
-				if (!empty($form['creativeId'])) {
-					$hasCreative = true;
-				}
-				if ( $hasCreative && isset($lineItem['id']) ) {
-					$lineItemCreativeAssociation = $this->lineItemCreativeAssociationService->create( $form['creativeId'], $lineItem['id'] );
-				}
+				$lineItemCreativeAssociation = $this->lineItemCreativeAssociationService->create( $form['creativeId'], $lineItem['id'] );
 				$messageType = 'success';
 				$message = 'Line items successfully created.';
 			} catch ( LineItemException $exception ) {
@@ -48,7 +42,6 @@ class LineItemController extends Controller {
 		return $this->render( 'line-item', [
 			'action' => $request->getUri(),
 			'lineItem' => $lineItem,
-			'hasCreative' => $hasCreative,
 			'lica' => $lineItemCreativeAssociation,
 			'message' => $message,
 			'messageType' => $messageType,

@@ -41,13 +41,13 @@
 											<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ lineItem.id }}" target="_blank">
 												{{ lineItem.name }}
 											</a><br />
-											<small>id: {{ lineItem.id }}, order: {{ lineItem.orderId }} {% if hasCreative %}, creative: {{ lica.creativeId }} {% endif %}</small>
+											<small>id: {{ lineItem.id }}, order: {{ lineItem.orderId }} {% if lica.creativeSet %}, creative: {{ lica.creativeId }} {% endif %}</small>
 										</li>
 									</ul>
 								</p>
 							{% endif %}
 						</div>
-						{% if hasCreative and lica.status == 'error' %}
+						{% if lica.creativeSet and not lica.success %}
 							<div class="alert alert-warning" role="alert">
 								<p>There were problems with line item and creative association</p>
 								<p>{{ lica.message|raw }}</p>
@@ -65,6 +65,12 @@
 							<div class="form-group">
 								<label for="orderId">Order ID</label>
 								<input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order ID" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="form-group">
+								<label for="creativeId">Creative ID</label>
+								<input type="text" class="form-control" id="creativeId" name="creativeId" placeholder="Creative ID" />
 							</div>
 						</div>
 						<div class="form-group">
@@ -126,12 +132,6 @@
 							<div class="form-group">
 								<label for="rate">Rate (USD CPM)</label>
 								<input type="text" class="form-control" id="rate" name="rate" placeholder="9.00" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="creativeId">Creative id</label>
-								<input type="text" class="form-control" id="creativeId" name="creativeId" placeholder="123" />
 							</div>
 						</div>
 						<hr />

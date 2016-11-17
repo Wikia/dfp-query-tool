@@ -12,34 +12,43 @@ class LineItemCreativeAssociationService {
 	}
 
 	public function create( $creativeId, $lineItemId ) {
-		$success = true;
-		$message = '';
+
+		if ( empty($creativeId) ) {
+			return [
+				'creativeSet' => false
+			];
+		}
+
+		$response = [
+			'success' => true,
+			'creativeSet' => true,
+			'creativeId' => $creativeId
+		];
 
 		try {
 			$user = Authenticator::getUser();
-			$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
 
-			$lineItemCreativeAssociation = new \LineItemCreativeAssociation();
-			$lineItemCreativeAssociation->creativeId = $creativeId;
-			$lineItemCreativeAssociation->lineItemId = $lineItemId;
-			$licas = [$lineItemCreativeAssociation];
+			if ( empty($lineItemId) ) {
+				$response['success'] = false;
+				$response['$message'] = 'Line item ID is empty - unable to associate creative';
+			} else {
+				$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
 
-			$licas = $lineItemCreativeAssociationService->createLineItemCreativeAssociations($licas);
+				$lineItemCreativeAssociation = new \LineItemCreativeAssociation();
+				$lineItemCreativeAssociation->creativeId = $creativeId;
+				$lineItemCreativeAssociation->lineItemId = $lineItemId;
+				$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( [ $lineItemCreativeAssociation ] );
 
-			if (!isset($licas)) {
-				$success = false;
-				$message = 'licas not created';
+				if ( !isset($lica) ) {
+					$response['success'] = false;
+					$response['message'] = 'line item - creative association not created';
+				}
 			}
-
 		} catch ( \Exception $e ) {
-			$success = false;
-			$message = $e->getMessage();
+			$response['success'] = false;
+			$response['message'] = $e->getMessage();
 		}
 
-		return [
-			'status' => $success ? 'success' : 'error',
-			'message' => $message,
-			'creativeId' => $creativeId
-		];
+		return $response;
 	}
 }
