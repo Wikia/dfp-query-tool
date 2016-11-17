@@ -30,7 +30,7 @@ class LineItemCreativeAssociationService {
 
 			if ( empty($lineItemId) ) {
 				$response['success'] = false;
-				$response['$message'] = 'Line item ID is empty - unable to associate creative';
+				$response['message'] = 'Line item ID is empty - unable to associate creative';
 			} else {
 				$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
 
