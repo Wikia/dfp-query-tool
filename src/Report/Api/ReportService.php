@@ -8,12 +8,18 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class ReportService
 {
 	const COLUMN_MAPPING = [
+		'adServerImpressions' => 'AD_SERVER_IMPRESSIONS',
+		'adServerClicks' => 'AD_SERVER_CLICKS',
+		'adServerActiveViewViewableImpressionsRate' => 'AD_SERVER_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
 		'totalActiveViewEligibleImpressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
 		'totalActiveViewMeasurableImpressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'totalActiveViewViewableImpressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
 		'totalActiveViewMeasurableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
 		'totalActiveViewViewableImpressionsRate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
 
+		'ad_server_impressions' => 'AD_SERVER_IMPRESSIONS',
+		'ad_server_clicks' => 'AD_SERVER_CLICKS',
+		'ad_server_active_view_viewable_impressions_rate' => 'AD_SERVER_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
 		'total_active_view_eligible_impressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
 		'total_active_view_measurable_impressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'total_active_view_viewable_impressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
@@ -32,8 +38,10 @@ class ReportService
 		'keyValues' => 'AD_REQUEST_CUSTOM_CRITERIA',
 		'lineItemId' => 'LINE_ITEM_ID',
 		'lineItemName' => 'LINE_ITEM_NAME',
+		'masterCompanionType' => 'MASTER_COMPANION_TYPE',
 		'orderId' => 'ORDER_ID',
 		'orderName' => 'ORDER_NAME',
+		'orderTraffickerId' => 'ORDER_TRAFFICKER_ID',
 		'targetingValueId' => 'CUSTOM_TARGETING_VALUE_ID',
 
 		'ad_unit_name' => 'AD_UNIT_NAME',
@@ -45,9 +53,17 @@ class ReportService
 		'key_values' => 'AD_REQUEST_CUSTOM_CRITERIA',
 		'line_item_id' => 'LINE_ITEM_ID',
 		'line_item_name' => 'LINE_ITEM_NAME',
+		'master_companion_type' => 'MASTER_COMPANION_TYPE',
 		'order_id' => 'ORDER_ID',
 		'order_name' => 'ORDER_NAME',
+		'order_trafficker_id' => 'ORDER_TRAFFICKER_ID',
 		'targeting_value_id' => 'CUSTOM_TARGETING_VALUE_ID'
+	];
+
+	const DIMENSIONS_ATTRIBUTES_MAPPING = [
+		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
+		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
+		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
 	public function query(ParameterBag $parameters) {
@@ -55,6 +71,7 @@ class ReportService
 
 		$columns = $this->getColumns($parameters);
 		$dimensions = $this->getDimensions($parameters);
+		$dimensionsAttributes = $this->getDimensionsAttributes($parameters);
 		$startDate = new \DateTime('-1 day', new \DateTimeZone('Europe/Warsaw'));
 		$endDate = new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
 		$startDate->setTime(0, 0, 0);
@@ -66,6 +83,7 @@ class ReportService
 			$reportQuery = new \ReportQuery();
 			$reportQuery->dimensions = $dimensions;
 			$reportQuery->columns = $columns;
+			$reportQuery->dimensionAttributes = $dimensionsAttributes;
 			$reportQuery->statement = StatementBuilder::build($parameters);
 			if ($parameters->has('custom_field_ids')) {
 				$reportQuery->customFieldIds = $parameters->get('custom_field_ids');
@@ -172,5 +190,11 @@ class ReportService
 		return array_map(function ($key) {
 			return self::DIMENSION_MAPPING[$key];
 		}, $parameters->get('dimensions'));
+	}
+
+	private function getDimensionsAttributes(ParameterBag $parameters) {
+		return array_map(function ($key) {
+			return self::DIMENSIONS_ATTRIBUTES_MAPPING[$key];
+		}, $parameters->get('dimensions_attributes'));
 	}
 }
