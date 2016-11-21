@@ -9,6 +9,9 @@ use Report\Api\ReportService;
 class Database
 {
 	const TYPE_MAPPING = [
+		'ad_server_impressions' => 'BIGINT',
+		'ad_server_clicks' => 'BIGINT',
+		'ad_server_active_view_viewable_impressions_rate' => 'FLOAT',
 		'ad_unit_name' => 'TEXT',
 		'creative_id' => 'BIGINT',
 		'creative_name' => 'TEXT',
@@ -20,6 +23,7 @@ class Database
 		'key_values' => 'TEXT',
 		'line_item_id' => 'BIGINT',
 		'line_item_name' => 'TEXT',
+		'master_companion_type' => 'TEXT',
 		'order_id' => 'BIGINT',
 		'order_name' => 'TEXT',
 		'targeting_value_id' => 'BIGINT',
