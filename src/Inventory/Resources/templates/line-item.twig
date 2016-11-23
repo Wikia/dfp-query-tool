@@ -70,9 +70,8 @@
 			<div class="col-sm-offset-2 col-sm-8">
 				<div class="form-horizontal col-sm-12">
 				<div class="form-group">
-					<label for="iterator">List of comma separated element values to loop through</label>
-					<input type="text" class="form-control" id="iterator" name="iterator" placeholder="1,2,3,..."/>
-					<span id="helpBlock" class="help-block">List elements will replace <i>%%element%%</i> value in form fields</span>
+					<label for="iterator">List of comma separated %%element%% values to loop through</label>
+					<input type="text" class="form-control" id="iterator" name="iterator" placeholder="e.g. 0.05, 0.10, 0.15..."/>
 				</div>
 				<hr/>
 				</div>
@@ -88,7 +87,7 @@
 				<div class="form-group">
 					<label for="lineItemName">Line item name</label>
 					<input type="text" class="form-control" id="lineItemName" name="lineItemName"
-						   placeholder="Line item name"/>
+						   placeholder="e.g. PartnerFoo LB %%element%% USD"/>
 				</div>
 				<div class="form-group">
 					<label for="sizes">Size(s)</label>
@@ -136,7 +135,7 @@
 				</div>
 				<div class="form-group">
 					<label for="rate">Rate (USD CPM)</label>
-					<input type="text" class="form-control" id="rate" name="rate" placeholder="9.00"/>
+					<input type="text" class="form-control" id="rate" name="rate" placeholder="e.g. 9.00 or %%element%%"/>
 				</div>
 				<hr/>
 				<div class="form-group">
