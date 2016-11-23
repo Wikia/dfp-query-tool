@@ -1,182 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>DFP inventory</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-		<link rel="stylesheet" href="{{ getResourcePath('Common:css/bootstrap.min.css') }}" />
-		<link rel="stylesheet" href="{{ getResourcePath('Common:css/style.css') }}" />
-	</head>
-	<body>
-		<nav class="navbar navbar-static-top navbar-inverse">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<div class="navbar-brand">
-						DFP inventory
-					</div>
-				</div>
-				<ul class="nav navbar-nav navbar-right">
-					<li>
-						<a href="https://developers.google.com/doubleclick-publishers/docs/reference/v201608/LineItemService" target="_blank">
-							API reference (includes list of errors)
-						</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-		<div class="container" style="margin-bottom: 20px;">
-			<div class="row">
-				<h3>Setup line item</h3>
+<head>
+	<title>DFP inventory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/bootstrap.min.css') }}"/>
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/style.css') }}"/>
+</head>
+<body>
+<nav class="navbar navbar-static-top navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<div class="navbar-brand">
+				DFP inventory
 			</div>
 		</div>
-		{% if message is not null %}
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-offset-1 col-sm-10">
-						<div class="alert alert-{{ messageType }}" role="alert">
-							<p>{{ message|raw }}</p>
-							{% if lineItem is not null %}
-								<p>
-									<ul>
-										<li>
-											<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ lineItem.id }}" target="_blank">
-												{{ lineItem.name }}
-											</a><br />
-											<small>id: {{ lineItem.id }}, order: {{ lineItem.orderId }} {% if lica.creativeSet %}, creative: {{ lica.creativeId }} {% endif %}</small>
-										</li>
-									</ul>
-								</p>
-							{% endif %}
-						</div>
-						{% if lica.creativeSet and not lica.success %}
-							<div class="alert alert-warning" role="alert">
-								<p>There were problems with line item and creative association</p>
-								<p>{{ lica.message|raw }}</p>
-							</div>
-						{% endif %}
-					</div>
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a href="https://developers.google.com/doubleclick-publishers/docs/reference/v201608/LineItemService"
+				   target="_blank">
+					API reference (includes list of errors)
+				</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+<div class="container" style="margin-bottom: 20px;">
+	<div class="row">
+		<h3>Setup line item</h3>
+	</div>
+</div>
+{% for response in responses %}
+{% if response.message is not null %}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-10">
+				<div class="alert alert-{{ response.messageType }}" role="alert">
+					<p>{{ response.message|raw }}</p>
+					{% if response.lineItem is not null %}
+						<p>
+						<ul>
+							<li>
+								<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ response.lineItem.id }}"
+								   target="_blank">
+									{{ response.lineItem.name }}
+								</a><br/>
+								<small>id: {{ response.lineItem.id }},
+									order: {{ response.lineItem.orderId }} {% if response.lica.creativeSet %}, creative: {{ response.lica.creativeId }} {% endif %}</small>
+							</li>
+						</ul>
+						</p>
+					{% endif %}
 				</div>
-			</div>
-		{% endif %}
-		<div class="container">
-			<div class="row">
-				<form method="post" action="{{ action }}">
-					<div class="col-sm-offset-2 col-sm-8">
-						<div class="form-group">
-							<div class="form-group">
-								<label for="orderId">Order ID</label>
-								<input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order ID" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="creativeId">Creative ID</label>
-								<input type="text" class="form-control" id="creativeId" name="creativeId" placeholder="Creative ID" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="lineItemName">Line item name</label>
-								<input type="text" class="form-control" id="lineItemName" name="lineItemName" placeholder="Line item name" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="sizes">Size(s)</label>
-								<input type="text" class="form-control" id="sizes" name="sizes" placeholder="e.g. 728x90, 300x250" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label>
-									<input type="checkbox" id="sameAdvertiser" name="sameAdvertiser" />
-									Allow same advertiser exception
-								</label>
-							</div>
-						</div>
-						<hr />
-						<div class="form-group">
-							<div class="form-group">
-								<label for="type">Type</label>
-								<select class="form-control" id="type" name="type">
-									<option value="SPONSORSHIP">Sponsorship</option>
-									<option value="STANDARD">Standard</option>
-									<option value="NETWORK">Network</option>
-									<option value="PRICE_PRIORITY" selected>Price priority</option>
-									<option value="HOUSE">House</option>
-								</select>
-							</div>
-							<div class="form-group type-level" style="display: none;">
-								<select class="form-control" id="typeLevel" name="typeLevel">
-									<option value="HIGH">High</option>
-									<option value="NORMAL" selected>Normal</option>
-									<option value="LOW">Low</option>
-								</select>
-							</div>
-							<div class="form-group">
-								<input type="text" class="form-control" id="priority" placeholder="Priority" name="priority" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="start">Start time (UTC)</label>
-								<input type="text" class="form-control" id="start" name="start" placeholder="Leave empty for immediately run" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="start">End time (UTC)</label>
-								<input type="text" class="form-control" id="end" name="end" placeholder="Leave empty for unlimited" />
-							</div>
-						</div>
-						<div class="form-group">
-							<div class="form-group">
-								<label for="rate">Rate (USD CPM)</label>
-								<input type="text" class="form-control" id="rate" name="rate" placeholder="9.00" />
-							</div>
-						</div>
-						<hr />
-						<div class="form-group">
-							<div class="form-group">
-								<label for="rate">Key-values</label>
-							</div>
-						</div>
-						<div class="form-group key-value-pairs">
-							<div class="row text-right form-group add-pair-container">
-								<div class="btn btn-wikia add-pair"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> ADD PAIR</div>
-							</div>
-						</div>
-						<hr />
-						<div class="row text-right">
-							<button class="btn btn-wikia"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> SUBMIT LINE ITEM</button>
-						</div>
+				{% if response.lica.creativeSet and not response.lica.success %}
+					<div class="alert alert-warning" role="alert">
+						<p>There were problems with line item and creative association</p>
+						<p>{{ response.lica.message|raw }}</p>
 					</div>
-				</form>
+				{% endif %}
 			</div>
 		</div>
-		<script id="pair-template" type="text/template">
-			<div class="row key-value-pair">
-				<div class="form-group col-xs-4">
-					<input type="text" class="form-control key" name="keys[]" placeholder="e.g. src" />
+	</div>
+{% endif %}
+{% endfor %}
+<div class="container">
+	<div class="row">
+		<form method="post" action="{{ action }}">
+			<div class="col-sm-offset-2 col-sm-8">
+				<div class="form-group">
+					<label for="iterator">List of values to loop through</label>
+					<input type="text" class="form-control" id="iterator" name="iterator" placeholder="[1,2,3,...]"/>
 				</div>
-				<div class="form-group col-xs-2">
-					<select class="form-control operator" name="operators[]">
-						<option value="IS" selected>is</option>
-						<option value="IS_NOT">is not</option>
-					</select>
+				<div class="form-group">
+					<label for="orderId">Order ID</label>
+					<input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order ID"/>
 				</div>
-				<div class="form-group col-xs-5">
-					<input type="text" class="form-control value" name="values[]" placeholder="e.g. gpt, mobile" />
+				<div class="form-group">
+					<label for="creativeId">Creative ID</label>
+					<input type="text" class="form-control" id="creativeId" name="creativeId"
+						   placeholder="Creative ID"/>
 				</div>
-				<div class="col-xs-1">
-					<div class="btn btn-wikia remove-pair"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></div>
+				<div class="form-group">
+					<label for="lineItemName">Line item name</label>
+					<input type="text" class="form-control" id="lineItemName" name="lineItemName"
+						   placeholder="Line item name"/>
+				</div>
+				<div class="form-group">
+					<label for="sizes">Size(s)</label>
+					<input type="text" class="form-control" id="sizes" name="sizes"
+						   placeholder="e.g. 728x90, 300x250"/>
+				</div>
+				<div class="form-group">
+					<label>
+						<input type="checkbox" id="sameAdvertiser" name="sameAdvertiser"/>
+						Allow same advertiser exception
+					</label>
+				</div>
+				<hr/>
+				<div class="form-group">
+					<div class="form-group">
+						<label for="type">Type</label>
+						<select class="form-control" id="type" name="type">
+							<option value="SPONSORSHIP">Sponsorship</option>
+							<option value="STANDARD">Standard</option>
+							<option value="NETWORK">Network</option>
+							<option value="PRICE_PRIORITY" selected>Price priority</option>
+							<option value="HOUSE">House</option>
+						</select>
+					</div>
+					<div class="form-group type-level" style="display: none;">
+						<select class="form-control" id="typeLevel" name="typeLevel">
+							<option value="HIGH">High</option>
+							<option value="NORMAL" selected>Normal</option>
+							<option value="LOW">Low</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<input type="text" class="form-control" id="priority" placeholder="Priority" name="priority"/>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="start">Start time (UTC)</label>
+					<input type="text" class="form-control" id="start" name="start"
+						   placeholder="Leave empty for immediately run"/>
+				</div>
+				<div class="form-group">
+					<label for="start">End time (UTC)</label>
+					<input type="text" class="form-control" id="end" name="end"
+						   placeholder="Leave empty for unlimited"/>
+				</div>
+				<div class="form-group">
+					<label for="rate">Rate (USD CPM)</label>
+					<input type="text" class="form-control" id="rate" name="rate" placeholder="9.00"/>
+				</div>
+				<hr/>
+				<div class="form-group">
+					<label>Key-values</label>
+				</div>
+				<div class="form-group key-value-pairs">
+					<div class="row text-right form-group add-pair-container">
+						<div class="btn btn-wikia add-pair"><span class="glyphicon glyphicon-plus"
+																  aria-hidden="true"></span> ADD PAIR
+						</div>
+					</div>
+				</div>
+				<hr/>
+				<div class="row text-right">
+					<button class="btn btn-wikia"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> SUBMIT
+						LINE ITEM
+					</button>
 				</div>
 			</div>
-		</script>
-		<script src="{{ getResourcePath('Common:js/jquery.min.js') }}" type="text/javascript"></script>
-		<script src="{{ getResourcePath('Common:js/bootstrap.min.js') }}" type="text/javascript"></script>
-		<script type="text/javascript">
-			var submittedForm = {{ form|raw }};
-		</script>
-		<script src="{{ getResourcePath('Inventory:js/line-item.js') }}" type="text/javascript"></script>
-	</body>
+		</form>
+	</div>
+</div>
+<script id="pair-template" type="text/template">
+	<div class="row key-value-pair">
+		<div class="form-group col-xs-4">
+			<input type="text" class="form-control key" name="keys[]" placeholder="e.g. src"/>
+		</div>
+		<div class="form-group col-xs-2">
+			<select class="form-control operator" name="operators[]">
+				<option value="IS" selected>is</option>
+				<option value="IS_NOT">is not</option>
+			</select>
+		</div>
+		<div class="form-group col-xs-5">
+			<input type="text" class="form-control value" name="values[]" placeholder="e.g. gpt, mobile"/>
+		</div>
+		<div class="col-xs-1">
+			<div class="btn btn-wikia remove-pair"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+			</div>
+		</div>
+	</div>
+</script>
+<script src="{{ getResourcePath('Common:js/jquery.min.js') }}" type="text/javascript"></script>
+<script src="{{ getResourcePath('Common:js/bootstrap.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	var submittedForm = {{ form|raw }};
+</script>
+<script src="{{ getResourcePath('Inventory:js/line-item.js') }}" type="text/javascript"></script>
+</body>
 </html>
