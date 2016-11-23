@@ -30,9 +30,9 @@ class LineItemController extends Controller
 			$form = $request->request->all();
 			$formsSet = $this->processForm($form);
 
-			foreach($formsSet as $form) {
+			foreach($formsSet as $alteredForm) {
 				try {
-					$lineItem = $this->lineItemService->create($form);
+					$lineItem = $this->lineItemService->create($alteredForm);
 					$responses[$index]['lineItem'] = $lineItem;
 					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($form['creativeId'], $lineItem['id']);
 					$responses[$index]['messageType'] = 'success';
