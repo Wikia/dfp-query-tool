@@ -63,7 +63,7 @@ class LineItemController extends Controller
 				$alteredForm = $form;
 
 				foreach ( $alteredForm as $key => $value ) {
-					$alteredForm[$key] = str_replace( '%element%', $element, $value );
+					$alteredForm[$key] = str_replace( '%%element%%', trim($element), $value );
 				}
 				$formsSet[] = $alteredForm;
 			}
