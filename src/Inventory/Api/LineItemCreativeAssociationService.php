@@ -25,6 +25,7 @@ class LineItemCreativeAssociationService {
 			'creativeId' => $creativeId
 		];
 
+		$processedCreativeIds = $this->processCreativeId( $creativeId );
 		try {
 			$user = Authenticator::getUser();
 
@@ -32,11 +33,16 @@ class LineItemCreativeAssociationService {
 				return $this->getIncorrectLineItemResult();
 			} else {
 				$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
+				$lineItemCreativeAssociations = [ ];
 
-				$lineItemCreativeAssociation = new \LineItemCreativeAssociation();
-				$lineItemCreativeAssociation->creativeId = $creativeId;
-				$lineItemCreativeAssociation->lineItemId = $lineItemId;
-				$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( [ $lineItemCreativeAssociation ] );
+				foreach ( $processedCreativeIds as $extractedCreativeId ) {
+					$lineItemCreativeAssociation = new \LineItemCreativeAssociation();
+					$lineItemCreativeAssociation->creativeId = trim( $extractedCreativeId );
+					$lineItemCreativeAssociation->lineItemId = $lineItemId;
+					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
+				}
+
+				$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
 
 				if ( !isset($lica) ) {
 					$response['success'] = false;
@@ -57,5 +63,9 @@ class LineItemCreativeAssociationService {
 			'message' => 'Line item creation failed - unable to associate creative',
 			'creativeSet' => false
 		];
+	}
+
+	private function processCreativeId( $creativeId ) {
+		return explode( ',', $creativeId );
 	}
 }
