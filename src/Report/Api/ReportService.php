@@ -11,6 +11,10 @@ class ReportService
 		'adServerImpressions' => 'AD_SERVER_IMPRESSIONS',
 		'adServerClicks' => 'AD_SERVER_CLICKS',
 		'adServerActiveViewViewableImpressionsRate' => 'AD_SERVER_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
+		'lineItemEndDateTime' => 'LINE_ITEM_END_DATE_TIME',
+		'lineItemStartDateTime' => 'LINE_ITEM_START_DATE_TIME',
+		'masterCompanionCreativeId' => 'MASTER_COMPANION_CREATIVE_ID',
+		'orderTrafficker' => 'ORDER_TRAFFICKER',
 		'totalActiveViewEligibleImpressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
 		'totalActiveViewMeasurableImpressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'totalActiveViewViewableImpressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
@@ -20,15 +24,15 @@ class ReportService
 		'ad_server_impressions' => 'AD_SERVER_IMPRESSIONS',
 		'ad_server_clicks' => 'AD_SERVER_CLICKS',
 		'ad_server_active_view_viewable_impressions_rate' => 'AD_SERVER_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
+		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
+		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
+		'master_companion_creative_id' => 'MASTER_COMPANION_CREATIVE_ID',
+		'order_trafficker' => 'ORDER_TRAFFICKER',
 		'total_active_view_eligible_impressions' => 'TOTAL_ACTIVE_VIEW_ELIGIBLE_IMPRESSIONS',
 		'total_active_view_measurable_impressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'total_active_view_viewable_impressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
 		'total_active_view_measurable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
-		'total_active_view_viewable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
-		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
-		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
-		'order_trafficer' => 'ORDER_TRAFFICER',
-		'master_companion_creative_id' => 'MASTER_COMPANION_CREATIVE_ID'
+		'total_active_view_viewable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE'
 	];
 	const DIMENSION_MAPPING = [
 		'adUnitName' => 'AD_UNIT_NAME',
@@ -40,11 +44,14 @@ class ReportService
 		'date' => 'DATE',
 		'deviceCategory' => 'DEVICE_CATEGORY_NAME',
 		'keyValues' => 'AD_REQUEST_CUSTOM_CRITERIA',
+		'lineItemEndDateTime' => 'LINE_ITEM_END_DATE_TIME',
 		'lineItemId' => 'LINE_ITEM_ID',
 		'lineItemName' => 'LINE_ITEM_NAME',
+		'lineItemStartDateTime' => 'LINE_ITEM_START_DATE_TIME',
 		'masterCompanionCreativeId' => 'MASTER_COMPANION_CREATIVE_ID',
 		'orderId' => 'ORDER_ID',
 		'orderName' => 'ORDER_NAME',
+		'orderTrafficker' => 'ORDER_TRAFFICKER',
 		'orderTraffickerId' => 'ORDER_TRAFFICKER_ID',
 		'targetingValueId' => 'CUSTOM_TARGETING_VALUE_ID',
 
@@ -55,16 +62,16 @@ class ReportService
 		'custom_criteria' => 'CUSTOM_CRITERIA',
 		'device_category' => 'DEVICE_CATEGORY_NAME',
 		'key_values' => 'AD_REQUEST_CUSTOM_CRITERIA',
+		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
 		'line_item_id' => 'LINE_ITEM_ID',
 		'line_item_name' => 'LINE_ITEM_NAME',
+		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
 		'master_companion_creative_id' => 'MASTER_COMPANION_CREATIVE_ID',
 		'order_id' => 'ORDER_ID',
 		'order_name' => 'ORDER_NAME',
+		'order_trafficker' => 'ORDER_TRAFFICKER',
 		'order_trafficker_id' => 'ORDER_TRAFFICKER_ID',
 		'targeting_value_id' => 'CUSTOM_TARGETING_VALUE_ID',
-		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
-		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
-		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
 	const DIMENSIONS_ATTRIBUTES_MAPPING = [
