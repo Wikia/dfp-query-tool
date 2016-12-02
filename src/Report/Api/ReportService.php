@@ -24,7 +24,11 @@ class ReportService
 		'total_active_view_measurable_impressions' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS',
 		'total_active_view_viewable_impressions' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS',
 		'total_active_view_measurable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_MEASURABLE_IMPRESSIONS_RATE',
-		'total_active_view_viewable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE'
+		'total_active_view_viewable_impressions_rate' => 'TOTAL_ACTIVE_VIEW_VIEWABLE_IMPRESSIONS_RATE',
+		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
+		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
+		'order_trafficer' => 'ORDER_TRAFFICER',
+		'master_companion_creative_id' => 'MASTER_COMPANION_CREATIVE_ID'
 	];
 	const DIMENSION_MAPPING = [
 		'adUnitName' => 'AD_UNIT_NAME',
@@ -38,7 +42,7 @@ class ReportService
 		'keyValues' => 'AD_REQUEST_CUSTOM_CRITERIA',
 		'lineItemId' => 'LINE_ITEM_ID',
 		'lineItemName' => 'LINE_ITEM_NAME',
-		'masterCompanionType' => 'MASTER_COMPANION_TYPE',
+		'masterCompanionCreativeId' => 'MASTER_COMPANION_CREATIVE_ID',
 		'orderId' => 'ORDER_ID',
 		'orderName' => 'ORDER_NAME',
 		'orderTraffickerId' => 'ORDER_TRAFFICKER_ID',
@@ -53,11 +57,14 @@ class ReportService
 		'key_values' => 'AD_REQUEST_CUSTOM_CRITERIA',
 		'line_item_id' => 'LINE_ITEM_ID',
 		'line_item_name' => 'LINE_ITEM_NAME',
-		'master_companion_type' => 'MASTER_COMPANION_TYPE',
+		'master_companion_creative_id' => 'MASTER_COMPANION_CREATIVE_ID',
 		'order_id' => 'ORDER_ID',
 		'order_name' => 'ORDER_NAME',
 		'order_trafficker_id' => 'ORDER_TRAFFICKER_ID',
-		'targeting_value_id' => 'CUSTOM_TARGETING_VALUE_ID'
+		'targeting_value_id' => 'CUSTOM_TARGETING_VALUE_ID',
+		'line_item_start_date_time' => 'LINE_ITEM_START_DATE_TIME',
+		'line_item_end_date_time' => 'LINE_ITEM_END_DATE_TIME',
+		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
 	const DIMENSIONS_ATTRIBUTES_MAPPING = [
@@ -176,7 +183,6 @@ class ReportService
 				}
 			}
 		}
-
 		return $data;
 	}
 

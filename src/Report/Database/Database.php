@@ -23,7 +23,10 @@ class Database
 		'key_values' => 'TEXT',
 		'line_item_id' => 'BIGINT',
 		'line_item_name' => 'TEXT',
-		'master_companion_type' => 'TEXT',
+		'line_item_start_date_time' => 'TEXT',
+		'line_item_end_date_time' => 'TEXT',
+		'order_trafficker' => 'TEXT',
+		'master_companion_creative_id' => 'BIGINT',
 		'order_id' => 'BIGINT',
 		'order_name' => 'TEXT',
 		'targeting_value_id' => 'BIGINT',
@@ -50,7 +53,7 @@ class Database
 ALTER TABLE %s ADD %s %s NULL;
 EOT;
 
-		foreach ($query['dimensions'] as $column) {
+		foreach (array_merge($query['dimensions'], $query['dimensions_attributes']) as $column) {
 			$sql = sprintf(
 				$columnSql,
 				$name,
@@ -96,7 +99,7 @@ EOT;
 		$columnsCanonical = [ 'date' ];
 		$columns = [ 'DATE' ];
 		$placeholders = [ '?' ];
-		foreach ($query['dimensions'] as $dimension) {
+		foreach (array_merge($query['dimensions'], $query['dimensions_attributes']) as $dimension) {
 			$columns[] = ReportService::DIMENSION_MAPPING[$dimension];
 			$columnsCanonical[] = $dimension;
 			$placeholders[] = '?';
