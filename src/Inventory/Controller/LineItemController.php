@@ -22,33 +22,55 @@ class LineItemController extends Controller
 	}
 
 	public function createLineItem(Request $request) {
-		$lineItem = null;
-		$lineItemCreativeAssociation = [];
-		$message = null;
-		$messageType = 'info';
+		$responses = [];
 		$form = [];
+		$index = 0;
 
 		if ($request->isMethod('POST')) {
 			$form = $request->request->all();
-			try {
-				$lineItem = $this->lineItemService->create($form);
-				$lineItemCreativeAssociation = $this->lineItemCreativeAssociationService->create($form['creativeId'], $lineItem['id']);
-				$messageType = 'success';
-				$message = 'Line items successfully created.';
-			} catch (LineItemException $exception) {
-				$message = $exception->getMessage();
-				$messageType = 'danger';
-				$lineItemCreativeAssociation = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
+			$formsSet = $this->processForm($form);
+
+			foreach($formsSet as $alteredForm) {
+				try {
+					$lineItem = $this->lineItemService->create($alteredForm);
+					$responses[$index]['lineItem'] = $lineItem;
+					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($form['creativeId'], $lineItem['id']);
+					$responses[$index]['messageType'] = 'success';
+					$responses[$index]['message'] = 'Line items successfully created.';
+				} catch (LineItemException $exception) {
+					$responses[$index]['lineItem'] = null;
+					$responses[$index]['message'] = $exception->getMessage();
+					$responses[$index]['messageType'] = 'danger';
+					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
+				}
+
+				$index++;
 			}
 		}
 
 		return $this->render('line-item', [
 			'action' => $request->getUri(),
-			'lineItem' => $lineItem,
-			'lica' => $lineItemCreativeAssociation,
-			'message' => $message,
-			'messageType' => $messageType,
+			'responses' => $responses,
 			'form' => json_encode($form)
 		]);
+	}
+
+	private function processForm($form) {
+		$formsSet = [];
+		if ( !empty($form['iterator']) ) {
+			$elements = explode(',', $form['iterator']);
+			foreach ( $elements as $element ) {
+				$alteredForm = $form;
+
+				foreach ( $alteredForm as $key => $value ) {
+					$alteredForm[$key] = str_replace( '%%element%%', trim($element), $value );
+				}
+				$formsSet[] = $alteredForm;
+			}
+		} else {
+			$formsSet[] = $form;
+		}
+
+		return $formsSet;
 	}
 }
