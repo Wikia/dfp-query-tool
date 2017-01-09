@@ -97,7 +97,9 @@ class ReportService
 			$reportQuery = new \ReportQuery();
 			$reportQuery->dimensions = $dimensions;
 			$reportQuery->columns = $columns;
-			$reportQuery->dimensionAttributes = $dimensionsAttributes;
+			if (!empty($dimensionsAttributes)) {
+				$reportQuery->dimensionAttributes = $dimensionsAttributes;
+			}
 			$reportQuery->statement = StatementBuilder::build($parameters);
 			if ($parameters->has('custom_field_ids')) {
 				$reportQuery->customFieldIds = $parameters->get('custom_field_ids');
