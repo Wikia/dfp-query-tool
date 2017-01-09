@@ -53,7 +53,13 @@ class Database
 ALTER TABLE %s ADD %s %s NULL;
 EOT;
 
-		foreach (array_merge($query['dimensions'], $query['dimensions_attributes']) as $column) {
+		if (!empty($query['dimensions_attributes'])) {
+			$columns = array_merge($query['dimensions'], $query['dimensions_attributes']);
+		} else {
+			$columns = $query['dimensions'];
+		}
+
+		foreach ($columns as $column) {
 			$sql = sprintf(
 				$columnSql,
 				$name,
@@ -99,7 +105,14 @@ EOT;
 		$columnsCanonical = [ 'date' ];
 		$columns = [ 'DATE' ];
 		$placeholders = [ '?' ];
-		foreach (array_merge($query['dimensions'], $query['dimensions_attributes']) as $dimension) {
+
+		if (!empty($query['dimensions_attributes'])) {
+			$dimensions = array_merge($query['dimensions'], $query['dimensions_attributes']);
+		} else {
+			$dimensions = $query['dimensions'];
+		}
+
+		foreach ($dimensions as $dimension) {
 			$columns[] = ReportService::DIMENSION_MAPPING[$dimension];
 			$columnsCanonical[] = $dimension;
 			$placeholders[] = '?';
