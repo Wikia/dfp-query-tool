@@ -30,50 +30,53 @@
 	</div>
 </div>
 {% for response in responses %}
-{% if response.message is not null %}
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-offset-1 col-sm-10">
-				<div class="alert alert-{{ response.messageType }} alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<p>{{ response.message|raw }}</p>
-					{% if response.lineItem is not null %}
-						<p>
-						<ul>
-							<li>
-								<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ response.lineItem.id }}"
-								   target="_blank">
-									{{ response.lineItem.name }}
-								</a><br/>
-								<small>id: {{ response.lineItem.id }},
-									order: {{ response.lineItem.orderId }} {% if response.lica.creativeSet %}, creative: {{ response.lica.creativeId }} {% endif %}</small>
-							</li>
-						</ul>
-						</p>
+	{% if response.message is not null %}
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="alert alert-{{ response.messageType }} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+									aria-hidden="true">&times;</span></button>
+						<p>{{ response.message|raw }}</p>
+						{% if response.lineItem is not null %}
+							<p>
+							<ul>
+								<li>
+									<a href="https://www.google.com/dfp/5441#delivery/LineItemDetail/lineItemId={{ response.lineItem.id }}"
+									   target="_blank">
+										{{ response.lineItem.name }}
+									</a><br/>
+									<small>id: {{ response.lineItem.id }},
+										order: {{ response.lineItem.orderId }} {% if response.lica.creativeSet %}, creative: {{ response.lica.creativeId }} {% endif %}</small>
+								</li>
+							</ul>
+							</p>
+						{% endif %}
+					</div>
+					{% if response.lica.creativeSet and not response.lica.success %}
+						<div class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+										aria-hidden="true">&times;</span></button>
+							<p>There were problems with line item and creative association</p>
+							<p>{{ response.lica.message|raw }}</p>
+						</div>
 					{% endif %}
 				</div>
-				{% if response.lica.creativeSet and not response.lica.success %}
-					<div class="alert alert-warning alert-dismissible" role="alert">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-						<p>There were problems with line item and creative association</p>
-						<p>{{ response.lica.message|raw }}</p>
-					</div>
-				{% endif %}
 			</div>
 		</div>
-	</div>
-{% endif %}
+	{% endif %}
 {% endfor %}
 <div class="container">
 	<div class="row">
 		<form method="post" action="{{ action }}">
 			<div class="col-sm-offset-2 col-sm-8">
 				<div class="form-horizontal col-sm-12">
-				<div class="form-group">
-					<label for="iterator">List of comma separated %%element%% values to loop through</label>
-					<input type="text" class="form-control" id="iterator" name="iterator" placeholder="e.g. 0.05, 0.10, 0.15..."/>
-				</div>
-				<hr/>
+					<div class="form-group">
+						<label for="iterator">List of comma separated %%element%% values to loop through</label>
+						<input type="text" class="form-control" id="iterator" name="iterator"
+							   placeholder="e.g. 0.05, 0.10, 0.15..."/>
+					</div>
+					<hr/>
 				</div>
 				<div class="form-group">
 					<label for="orderId">Order ID</label>
@@ -135,7 +138,11 @@
 				</div>
 				<div class="form-group">
 					<label for="rate">Rate (USD CPM)</label>
-					<input type="text" class="form-control" id="rate" name="rate" placeholder="e.g. 9.00 or %%element%%"/>
+					<input type="text" class="form-control" id="rate" name="rate"
+						   placeholder="e.g. 9.00 or %%element%%"/>
+					<input type="checkbox" name="cents" id="cents"/>
+					<label for="cents">Rate in cents</label>
+
 				</div>
 				<hr/>
 				<div class="form-group">

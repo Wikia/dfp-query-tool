@@ -43,7 +43,14 @@ class LineItemService
 			$this->setupTimeRange($lineItem, $form);
 
 			$lineItem->costType = 'CPM';
-			$lineItem->costPerUnit = new \Money('USD', floatval($form['rate']) * 1000000);
+
+			if (isset($form['cents'])) {
+				$rate = $form['rate'] / 100;
+			} else {
+				$rate = $form['rate'];
+			}
+
+			$lineItem->costPerUnit = new \Money('USD', floatval($rate) * 1000000);
 
 			$lineItem->creativePlaceholders = $this->getCreativePlaceholders($form['sizes']);
 			$lineItem->creativeRotationType = 'OPTIMIZED';
