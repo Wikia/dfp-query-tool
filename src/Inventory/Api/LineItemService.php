@@ -44,11 +44,7 @@ class LineItemService
 
 			$lineItem->costType = 'CPM';
 
-			if (isset($form['cents'])) {
-				$rate = $form['rate'] / 100;
-			} else {
-				$rate = $form['rate'];
-			}
+			$rate = isset($form['cents'] ? $form['rate'] / 100 : $form['rate'];
 
 			$lineItem->costPerUnit = new \Money('USD', floatval($rate) * 1000000);
 
