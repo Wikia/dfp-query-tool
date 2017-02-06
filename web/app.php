@@ -41,7 +41,7 @@ $app->get('/inventory/line_item', function (Request $request) use ($lineItemCont
 	return $lineItemController->createLineItem($request);
 });
 
-$app->post('/inventory/line_item', function (Request $request) use ($lineItemController) {
+$app->post('api/inventory/line_item', function (Request $request) use ($lineItemController) {
 	return $lineItemController->createLineItem($request);
 });
 

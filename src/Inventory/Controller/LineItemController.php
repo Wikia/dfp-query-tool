@@ -44,6 +44,13 @@ class LineItemController extends Controller
 					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
 				}
 
+				$s = curl_init();
+				curl_setopt($s, CURLOPT_URL, "http://localhost:26300/emit/id1/success");
+				curl_setopt($s, CURLOPT_RETURNTRANSFER, true);
+				$content = curl_exec($s);
+				$status = curl_getinfo($s, CURLINFO_HTTP_CODE);
+				curl_close($s);
+
 				$index++;
 			}
 		}

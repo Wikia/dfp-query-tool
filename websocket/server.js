@@ -1,5 +1,6 @@
+//TODO make it work on dev-adeng
+
 var CONF = {
-		IO: {HOST: '0.0.0.0', PORT: 8080},
 		EXPRESS: {HOST: 'localhost', PORT: 26300}
 	},
 	app = require('express')();
