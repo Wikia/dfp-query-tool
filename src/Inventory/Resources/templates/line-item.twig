@@ -220,6 +220,7 @@
 
 			var formData = $(form).serialize();
 
+			//TODO instead of one post request we should issue one post for one line item
 			$.ajax({
 				type: 'POST',
 				url: $(form).attr('action'),
