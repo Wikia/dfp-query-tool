@@ -1,0 +1,29 @@
+{
+  "name": "dfp-query-tool",
+  "version": "1.0.0",
+  "description": "Tool to communicate with DFP via API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fraszczakszymon/dfp-query-tool.git"
+  },
+  "keywords": [
+    "DFP",
+    "API",
+    "silex",
+    "socket.io"
+  ],
+  "author": "Fandom",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fraszczakszymon/dfp-query-tool/issues"
+  },
+  "homepage": "https://github.com/fraszczakszymon/dfp-query-tool#readme",
+  "dependencies": {
+    "express": "^4.14.1",
+    "socket.io": "^1.7.2"
+  }
+}
