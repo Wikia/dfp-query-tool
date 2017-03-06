@@ -112,7 +112,7 @@ class ReportService
 		}
 	}
 
-	public function postQuery(ParameterBag $parameters) {
+	public function postQuery(ParameterBag $parameters, \DateTime $date) {
 		$filters = [];
 		$filterValues = $parameters->get('filterValues');
 		$filterTypes = $parameters->get('filterTypes');
@@ -122,7 +122,7 @@ class ReportService
 		}
 		$parameters->set('filters', $filters);
 
-		return $this->query($parameters);
+		return $this->query($parameters, new \DateTime('-1 day', $date));
 	}
 
 	public function getReport($id) {
@@ -161,24 +161,14 @@ class ReportService
 				continue;
 			}
 
-			$values = explode(',', $line);
+			$values = str_getcsv($line);
 			if ($header) {
-				foreach ($values as $value) {
-					$enum = $value;
-					if (strpos($value, '.') !== false) {
-						list($key, $enum) = explode('.', $value);
-					} else if (strpos($value, 'CF[') !== false) {
-						$enum = strtr($value, [
-							'[' => '_',
-							']_Value' => ''
-						]);
-					}
-					$columns[] = $enum;
-				}
-				$header = false;
+                $columns = $this->parseHeaders($values, $columns);
+                $header = false;
 			} else {
 				$row = [];
 				$skip = false;
+
 				foreach ($values as $key => $value) {
 					$row[$columns[$key]] = $value;
 					if ($value === '-') {
@@ -208,7 +198,7 @@ class ReportService
 	private function getDimensionsAttributes(ParameterBag $parameters) {
 		return array_map(function ($key) {
 			return self::DIMENSIONS_ATTRIBUTES_MAPPING[$key];
-		}, $parameters->get('dimensions_attributes'));
+		}, $parameters->get('dimensions_attributes', []));
 	}
 
     /**
@@ -221,5 +211,27 @@ class ReportService
         $endDate = clone $startDate;
         $endDate->add(new \DateInterval('P1D'));
         return $endDate->sub(new \DateInterval('PT1S'));
+    }
+
+    /**
+     * @param $values
+     * @param $columns
+     * @return array
+     */
+    private function parseHeaders($values, $columns): array {
+        foreach ($values as $value) {
+            $enum = $value;
+            if (strpos($value, '.') !== false) {
+                list($key, $enum) = explode('.', $value);
+            } else if (strpos($value, 'CF[') !== false) {
+                $enum = strtr($value, [
+                    '[' => '_',
+                    ']_Value' => ''
+                ]);
+            }
+            $columns[] = $enum;
+        }
+
+        return $columns;
     }
 }
