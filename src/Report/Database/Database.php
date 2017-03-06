@@ -94,13 +94,11 @@ EOT;
 		}
 	}
 
-	public function insertResults($name, $query, $results) {
+	public function insertResults($name, $query, $results, \DateTime $date) {
 		if (!is_array($results)) {
 			throw new InvalidArgumentException($results);
 		}
 
-		$date = new \DateTime('-1 day');
-		$date->setTime(0, 0, 0);
 		$this->removeDuplicates($name, $date);
 		$columnsCanonical = [ 'date' ];
 		$columns = [ 'DATE' ];

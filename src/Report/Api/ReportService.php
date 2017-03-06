@@ -80,16 +80,14 @@ class ReportService
 		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
-	public function query(ParameterBag $parameters) {
+	public function query(ParameterBag $parameters, \DateTime $startDate) {
 		$user = Authenticator::getUser();
 
 		$columns = $this->getColumns($parameters);
 		$dimensions = $this->getDimensions($parameters);
 		$dimensionsAttributes = $this->getDimensionsAttributes($parameters);
-		$startDate = new \DateTime('-1 day', new \DateTimeZone('Europe/Warsaw'));
-		$endDate = new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
-		$startDate->setTime(0, 0, 0);
-		$endDate->setTime(0, 0, 0);
+
+        $endDate = $this->getEndDate($startDate);
 
 		try {
 			$reportService = $user->GetService('ReportService', 'v201605');
@@ -212,4 +210,16 @@ class ReportService
 			return self::DIMENSIONS_ATTRIBUTES_MAPPING[$key];
 		}, $parameters->get('dimensions_attributes'));
 	}
+
+    /**
+     * @param $startDate
+     * @return \DateTime
+     */
+    private function getEndDate(\DateTime $startDate): \DateTime
+    {
+        /** @var \DateTime $endDate */
+        $endDate = clone $startDate;
+        $endDate->add(new \DateInterval('P1D'));
+        return $endDate->sub(new \DateInterval('PT1S'));
+    }
 }

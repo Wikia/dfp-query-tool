@@ -31,11 +31,17 @@ class ReportCommand extends Command
 				'queryId',
 				InputArgument::OPTIONAL,
 				'ID of query defined in config/queries.yml'
-			);
+			)
+            ->addArgument(
+                'date',
+                InputArgument::OPTIONAL,
+                'Date of report in format YYYY-MM-DD'
+            );
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$queryId = $input->getArgument('queryId');
+		$notParsedDate = $input->getArgument('date');
 
 		$queries = $this->config['queries'];
 		if ($queryId !== null) {
@@ -47,20 +53,24 @@ class ReportCommand extends Command
 			];
 		}
 
+        $date = $this->getDate($notParsedDate);
+		$output->writeln("Gathering results for: {$date->format('Y-m-d')}");
+
 		foreach ($queries as $queryId => $query) {
 			$this->database->updateTable($queryId, $query);
-			$results = $this->runQuery($queryId);
+			$output->writeln('Table updated');
+			$results = $this->runQuery($queryId, $date);
+			$output->writeln('Results stored');
 			printf("\t- rows: %d\n", count($results));
-			$this->database->insertResults($queryId, $query, $results);
+			$this->database->insertResults($queryId, $query, $results, $date);
 		}
 	}
 
-	public function runQuery($queryId) {
+	public function runQuery($queryId, \DateTime $startDate) {
 		printf("Running query: %s\n", $queryId);
 		$parameters = new ParameterBag($this->config['queries'][$queryId]);
 		$reportService = new ReportService();
-
-		$results = $reportService->query($parameters);
+		$results = $reportService->query($parameters, $startDate);
 
 		return $results;
 	}
@@ -72,4 +82,16 @@ class ReportCommand extends Command
 
 		return Yaml::parse(file_get_contents(self::$queriesConfig));
 	}
+
+    /**
+     * @param $notParsedDate
+     * @return \DateTime
+     */
+    protected function getDate($notParsedDate): \DateTime {
+        $notParsedDate = $notParsedDate ?: '-1 day';
+        $date = new \DateTime($notParsedDate, new \DateTimeZone('Europe/Warsaw'));
+        $date->setTime(0, 0, 0);
+
+        return $date;
+    }
 }
