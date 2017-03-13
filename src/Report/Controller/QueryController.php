@@ -18,6 +18,7 @@ class QueryController extends Controller
 	}
 
 	public function post(Request $request) {
-		return $this->reportService->postQuery($request->request, new \DateTimeZone('Europe/Warsaw'));
+        $date = new \DateTime('-1 day', new \DateTimeZone('Europe/Warsaw'));
+        return $this->reportService->postQuery($request->request, $date);
 	}
 }

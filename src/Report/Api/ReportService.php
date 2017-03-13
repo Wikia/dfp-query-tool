@@ -205,12 +205,10 @@ class ReportService
      * @param $startDate
      * @return \DateTime
      */
-    private function getEndDate(\DateTime $startDate): \DateTime
-    {
+    private function getEndDate(\DateTime $startDate): \DateTime {
         /** @var \DateTime $endDate */
         $endDate = clone $startDate;
-        $endDate->add(new \DateInterval('P1D'));
-        return $endDate->sub(new \DateInterval('PT1S'));
+        return $endDate;
     }
 
     /**
