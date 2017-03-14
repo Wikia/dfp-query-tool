@@ -7,21 +7,23 @@ use Common\Api\Authenticator;
 class LineItemService
 {
 	private $customTargetingService;
+	private $user;
+	private $lineItemService;
+	private $targetedAdUnits;
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
+		$this->user = Authenticator::getUser();
+		$this->lineItemService = $this->user->GetService('LineItemService', 'v201608');
+		$this->targetedAdUnits = [$this->getRootAdUnit($this->user)];
 	}
 
 	public function create($form) {
 		$this->validateForm($form);
 
 		try {
-			$user = Authenticator::getUser();
-
-			$lineItemService = $user->GetService('LineItemService', 'v201608');
-
 			$inventoryTargeting = new \InventoryTargeting();
-			$inventoryTargeting->targetedAdUnits = [ $this->getRootAdUnit($user) ];
+		$inventoryTargeting->targetedAdUnits = $this->targetedAdUnits;
 
 			$targeting = new \Targeting();
 			$targeting->inventoryTargeting = $inventoryTargeting;
@@ -51,7 +53,7 @@ class LineItemService
 			$lineItem->creativePlaceholders = $this->getCreativePlaceholders($form['sizes']);
 			$lineItem->creativeRotationType = 'OPTIMIZED';
 
-			$lineItems = $lineItemService->createLineItems([ $lineItem ]);
+			$lineItems = $this->lineItemService->createLineItems([ $lineItem ]);
 
 			if (isset($lineItems)) {
 				foreach ($lineItems as $lineItem) {
