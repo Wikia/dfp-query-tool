@@ -32,11 +32,11 @@ class ReportCommand extends Command
 				InputArgument::OPTIONAL,
 				'ID of query defined in config/queries.yml'
 			)
-            ->addArgument(
-                'date',
-                InputArgument::OPTIONAL,
-                'Date of report in format YYYY-MM-DD'
-            );
+			->addArgument(
+				'date',
+				InputArgument::OPTIONAL,
+				'Date of report in format YYYY-MM-DD'
+			);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output) {
@@ -53,7 +53,7 @@ class ReportCommand extends Command
 			];
 		}
 
-        $date = $this->getDate($notParsedDate);
+		$date = $this->getDate($notParsedDate);
 		$output->writeln("Gathering results for: {$date->format('Y-m-d')}");
 
 		foreach ($queries as $queryId => $query) {
@@ -83,15 +83,15 @@ class ReportCommand extends Command
 		return Yaml::parse(file_get_contents(self::$queriesConfig));
 	}
 
-    /**
-     * @param $notParsedDate
-     * @return \DateTime
-     */
-    protected function getDate($notParsedDate): \DateTime {
-        $notParsedDate = $notParsedDate ?: '-1 day';
-        $date = new \DateTime($notParsedDate, new \DateTimeZone('Europe/Warsaw'));
-        $date->setTime(0, 0, 0);
-
-        return $date;
-    }
+	/**
+	 * @param $notParsedDate
+	 * @return \DateTime
+	 */
+	protected function getDate($notParsedDate): \DateTime {
+		$notParsedDate = $notParsedDate ?: '-1 day';
+		$date = new \DateTime($notParsedDate, new \DateTimeZone('Europe/Warsaw'));
+		$date->setTime(0, 0, 0);
+		
+		return $date;
+	}
 }
