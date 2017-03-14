@@ -80,16 +80,14 @@ class ReportService
 		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
-	public function query(ParameterBag $parameters) {
+	public function query(ParameterBag $parameters, \DateTime $startDate) {
 		$user = Authenticator::getUser();
 
 		$columns = $this->getColumns($parameters);
 		$dimensions = $this->getDimensions($parameters);
 		$dimensionsAttributes = $this->getDimensionsAttributes($parameters);
-		$startDate = new \DateTime('-1 day', new \DateTimeZone('Europe/Warsaw'));
-		$endDate = new \DateTime('now', new \DateTimeZone('Europe/Warsaw'));
-		$startDate->setTime(0, 0, 0);
-		$endDate->setTime(0, 0, 0);
+
+		$endDate = $this->getEndDate($startDate);
 
 		try {
 			$reportService = $user->GetService('ReportService', 'v201605');
@@ -114,7 +112,7 @@ class ReportService
 		}
 	}
 
-	public function postQuery(ParameterBag $parameters) {
+	public function postQuery(ParameterBag $parameters, \DateTime $date) {
 		$filters = [];
 		$filterValues = $parameters->get('filterValues');
 		$filterTypes = $parameters->get('filterTypes');
@@ -124,7 +122,7 @@ class ReportService
 		}
 		$parameters->set('filters', $filters);
 
-		return $this->query($parameters);
+		return $this->query($parameters, new \DateTime('-1 day', $date));
 	}
 
 	public function getReport($id) {
@@ -163,24 +161,14 @@ class ReportService
 				continue;
 			}
 
-			$values = explode(',', $line);
+			$values = str_getcsv($line);
 			if ($header) {
-				foreach ($values as $value) {
-					$enum = $value;
-					if (strpos($value, '.') !== false) {
-						list($key, $enum) = explode('.', $value);
-					} else if (strpos($value, 'CF[') !== false) {
-						$enum = strtr($value, [
-							'[' => '_',
-							']_Value' => ''
-						]);
-					}
-					$columns[] = $enum;
-				}
+				$columns = $this->parseHeaders($values, $columns);
 				$header = false;
 			} else {
 				$row = [];
 				$skip = false;
+
 				foreach ($values as $key => $value) {
 					$row[$columns[$key]] = $value;
 					if ($value === '-') {
@@ -210,6 +198,40 @@ class ReportService
 	private function getDimensionsAttributes(ParameterBag $parameters) {
 		return array_map(function ($key) {
 			return self::DIMENSIONS_ATTRIBUTES_MAPPING[$key];
-		}, $parameters->get('dimensions_attributes'));
+		}, $parameters->get('dimensions_attributes', []));
+	}
+
+	/**
+	 * @param $startDate
+	 * @return \DateTime
+	 */
+	private function getEndDate(\DateTime $startDate): \DateTime {
+        	/** @var \DateTime $endDate */
+        	$endDate = clone $startDate;
+        	return $endDate;
+	}
+
+	/**
+	* @param $values
+	* @param $columns
+	* @return array
+	*/
+	private function parseHeaders($values, $columns): array {
+		foreach ($values as $value) {
+			$enum = $value;
+			
+			if (strpos($value, '.') !== false) {
+				list($key, $enum) = explode('.', $value);
+			} else if (strpos($value, 'CF[') !== false) {
+				$enum = strtr($value, [
+					'[' => '_',
+					']_Value' => ''
+				]);
+			}
+			
+			$columns[] = $enum;
+		}
+		
+		return $columns;
 	}
 }
