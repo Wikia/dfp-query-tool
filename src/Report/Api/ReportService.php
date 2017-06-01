@@ -158,7 +158,6 @@ class ReportService
 	}
 
 	private function downloadReport($reportService, $id) {
-		$id = 2655202332;
 		$reportDownloader = new ReportDownloader($reportService, $id);
 		$reportDownloader->waitForReportToFinish();
 
