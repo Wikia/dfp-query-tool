@@ -2,7 +2,17 @@
 
 namespace Inventory\Api;
 
-use Common\Api\Authenticator;
+use Google\AdsApi\Dfp\Util\v201705\DfpDateTimes;
+use Google\AdsApi\Dfp\v201705\AdUnitTargeting;
+use Google\AdsApi\Dfp\v201705\CreativePlaceholder;
+use Google\AdsApi\Dfp\v201705\CustomCriteria;
+use Google\AdsApi\Dfp\v201705\CustomCriteriaSet;
+use Google\AdsApi\Dfp\v201705\Goal;
+use Google\AdsApi\Dfp\v201705\InventoryTargeting;
+use Google\AdsApi\Dfp\v201705\LineItem;
+use Google\AdsApi\Dfp\v201705\Money;
+use Google\AdsApi\Dfp\v201705\Size;
+use Google\AdsApi\Dfp\v201705\Targeting;
 
 class LineItemService
 {
@@ -13,8 +23,7 @@ class LineItemService
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
-		$this->user = Authenticator::getUser();
-		$this->lineItemService = $this->user->GetService('LineItemService', 'v201608');
+		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201705\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit($this->user)];
 	}
 
@@ -22,36 +31,36 @@ class LineItemService
 		$this->validateForm($form);
 
 		try {
-			$inventoryTargeting = new \InventoryTargeting();
-		$inventoryTargeting->targetedAdUnits = $this->targetedAdUnits;
+			$inventoryTargeting = new InventoryTargeting();
+			$inventoryTargeting->setTargetedAdUnits($this->targetedAdUnits);
 
-			$targeting = new \Targeting();
-			$targeting->inventoryTargeting = $inventoryTargeting;
-			$targeting->customTargeting = $this->getCustomTargeting($form);
+			$targeting = new Targeting();
+			$targeting->setInventoryTargeting($inventoryTargeting);
+			$targeting->setCustomTargeting($this->getCustomTargeting($form));
 
 			$orderId = $form['orderId'];
-			$lineItem = new \LineItem();
-			$lineItem->name = $form['lineItemName'];
-			$lineItem->orderId = $orderId;
-			$lineItem->targeting = $targeting;
-			$lineItem->allowOverbook = true;
+			$lineItem = new LineItem();
+			$lineItem->setName($form['lineItemName']);
+			$lineItem->setOrderId($orderId);
+			$lineItem->setTargeting($targeting);
+			$lineItem->setAllowOverbook(true);
 
-			$lineItem->disableSameAdvertiserCompetitiveExclusion = false;
+			$lineItem->setDisableSameAdvertiserCompetitiveExclusion(false);
 			if (isset($form['sameAdvertiser'])) {
-				$lineItem->disableSameAdvertiserCompetitiveExclusion = true;
+				$lineItem->setDisableSameAdvertiserCompetitiveExclusion(true);
 			}
 
 			$this->setupType($lineItem, $form);
 			$this->setupTimeRange($lineItem, $form);
 
-			$lineItem->costType = 'CPM';
+			$lineItem->setCostType('CPM');
 
 			$rate = isset($form['cents']) ? $form['rate'] / 100 : $form['rate'];
 
-			$lineItem->costPerUnit = new \Money('USD', floatval($rate) * 1000000);
+			$lineItem->setCostPerUnit(new Money('USD', floatval($rate) * 1000000));
 
-			$lineItem->creativePlaceholders = $this->getCreativePlaceholders($form['sizes']);
-			$lineItem->creativeRotationType = 'OPTIMIZED';
+			$lineItem->setCreativePlaceholders($this->getCreativePlaceholders($form['sizes']));
+			$lineItem->setCreativeRotationType('OPTIMIZED');
 
 			$lineItems = $this->lineItemService->createLineItems([ $lineItem ]);
 
@@ -93,9 +102,9 @@ class LineItemService
 
 		$network = $networkService->getCurrentNetwork();
 
-		$adUnit = new \AdUnitTargeting();
-		$adUnit->adUnitId = $network->effectiveRootAdUnitId;
-		$adUnit->includeDescendants = true;
+		$adUnit = new AdUnitTargeting();
+		$adUnit->setAdUnitId($network->effectiveRootAdUnitId);
+		$adUnit->setIncludeDescendants(true);
 
 		return $adUnit;
 	}
@@ -105,8 +114,8 @@ class LineItemService
 			return null;
 		}
 
-		$set = new \CustomCriteriaSet();
-		$set->logicalOperator = 'AND';
+		$set = new CustomCriteriaSet();
+		$set->setLogicalOperator('AND');
 		$targetingCriteria = [];
 
 		$keyIds = $this->customTargetingService->getKeyIds($form['keys']);
@@ -117,13 +126,13 @@ class LineItemService
 			$values = explode(',', $form['values'][$i]);
 			$valueIds = $this->customTargetingService->getValueIds($keyId, $values);
 
-			$criteria = new \CustomCriteria();
-			$criteria->keyId = $keyId;
-			$criteria->valueIds = $valueIds;
-			$criteria->operator = $form['operators'][$i];
+			$criteria = new CustomCriteria();
+			$criteria->setKeyId($keyId);
+			$criteria->setValueIds($valueIds);
+			$criteria->setOperator($form['operators'][$i]);
 			$targetingCriteria[] = $criteria;
 		}
-		$set->children = $targetingCriteria;
+		$set->setChildren($targetingCriteria);
 
 		return $set;
 	}
@@ -134,50 +143,50 @@ class LineItemService
 
 		foreach ($sizes as $size) {
 			list($width, $height) = explode('x', trim($size));
-			$creativePlaceholder = new \CreativePlaceholder();
-			$creativePlaceholder->size = new \Size(intval($width), intval($height), false);
+			$creativePlaceholder = new CreativePlaceholder();
+			$creativePlaceholder->setSize(new Size(intval($width), intval($height), false));
 			$placeholders[] = $creativePlaceholder;
 		}
 
 		return $placeholders;
 	}
 
-	private function setupType($lineItem, $form) {
-		$lineItem->lineItemType = $form['type'];
-		$lineItem->priority = $form['priority'];
+	private function setupType(LineItem $lineItem, $form) {
+		$lineItem->setLineItemType($form['type']);
+		$lineItem->setPriority($form['priority']);
 		switch ($form['type']) {
 			case 'STANDARD':
-				$goal = new \Goal();
-				$goal->units = 500000;
-				$goal->unitType = 'IMPRESSIONS';
-				$goal->goalType = 'LIFETIME';
-				$lineItem->primaryGoal = $goal;
+				$goal = new Goal();
+				$goal->setUnits(500000);
+				$goal->setUnitType('IMPRESSIONS');
+				$goal->setGoalType('LIFETIME');
+				$lineItem->setPrimaryGoal($goal);
 				return;
 			case 'PRICE_PRIORITY':
-				$goal = new \Goal();
-				$goal->goalType = 'NONE';
-				$lineItem->primaryGoal = $goal;
+				$goal = new Goal();
+				$goal->setGoalType('NONE');
+				$lineItem->setPrimaryGoal($goal);
 				return;
 			case 'SPONSORSHIP':
 			case 'NETWORK':
 			case 'HOUSE':
-				$goal = new \Goal();
-				$goal->units = 100;
-				$lineItem->primaryGoal = $goal;
+				$goal = new Goal();
+				$goal->setUnits(100);
+				$lineItem->setPrimaryGoal($goal);
 				return;
 		}
 	}
 
-	private function setupTimeRange($lineItem, $form) {
+	private function setupTimeRange(LineItem $lineItem, $form) {
 		if ($form['start'] !== '') {
-			$lineItem->startDateTime = \DateTimeUtils::ToDfpDateTime(new \DateTime($form['start'], new \DateTimeZone('UTC')));
+			$lineItem->setStartDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['start'], new \DateTimeZone('UTC'))));
 		} else {
-			$lineItem->startDateTimeType = 'IMMEDIATELY';
+			$lineItem->setStartDateTimeType('IMMEDIATELY');
 		}
 		if ($form['end'] !== '') {
-			$lineItem->endDateTime = \DateTimeUtils::ToDfpDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC')));
+			$lineItem->setEndDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC'))));
 		} else {
-			$lineItem->unlimitedEndDateTime = true;
+			$lineItem->setUnlimitedEndDateTime(true);
 		}
 	}
 }

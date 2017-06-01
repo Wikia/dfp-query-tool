@@ -2,7 +2,7 @@
 
 namespace Inventory\Api;
 
-use Common\Api\Authenticator;
+use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
 
 class CustomTargetingService
 {
@@ -10,15 +10,13 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$user = Authenticator::getUser();
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
 
-			$customTargetingService = $user->GetService('CustomTargetingService', 'v201608');
-
-			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where('name = :name');
+			$statementBuilder = new StatementBuilder();
+			$statementBuilder->where('name = :name');
 
 			foreach ($keys as $key) {
-				$statementBuilder->WithBindVariableValue('name', $key);
+				$statementBuilder->withBindVariableValue('name', $key);
 
 				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->ToStatement());
 
@@ -42,16 +40,14 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$user = Authenticator::getUser();
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
 
-			$customTargetingService = $user->GetService('CustomTargetingService', 'v201608');
-
-			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
-			$statementBuilder->WithBindVariableValue('customTargetingKeyId', $keyId);
+			$statementBuilder = new StatementBuilder();
+			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
+			$statementBuilder->withBindVariableValue('customTargetingKeyId', $keyId);
 
 			foreach ($values as $value) {
-				$statementBuilder->WithBindVariableValue('name', trim($value));
+				$statementBuilder->withBindVariableValue('name', trim($value));
 
 				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->ToStatement());
 
