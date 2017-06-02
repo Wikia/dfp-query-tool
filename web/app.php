@@ -9,6 +9,7 @@ $reportController = new \Report\Controller\ReportController($app);
 $queryController = new \Report\Controller\QueryController($app);
 $tableauController = new \Tableau\Controller\TableauController($app);
 $lineItemController = new \Inventory\Controller\LineItemController($app);
+$keyValuesController = new \Inventory\Controller\KeyValuesController($app);
 
 $app['debug'] = true;
 
@@ -43,6 +44,14 @@ $app->get('/inventory/line_item', function (Request $request) use ($lineItemCont
 
 $app->post('/inventory/line_item', function (Request $request) use ($lineItemController) {
 	return $lineItemController->createLineItem($request);
+});
+
+$app->get('/inventory/key_values', function (Request $request) use ($keyValuesController) {
+	return $keyValuesController->createKeyValues($request);
+});
+
+$app->post('/inventory/key_values', function (Request $request) use ($keyValuesController) {
+	return $keyValuesController->createKeyValues($request);
 });
 
 $app->run();

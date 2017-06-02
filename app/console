@@ -34,6 +34,5 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 $console = $app['console'];
 
 $console->add(new Report\Command\ReportCommand($app));
-$console->add(new Report\Command\HourlyReportCommand($app));
 
 $console->run();

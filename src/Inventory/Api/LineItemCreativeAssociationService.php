@@ -2,7 +2,7 @@
 
 namespace Inventory\Api;
 
-use Common\Api\Authenticator;
+use Google\AdsApi\Dfp\v201705\LineItemCreativeAssociation;
 
 class LineItemCreativeAssociationService {
 	private $customTargetingService;
@@ -27,18 +27,16 @@ class LineItemCreativeAssociationService {
 
 		$processedCreativeIds = $this->processCreativeId( $creativeId );
 		try {
-			$user = Authenticator::getUser();
-
 			if ( empty($lineItemId) ) {
 				return $this->getIncorrectLineItemResult();
 			} else {
-				$lineItemCreativeAssociationService = $user->GetService( 'LineItemCreativeAssociationService', 'v201608' );
+				$lineItemCreativeAssociationService = DfpService::get(\Google\AdsApi\Dfp\v201705\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
 				foreach ( $processedCreativeIds as $extractedCreativeId ) {
-					$lineItemCreativeAssociation = new \LineItemCreativeAssociation();
-					$lineItemCreativeAssociation->creativeId = trim( $extractedCreativeId );
-					$lineItemCreativeAssociation->lineItemId = $lineItemId;
+					$lineItemCreativeAssociation = new LineItemCreativeAssociation();
+					$lineItemCreativeAssociation->setCreativeId(trim( $extractedCreativeId ));
+					$lineItemCreativeAssociation->setLineItemId($lineItemId);
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
 				}
 

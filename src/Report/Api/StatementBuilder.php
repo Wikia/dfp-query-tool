@@ -2,12 +2,13 @@
 
 namespace Report\Api;
 
+use Google\AdsApi\Dfp\Util\v201705\StatementBuilder as DfpStatementBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StatementBuilder
 {
 	public static function build(ParameterBag $parameters) {
-		$statementBuilder = new \StatementBuilder();
+		$statementBuilder = new DfpStatementBuilder();
 		$statements = [];
 		$i = 1;
 		foreach ($parameters->get('filters') as $type => $value) {
@@ -22,12 +23,12 @@ class StatementBuilder
 			}
 			$i++;
 		}
-		$statementBuilder->Where(implode(' and ', $statements));
+		$statementBuilder->where(implode(' and ', $statements));
 
-		return $statementBuilder->ToStatement();
+		return $statementBuilder->toStatement();
 	}
 
-	private static function buildStatement($statementBuilder, $index, $filter, $type, $values) {
+	private static function buildStatement(DfpStatementBuilder $statementBuilder, $index, $filter, $type, $values) {
 		if (!is_array($values)) {
 			$values = explode(',', $values);
 		}
@@ -36,7 +37,7 @@ class StatementBuilder
 		foreach ($values as $value) {
 			$key = sprintf('%s_%d_%d', $type, $index, $i);
 			$keys[] = ':' . $key;
-			$statementBuilder->WithBindVariableValue($key, self::parseValue($type, trim($value)));
+			$statementBuilder->withBindVariableValue($key, self::parseValue($type, trim($value)));
 			$i++;
 		}
 
@@ -61,12 +62,12 @@ class StatementBuilder
 	 *
 	 * @TODO currently there is no support for multiple values in not statement
 	 */
-	private static function buildNotStatement( $statementBuilder, $index, $filter, $type, $values ) {
+	private static function buildNotStatement(DfpStatementBuilder $statementBuilder, $index, $filter, $type, $values ) {
 		$value = is_array($values) ? $values[0] : $values;
 		$key = sprintf('%s_%d_%d', $type, $index, 1);
 		$keyFormatted = ':' . $key;
 
-		$statementBuilder->WithBindVariableValue($key, self::parseValue($type, trim($value)));
+		$statementBuilder->withBindVariableValue($key, self::parseValue($type, trim($value)));
 
 		return sprintf('%s != %s', $filter, $keyFormatted);
 	}

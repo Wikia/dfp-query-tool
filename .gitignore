@@ -2,7 +2,6 @@
 vendor
 config/auth.ini
 config/queries.yml
-config/hourly-queries.yml
 config/db.yml
 *.log
 composer.phar

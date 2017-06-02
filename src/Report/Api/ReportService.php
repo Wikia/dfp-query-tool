@@ -3,6 +3,12 @@
 namespace Report\Api;
 
 use Common\Api\Authenticator;
+use Google\AdsApi\Dfp\DfpServices;
+use Google\AdsApi\Dfp\Util\v201705\DfpDateTimes;
+use Google\AdsApi\Dfp\Util\v201705\ReportDownloader;
+use Google\AdsApi\Dfp\v201705\ReportJob;
+use Google\AdsApi\Dfp\v201705\ReportQuery;
+use Google\AdsApi\Dfp\v201705\ReportService as DfpReportService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ReportService
@@ -80,8 +86,14 @@ class ReportService
 		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
+	private $dfpServices;
+
+	public function __construct() {
+		$this->dfpServices = new DfpServices();
+	}
+
 	public function query(ParameterBag $parameters, \DateTime $startDate) {
-		$user = Authenticator::getUser();
+		$session = Authenticator::getSession();
 
 		$columns = $this->getColumns($parameters);
 		$dimensions = $this->getDimensions($parameters);
@@ -90,21 +102,22 @@ class ReportService
 		$endDate = $this->getEndDate($startDate);
 
 		try {
-			$reportService = $user->GetService('ReportService', 'v201605');
+			$reportService = $this->dfpServices->get($session, DfpReportService::class);
 
-			$reportQuery = new \ReportQuery();
-			$reportQuery->dimensions = $dimensions;
-			$reportQuery->columns = $columns;
+			$reportQuery = new ReportQuery();
+			$reportQuery->setDimensions($dimensions);
+			$reportQuery->setColumns($columns);
 			if (!empty($dimensionsAttributes)) {
-				$reportQuery->dimensionAttributes = $dimensionsAttributes;
+				$reportQuery->setDimensionAttributes($dimensionsAttributes);
 			}
-			$reportQuery->statement = StatementBuilder::build($parameters);
+			$statement = StatementBuilder::build($parameters);
+			$reportQuery->setStatement($statement);
 			if ($parameters->has('custom_field_ids')) {
-				$reportQuery->customFieldIds = $parameters->get('custom_field_ids');
+				$reportQuery->setCustomFieldIds($parameters->get('custom_field_ids'));
 			}
-			$reportQuery->dateRangeType = 'CUSTOM_DATE';
-			$reportQuery->startDate = \DateTimeUtils::ToDfpDateTime($startDate)->date;
-			$reportQuery->endDate = \DateTimeUtils::ToDfpDateTime($endDate)->date;
+			$reportQuery->setDateRangeType('CUSTOM_DATE');
+			$reportQuery->setStartDate(DfpDateTimes::fromDateTime($startDate)->getDate());
+			$reportQuery->setEndDate(DfpDateTimes::fromDateTime($endDate)->getDate());
 
 			return $this->run($reportService, $reportQuery);
 		} catch (\Exception $e) {
@@ -127,8 +140,8 @@ class ReportService
 
 	public function getReport($id) {
 		try {
-			$user = Authenticator::getUser();
-			$reportService = $user->GetService('ReportService', 'v201605');
+			$session = Authenticator::getSession();
+			$reportService = $this->dfpServices->get($session, DfpReportService::class);
 
 			return $this->downloadReport($reportService, $id);
 		} catch (\Exception $e) {
@@ -137,18 +150,19 @@ class ReportService
 	}
 
 	private function run($reportService, $reportQuery) {
-		$reportJob = new \ReportJob();
-		$reportJob->reportQuery = $reportQuery;
+		$reportJob = new ReportJob();
+		$reportJob->setReportQuery($reportQuery);
 		$reportJob = $reportService->runReportJob($reportJob);
 
-		return $this->downloadReport($reportService, $reportJob->id);
+		return $this->downloadReport($reportService, $reportJob->getId());
 	}
 
 	private function downloadReport($reportService, $id) {
-		$reportDownloader = new \ReportDownloader($reportService, $id);
-		$reportDownloader->waitForReportReady();
+		$reportDownloader = new ReportDownloader($reportService, $id);
+		$reportDownloader->waitForReportToFinish();
 
-		return $this->parseCsvData(gzdecode($reportDownloader->downloadReport('CSV_DUMP')));
+		$content = $reportDownloader->downloadReport('CSV_DUMP')->getContents();
+		return $this->parseCsvData(gzdecode($content));
 	}
 
 	private function parseCsvData($csv) {
@@ -205,7 +219,7 @@ class ReportService
 	 * @param $startDate
 	 * @return \DateTime
 	 */
-	private function getEndDate(\DateTime $startDate): \DateTime {
+	private function getEndDate(\DateTime $startDate) {
         	/** @var \DateTime $endDate */
         	$endDate = clone $startDate;
         	return $endDate;

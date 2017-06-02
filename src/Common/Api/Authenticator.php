@@ -2,13 +2,21 @@
 
 namespace Common\Api;
 
+use Google\AdsApi\Common\OAuth2TokenBuilder;
+use Google\AdsApi\Dfp\DfpSessionBuilder;
+
 class Authenticator
 {
 	private static $credentialsPath = __DIR__ . '/../../../config/auth.ini';
 
-	static public function getUser() {
-		$user = new \DfpUser(self::$credentialsPath);
+	static public function getSession() {
+		$oAuth2Credential = (new OAuth2TokenBuilder())
+			->fromFile(self::$credentialsPath)
+			->build();
 
-		return $user;
+		return (new DfpSessionBuilder())
+			->fromFile(self::$credentialsPath)
+			->withOAuth2Credential($oAuth2Credential)
+			->build();
 	}
 }

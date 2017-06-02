@@ -2,7 +2,9 @@
 
 namespace Inventory\Api;
 
-use Common\Api\Authenticator;
+use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
+use Google\AdsApi\Dfp\v201705\CustomTargetingValue;
+use Google\AdsApi\Dfp\v201705\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -10,21 +12,20 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$user = Authenticator::getUser();
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
 
-			$customTargetingService = $user->GetService('CustomTargetingService', 'v201608');
-
-			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where('name = :name');
+			$statementBuilder = new StatementBuilder();
+			$statementBuilder->where('name = :name');
 
 			foreach ($keys as $key) {
-				$statementBuilder->WithBindVariableValue('name', $key);
+				$statementBuilder->withBindVariableValue('name', $key);
 
-				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->ToStatement());
+				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
 
-				if (isset($page->results)) {
-					foreach ($page->results as $customTargetingKey) {
-						$ids[] = $customTargetingKey->id;
+				$results = $page->getResults();
+				if (!empty($results)) {
+					foreach ($results as $customTargetingKey) {
+						$ids[] = $customTargetingKey->getId();
 					}
 				} else {
 					throw new \Exception(sprintf('Key not found (<strong>%s</strong>).', $key));
@@ -42,22 +43,21 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$user = Authenticator::getUser();
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
 
-			$customTargetingService = $user->GetService('CustomTargetingService', 'v201608');
-
-			$statementBuilder = new \StatementBuilder();
-			$statementBuilder->Where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
-			$statementBuilder->WithBindVariableValue('customTargetingKeyId', $keyId);
+			$statementBuilder = new StatementBuilder();
+			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
+			$statementBuilder->withBindVariableValue('customTargetingKeyId', $keyId);
 
 			foreach ($values as $value) {
-				$statementBuilder->WithBindVariableValue('name', trim($value));
+				$statementBuilder->withBindVariableValue('name', trim($value));
 
-				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->ToStatement());
+				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
 
-				if (isset($page->results)) {
-					foreach ($page->results as $customTargetingValue) {
-						$ids[] = $customTargetingValue->id;
+				$results = $page->getResults();
+				if (!empty($results)) {
+					foreach ($results as $customTargetingValue) {
+						$ids[] = $customTargetingValue->getId();
 					}
 				} else {
 					throw new \Exception(sprintf('Value not found (<strong>%s</strong>).', $value));
@@ -68,5 +68,30 @@ class CustomTargetingService
 		}
 
 		return $ids;
+	}
+
+	public function addValues($key, $values) {
+		$addedValues = 0;
+		$keyIds = $this->getKeyIds([$key]);
+		$keyId = array_shift($keyIds);
+		$packages = array_chunk($values, 200);
+
+		$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
+		foreach ($packages as $packageValues) {
+			$customTargetingValues = [];
+
+			foreach ($packageValues as $value) {
+				$customTargetingValue = new CustomTargetingValue();
+				$customTargetingValue->setCustomTargetingKeyId($keyId);
+				$customTargetingValue->setDisplayName($value);
+				$customTargetingValue->setName($value);
+				$customTargetingValue->setMatchType(CustomTargetingValueMatchType::EXACT);
+
+				$customTargetingValues[] = $customTargetingValue;
+			}
+			$addedValues += count($customTargetingService->createCustomTargetingValues($customTargetingValues));
+		}
+
+		return $addedValues;
 	}
 }
