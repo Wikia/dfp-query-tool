@@ -14,11 +14,37 @@ class SuggestedAdUnitsService
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())->limit($pageSize);
 
+		$totalResultSetSize = 0;
+		$logContent = '';
+		do {
+			$page = $suggestedAdUnitService->getSuggestedAdUnitsByStatement(
+				$statementBuilder->toStatement());
+			// Print out some information for the suggested ad units to be approved.
+			if ($page->getResults() !== null) {
+				$totalResultSetSize = $page->getTotalResultSetSize();
+				$i = $page->getStartIndex();
+				foreach ($page->getResults() as $suggestedAdUnit) {
+					$adUnit = [];
+					foreach ($suggestedAdUnit->getParentPath() as $parentPath) {
+						$adUnit[] = $parentPath->getName();
+					}
+					$adUnit[] = implode('/', $suggestedAdUnit->getPath());
+
+					$logContent .= sprintf("(%d) %s\n", $suggestedAdUnit->getNumRequests(), implode('/', $adUnit));
+				}
+			}
+			$statementBuilder->increaseOffsetBy($pageSize);
+		} while ($statementBuilder->getOffset() < $totalResultSetSize);
+
 		$action = new ApproveSuggestedAdUnitsAction();
-		$result = $suggestedAdUnitService->performSuggestedAdUnitAction($action,
-			$statementBuilder->toStatement());
+		$result = $suggestedAdUnitService->performSuggestedAdUnitAction($action, $statementBuilder->toStatement());
+
+		$now = new \DateTime();
+		$filePath = __DIR__ . '/../../../logs/approved-adunits-' . $now->format('YmdHi') . '.log';
+
 		if ($result !== null && $result->getNumChanges() > 0) {
 			printf("Number of suggested ad units approved: %d\n", $result->getNumChanges());
+			file_put_contents($filePath, $logContent);
 		} else {
 			printf("No suggested ad units were approved.\n");
 		}

@@ -4,4 +4,6 @@ config/auth.ini
 config/queries.yml
 config/db.yml
 *.log
+log/*
+!log/.gitkeep
 composer.phar
