@@ -11,20 +11,20 @@ use Google\AdsApi\Dfp\v201705\Goal;
 use Google\AdsApi\Dfp\v201705\InventoryTargeting;
 use Google\AdsApi\Dfp\v201705\LineItem;
 use Google\AdsApi\Dfp\v201705\Money;
+use Google\AdsApi\Dfp\v201705\NetworkService;
 use Google\AdsApi\Dfp\v201705\Size;
 use Google\AdsApi\Dfp\v201705\Targeting;
 
 class LineItemService
 {
 	private $customTargetingService;
-	private $user;
 	private $lineItemService;
 	private $targetedAdUnits;
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
 		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201705\LineItemService::class);
-		$this->targetedAdUnits = [$this->getRootAdUnit($this->user)];
+		$this->targetedAdUnits = [$this->getRootAdUnit()];
 	}
 
 	public function create($form) {
@@ -67,9 +67,9 @@ class LineItemService
 			if (isset($lineItems)) {
 				foreach ($lineItems as $lineItem) {
 					return [
-						'id' => $lineItem->id,
-						'name' => $lineItem->name,
-						'orderId' => $lineItem->orderId
+						'id' => $lineItem->getId(),
+						'name' => $lineItem->getName(),
+						'orderId' => $lineItem->getOrderId()
 					];
 				}
 			}
@@ -97,13 +97,13 @@ class LineItemService
 		}
 	}
 
-	private function getRootAdUnit($user) {
-		$networkService = $user->GetService('NetworkService', 'v201608');
+	private function getRootAdUnit() {
+		$networkService = DfpService::get(NetworkService::class);
 
 		$network = $networkService->getCurrentNetwork();
 
 		$adUnit = new AdUnitTargeting();
-		$adUnit->setAdUnitId($network->effectiveRootAdUnitId);
+		$adUnit->setAdUnitId($network->getEffectiveRootAdUnitId());
 		$adUnit->setIncludeDescendants(true);
 
 		return $adUnit;

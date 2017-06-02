@@ -18,11 +18,12 @@ class CustomTargetingService
 			foreach ($keys as $key) {
 				$statementBuilder->withBindVariableValue('name', $key);
 
-				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->ToStatement());
+				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
 
-				if (isset($page->results)) {
-					foreach ($page->results as $customTargetingKey) {
-						$ids[] = $customTargetingKey->id;
+				$results = $page->getResults();
+				if (!empty($results)) {
+					foreach ($results as $customTargetingKey) {
+						$ids[] = $customTargetingKey->getId();
 					}
 				} else {
 					throw new \Exception(sprintf('Key not found (<strong>%s</strong>).', $key));
@@ -49,11 +50,12 @@ class CustomTargetingService
 			foreach ($values as $value) {
 				$statementBuilder->withBindVariableValue('name', trim($value));
 
-				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->ToStatement());
+				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
 
-				if (isset($page->results)) {
-					foreach ($page->results as $customTargetingValue) {
-						$ids[] = $customTargetingValue->id;
+				$results = $page->getResults();
+				if (!empty($results)) {
+					foreach ($results as $customTargetingValue) {
+						$ids[] = $customTargetingValue->getId();
 					}
 				} else {
 					throw new \Exception(sprintf('Value not found (<strong>%s</strong>).', $value));
