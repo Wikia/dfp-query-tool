@@ -31,6 +31,7 @@ class SuggestedAdUnitsService
 					$adUnit[] = implode('/', $suggestedAdUnit->getPath());
 
 					$logContent .= sprintf("(%d) %s\n", $suggestedAdUnit->getNumRequests(), implode('/', $adUnit));
+					$i++;
 				}
 			}
 			$statementBuilder->increaseOffsetBy($pageSize);
