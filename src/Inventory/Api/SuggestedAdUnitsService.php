@@ -19,7 +19,7 @@ class SuggestedAdUnitsService
 		do {
 			$page = $suggestedAdUnitService->getSuggestedAdUnitsByStatement(
 				$statementBuilder->toStatement());
-			// Print out some information for the suggested ad units to be approved.
+
 			if ($page->getResults() !== null) {
 				$totalResultSetSize = $page->getTotalResultSetSize();
 				$i = $page->getStartIndex();
