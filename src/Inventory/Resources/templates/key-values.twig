@@ -64,8 +64,14 @@
 					<input type="text" class="form-control" id="key" name="key" placeholder="wsi"/>
 				</div>
 				<div class="form-group">
-					<label for="orderId">Values (each value in new line)</label>
-					<textarea class="form-control" id="values" name="values" rows="20"></textarea>
+					<label>Value combinations (comma separated in each combination, use one line for non-combined values)</label>
+				</div>
+				<div class="form-group combination-rows">
+					<div class="row text-right form-group combinations-container">
+						<div class="btn btn-wikia add-combination"><span class="glyphicon glyphicon-plus"
+																  aria-hidden="true"></span> ADD COMBINATION
+						</div>
+					</div>
 				</div>
 				<hr/>
 				<div class="row text-right">
@@ -76,22 +82,13 @@
 		</form>
 	</div>
 </div>
-<script id="pair-template" type="text/template">
-	<div class="row key-value-pair">
-		<div class="form-group col-xs-4">
-			<input type="text" class="form-control key" name="keys[]" placeholder="e.g. src"/>
-		</div>
-		<div class="form-group col-xs-2">
-			<select class="form-control operator" name="operators[]">
-				<option value="IS" selected>is</option>
-				<option value="IS_NOT">is not</option>
-			</select>
-		</div>
-		<div class="form-group col-xs-5">
-			<input type="text" class="form-control value" name="values[]" placeholder="e.g. gpt, mobile"/>
+<script id="combination-template" type="text/template">
+	<div class="row combination">
+		<div class="form-group col-xs-11">
+			<input type="text" class="form-control values" name="combinationValues[]" placeholder="l,b,m,i,..." />
 		</div>
 		<div class="col-xs-1">
-			<div class="btn btn-wikia remove-pair"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+			<div class="btn btn-wikia remove-combination"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 			</div>
 		</div>
 	</div>
@@ -101,5 +98,6 @@
 <script type="text/javascript">
 	var submittedForm = {{ form|raw }};
 </script>
+<script src="{{ getResourcePath('Inventory:js/key-values.js') }}" type="text/javascript"></script>
 </body>
 </html>

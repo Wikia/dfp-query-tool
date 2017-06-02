@@ -29,7 +29,10 @@ class KeyValuesController extends Controller
 		if ($request->isMethod('POST')) {
 			$form = $request->request->all();
 			$key = $form['key'];
-			$values = explode("\n", $form['values']);
+			$values = [];
+			if (isset($form['combinationValues'])) {
+				$values = $this->getValues($form['combinationValues']);
+			}
 
 			try {
 				$addedValues = $this->customTargetingService->addValues($key, $values);
@@ -44,5 +47,38 @@ class KeyValuesController extends Controller
 			'error' => $error,
 			'form' => json_encode($form)
 		]);
+	}
+
+	private function getValues($combinations) {
+		$parsedCombinations = [];
+		foreach ($combinations as $combination) {
+			if (trim($combination) === '') {
+				continue;
+			}
+
+			$parsedCombinations[] = explode(',', $combination);
+		}
+
+		return $this->generateCombinations($parsedCombinations);
+	}
+
+	private function generateCombinations($arrays, $i = 0) {
+		if (!isset($arrays[$i])) {
+			return array();
+		}
+		if ($i == count($arrays) - 1) {
+			return $arrays[$i];
+		}
+
+		$tmp = $this->generateCombinations($arrays, $i + 1);
+
+		$result = array();
+		foreach ($arrays[$i] as $v) {
+			foreach ($tmp as $t) {
+				$result[] = implode('', [$v, $t]);
+			}
+		}
+
+		return $result;
 	}
 }
