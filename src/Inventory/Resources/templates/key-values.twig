@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>DFP inventory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/bootstrap.min.css') }}"/>
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/style.css') }}"/>
+</head>
+<body>
+<nav class="navbar navbar-static-top navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<div class="navbar-brand">
+				DFP inventory
+			</div>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a href="https://developers.google.com/doubleclick-publishers/docs/reference/v201608/LineItemService"
+				   target="_blank">
+					API reference (includes list of errors)
+				</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+<div class="container" style="margin-bottom: 20px;">
+	<div class="row">
+		<h3>Create new values for key</h3>
+	</div>
+</div>
+{% if addedValues > 0 %}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-10">
+				<div class="alert alert-success alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+								aria-hidden="true">&times;</span></button>
+					<p>{{ addedValues }} new values successfully added.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+{% if error != '' %}
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-offset-1 col-sm-10">
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+								aria-hidden="true">&times;</span></button>
+					<p>{{ error|raw }}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+<div class="container">
+	<div class="row">
+		<form method="post" action="{{ action }}">
+			<div class="col-sm-offset-2 col-sm-8">
+				<div class="form-group">
+					<label for="orderId">Key</label>
+					<input type="text" class="form-control" id="key" name="key" placeholder="wsi"/>
+				</div>
+				<div class="form-group">
+					<label for="orderId">Values (each value in new line)</label>
+					<textarea class="form-control" id="values" name="values" rows="20"></textarea>
+				</div>
+				<hr/>
+				<div class="row text-right">
+					<button class="btn btn-wikia"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> SUBMIT NEW VALUES
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script id="pair-template" type="text/template">
+	<div class="row key-value-pair">
+		<div class="form-group col-xs-4">
+			<input type="text" class="form-control key" name="keys[]" placeholder="e.g. src"/>
+		</div>
+		<div class="form-group col-xs-2">
+			<select class="form-control operator" name="operators[]">
+				<option value="IS" selected>is</option>
+				<option value="IS_NOT">is not</option>
+			</select>
+		</div>
+		<div class="form-group col-xs-5">
+			<input type="text" class="form-control value" name="values[]" placeholder="e.g. gpt, mobile"/>
+		</div>
+		<div class="col-xs-1">
+			<div class="btn btn-wikia remove-pair"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+			</div>
+		</div>
+	</div>
+</script>
+<script src="{{ getResourcePath('Common:js/jquery.min.js') }}" type="text/javascript"></script>
+<script src="{{ getResourcePath('Common:js/bootstrap.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	var submittedForm = {{ form|raw }};
+</script>
+</body>
+</html>
