@@ -37,17 +37,20 @@ class SuggestedAdUnitsService
 			$statementBuilder->increaseOffsetBy($pageSize);
 		} while ($statementBuilder->getOffset() < $totalResultSetSize);
 
-		$action = new ApproveSuggestedAdUnitsAction();
-		$result = $suggestedAdUnitService->performSuggestedAdUnitAction($action, $statementBuilder->toStatement());
-
 		$now = new \DateTime();
-		$filePath = __DIR__ . '/../../../logs/approved-adunits-' . $now->format('YmdHi') . '.log';
+		$filePath = __DIR__ . '/../../../log/approved-adunits-' . $now->format('YmdHi') . '.log';
 
-		if ($result !== null && $result->getNumChanges() > 0) {
-			printf("Number of suggested ad units approved: %d\n", $result->getNumChanges());
-			file_put_contents($filePath, $logContent);
-		} else {
-			printf("No suggested ad units were approved.\n");
+		file_put_contents($filePath, $logContent);
+		if ($totalResultSetSize > 0) {
+			$statementBuilder->removeLimitAndOffset();
+			$action = new ApproveSuggestedAdUnitsAction();
+			$result = $suggestedAdUnitService->performSuggestedAdUnitAction($action, $statementBuilder->toStatement());
+
+			if ($result !== null && $result->getNumChanges() > 0) {
+				printf("Number of suggested ad units approved: %d\n", $result->getNumChanges());
+			} else {
+				printf("No suggested ad units were approved.\n");
+			}
 		}
 	}
 }
