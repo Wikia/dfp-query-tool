@@ -56,26 +56,26 @@ class GetRefreshToken {
 		print "Select the ads API you're using: [0] AdWords [1] DFP [2] Both\n";
 		$api = trim(fgets($stdin));
 
-		while (!is_numeric($api)
-			|| !(strval(intval($api)) === $api)
-			|| !(intval($api) >= 0 && intval($api) <= 2)) {
-			print "Please enter a valid number for the ads API you're using: [0] "
-				. "AdWords [1] DFP [2] Both\n";
+		while (!is_numeric($api) ||
+			!(strval(intval($api)) === $api) ||
+			!(intval($api) >= 0 && intval($api) <= 2)
+		      ) {
+			print "Please enter a valid number for the ads API you're using: [0] AdWords [1] DFP [2] Both\n";
 			$api = trim(fgets($stdin));
 		}
+
 		$api = intval($api);
 
 		if ($api === 2) {
-			print '[OPTIONAL] enter any additional OAuth2 scopes as a space '
-				. 'delimited string here (the AdWords and DFP scopes are already '
-				. 'included): ';
+			print '[OPTIONAL] enter any additional OAuth2 scopes as a space ' .
+				'delimited string here (the AdWords and DFP scopes are already included): ';
 		} else {
 			printf(
-				'[OPTIONAL] enter any additional OAuth2 scopes as a space '
-				. 'delimited string here (the %s scope is already included): ',
+				'[OPTIONAL] enter any additional OAuth2 scopes as a space delimited string here (the %s scope is already included): ',
 				$PRODUCTS[$api][0]
 			);
 		}
+
 		$scopes = $PRODUCTS[$api][1] . ' ' . trim(fgets($stdin));
 
 		$oauth2 = new OAuth2([
@@ -88,13 +88,11 @@ class GetRefreshToken {
 		]);
 
 		printf(
-			"Log into the Google account you use for %s and visit the following "
-			. "URL:\n%s\n\n",
+			"Log into the Google account you use for %s and visit the following URL:\n%s\n\n",
 			$PRODUCTS[$api][0],
 			$oauth2->buildFullAuthorizationUri()
 		);
-		print
-			'After approving the application, enter the authorization code here: ';
+		print 'After approving the application, enter the authorization code here: ';
 		$code = trim(fgets($stdin));
 		fclose($stdin);
 		print "\n";
@@ -104,10 +102,10 @@ class GetRefreshToken {
 
 		printf("Your refresh token is: %s\n\n", $authToken['refresh_token']);
 		printf(
-			"Copy the following lines to your 'adsapi_php.ini' file:\n"
-			. "clientId = \"%s\"\n"
-			. "clientSecret = \"%s\"\n"
-			. "refreshToken = \"%s\"\n",
+			"Copy the following lines to your 'adsapi_php.ini' file:\n" .
+			"clientId = \"%s\"\n" .
+			"clientSecret = \"%s\"\n" .
+			"refreshToken = \"%s\"\n",
 			$clientId,
 			$clientSecret,
 			$authToken['refresh_token']
