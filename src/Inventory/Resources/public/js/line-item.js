@@ -4,6 +4,10 @@ $(document).ready(function () {
 	$('.add-pair').on('click', function () {
 		$('.add-pair-container').before($('#pair-template').html());
 	});
+	$('#addPriceMap').on('click', function () {
+		$(this).addClass('hidden');
+		$('#priceMapForumGroup').removeClass('hidden');
+	});
 
 	$('.key-value-pairs').on('click', '.remove-pair', function () {
 		$(this).parent().parent().remove();
@@ -20,6 +24,7 @@ $(document).ready(function () {
 	$('#rate').val(window.submittedForm.rate);
 	$('#creativeId').val(window.submittedForm.creativeId);
 	$('#iterator').val(window.submittedForm.iterator);
+	$('#priceMap').val(window.submittedForm.priceMap);
 
 	if (window.submittedForm.keys) {
 		for (var i = 0; i < window.submittedForm.keys.length; i++) {
