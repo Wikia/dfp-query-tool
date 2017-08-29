@@ -28,23 +28,36 @@ class LineItemController extends Controller
 
 		if ($request->isMethod('POST')) {
 			$form = $request->request->all();
-			$formsSet = $this->processForm($form);
+			list($isValid, $errorMessages) = $this->validateForm($form);
 
-			foreach($formsSet as $alteredForm) {
-				try {
-					$lineItem = $this->lineItemService->create($alteredForm);
-					$responses[$index]['lineItem'] = $lineItem;
-					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($form['creativeId'], $lineItem['id']);
-					$responses[$index]['messageType'] = 'success';
-					$responses[$index]['message'] = 'Line items successfully created.';
-				} catch (LineItemException $exception) {
-					$responses[$index]['lineItem'] = null;
-					$responses[$index]['message'] = $exception->getMessage();
-					$responses[$index]['messageType'] = 'danger';
-					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
+			if (!$isValid) {
+				foreach ($errorMessages as $errorMessage) {
+					$responses[] = [
+						'messageType' => 'danger',
+						'message' => $errorMessage,
+						'lineItem' => null,
+						'lica' => null
+					];
 				}
+			} else {
+				$formsSet = $this->processForm($form);
 
-				$index++;
+				foreach($formsSet as $alteredForm) {
+					try {
+						$lineItem = $this->lineItemService->create($alteredForm);
+						$responses[$index]['lineItem'] = $lineItem;
+						$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($form['creativeId'], $lineItem['id']);
+						$responses[$index]['messageType'] = 'success';
+						$responses[$index]['message'] = 'Line items successfully created.';
+					} catch (LineItemException $exception) {
+						$responses[$index]['lineItem'] = null;
+						$responses[$index]['message'] = $exception->getMessage();
+						$responses[$index]['messageType'] = 'danger';
+						$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
+					}
+
+					$index++;
+				}
 			}
 		}
 
@@ -57,13 +70,18 @@ class LineItemController extends Controller
 
 	private function processForm($form) {
 		$formsSet = [];
-		if ( !empty($form['iterator']) ) {
+		if (!empty($form['iterator'])) {
 			$elements = explode(',', $form['iterator']);
-			foreach ( $elements as $element ) {
+			$priceMapElements = explode(',', $form['priceMap']);
+
+			foreach ( $elements as $index => $element ) {
 				$alteredForm = $form;
 
 				foreach ( $alteredForm as $key => $value ) {
 					$alteredForm[$key] = str_replace( '%%element%%', trim($element), $value );
+					if (isset($priceMapElements[$index])) {
+						$alteredForm[$key] = str_replace( '%%priceMapElement%%', trim($priceMapElements[$index]), $alteredForm[$key] );
+					}
 				}
 				$formsSet[] = $alteredForm;
 			}
@@ -72,5 +90,20 @@ class LineItemController extends Controller
 		}
 
 		return $formsSet;
+	}
+
+	private function validateForm($form) {
+		$isValid = true;
+		$errors = [];
+
+		if (
+			!empty($form['iterator']) && !empty($form['priceMap']) &&
+			substr_count($form['iterator'], ',') !== substr_count($form['priceMap'], ',')
+		) {
+			$isValid = false;
+			$errors[] = 'Number of elements and priceMapElements have to be the same';
+		}
+
+		return [$isValid, $errors];
 	}
 }
