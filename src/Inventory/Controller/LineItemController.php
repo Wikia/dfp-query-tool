@@ -6,6 +6,7 @@ use Common\Controller\Controller;
 use Inventory\Api\LineItemCreativeAssociationService;
 use Inventory\Api\LineItemException;
 use Inventory\Api\LineItemService;
+use Inventory\Form\LineItemForm;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -28,7 +29,9 @@ class LineItemController extends Controller
 
 		if ($request->isMethod('POST')) {
 			$form = $request->request->all();
-			list($isValid, $errorMessages) = $this->validateForm($form);
+			$lineItemForm = new LineItemForm($form);
+
+			list($isValid, $errorMessages) = $lineItemForm->validate();
 
 			if (!$isValid) {
 				foreach ($errorMessages as $errorMessage) {
@@ -40,7 +43,7 @@ class LineItemController extends Controller
 					];
 				}
 			} else {
-				$formsSet = $this->processForm($form);
+				$formsSet = $lineItemForm->process();
 
 				foreach($formsSet as $alteredForm) {
 					try {
@@ -66,44 +69,5 @@ class LineItemController extends Controller
 			'responses' => $responses,
 			'form' => json_encode($form)
 		]);
-	}
-
-	private function processForm($form) {
-		$formsSet = [];
-		if (!empty($form['iterator'])) {
-			$elements = explode(',', $form['iterator']);
-			$priceMapElements = explode(',', $form['priceMap']);
-
-			foreach ( $elements as $index => $element ) {
-				$alteredForm = $form;
-
-				foreach ( $alteredForm as $key => $value ) {
-					$alteredForm[$key] = str_replace( '%%element%%', trim($element), $value );
-					if (isset($priceMapElements[$index])) {
-						$alteredForm[$key] = str_replace( '%%priceMapElement%%', trim($priceMapElements[$index]), $alteredForm[$key] );
-					}
-				}
-				$formsSet[] = $alteredForm;
-			}
-		} else {
-			$formsSet[] = $form;
-		}
-
-		return $formsSet;
-	}
-
-	private function validateForm($form) {
-		$isValid = true;
-		$errors = [];
-
-		if (
-			!empty($form['iterator']) && !empty($form['priceMap']) &&
-			substr_count($form['iterator'], ',') !== substr_count($form['priceMap'], ',')
-		) {
-			$isValid = false;
-			$errors[] = 'Number of elements and priceMapElements have to be the same';
-		}
-
-		return [$isValid, $errors];
 	}
 }
