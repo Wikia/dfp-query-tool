@@ -17,6 +17,7 @@ $(document).ready(function () {
 	$('#lineItemName').val(window.submittedForm.lineItemName);
 	$('#sizes').val(window.submittedForm.sizes);
 	$('#sameAdvertiser').prop('checked', window.submittedForm.sameAdvertiser === 'on');
+	$('#isVideo').prop('checked', window.submittedForm.isVideo === 'on');
 	$('#type').val(window.submittedForm.type || 'PRICE_PRIORITY');
 	$('#priority').val(window.submittedForm.priority);
 	$('#start').val(window.submittedForm.start);
