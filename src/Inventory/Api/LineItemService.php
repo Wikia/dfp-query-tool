@@ -7,6 +7,7 @@ use Google\AdsApi\Dfp\v201705\AdUnitTargeting;
 use Google\AdsApi\Dfp\v201705\CreativePlaceholder;
 use Google\AdsApi\Dfp\v201705\CustomCriteria;
 use Google\AdsApi\Dfp\v201705\CustomCriteriaSet;
+use Google\AdsApi\Dfp\v201705\EnvironmentType;
 use Google\AdsApi\Dfp\v201705\Goal;
 use Google\AdsApi\Dfp\v201705\InventoryTargeting;
 use Google\AdsApi\Dfp\v201705\LineItem;
@@ -61,6 +62,10 @@ class LineItemService
 
 			$lineItem->setCreativePlaceholders($this->getCreativePlaceholders($form['sizes']));
 			$lineItem->setCreativeRotationType('OPTIMIZED');
+
+			if ($form['isVideo']) {
+				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
+			}
 
 			$lineItems = $this->lineItemService->createLineItems([ $lineItem ]);
 
