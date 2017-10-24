@@ -35,5 +35,6 @@ $console = $app['console'];
 
 $console->add(new Report\Command\ReportCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
+$console->add(new Inventory\Command\RetargetLineItemsInOrderCommand($app));
 
 $console->run();
