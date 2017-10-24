@@ -3,6 +3,7 @@
 namespace Inventory\Api;
 
 use Google\AdsApi\Dfp\Util\v201705\DfpDateTimes;
+use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
 use Google\AdsApi\Dfp\v201705\AdUnitTargeting;
 use Google\AdsApi\Dfp\v201705\CreativePlaceholder;
 use Google\AdsApi\Dfp\v201705\CustomCriteria;
@@ -192,6 +193,65 @@ class LineItemService
 			$lineItem->setEndDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC'))));
 		} else {
 			$lineItem->setUnlimitedEndDateTime(true);
+		}
+	}
+
+	public function getLineItemsInOrder($orderId) {
+		$statementBuilder = new StatementBuilder();
+		$statementBuilder->Where('orderId = :id and isArchived = false');
+		$statementBuilder->OrderBy('id ASC');
+		$statementBuilder->Limit(1000);
+		$statementBuilder->WithBindVariableValue('id', $orderId);
+
+		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+		return $page->getResults();
+	}
+
+	public function addSrcTestTargeting($lineItem) {
+		$testTargetingsMapping = [
+			49788493452 => 447853743500, // gpt
+			61305943452 => 447853743500, // mobile
+			74235804012 => 447874602729, // mobile_remnant
+			447865435883 => 447853743500, // ns
+			228287954892 => 447874655741, // rec
+			94033620252 => 447874602729, // remnant
+			232614240732 => 447853743500, // premium => test
+			447870422802 => 447874655741, // rec-ns
+			53650108452 => 447853743500, // ooyala => test
+
+		];
+
+		var_dump( $lineItem->getId() );
+
+		$targetingsOrSet = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+
+		foreach ($targetingsOrSet as $targetingsSet) {
+			$targetingsSet = $targetingsSet->getChildren();
+			var_dump( $targetingsSet );
+
+			foreach ( $targetingsSet as $targeting ) {
+				if ( $targeting->getKeyId() === 419892 ) {
+					$newTargetingValues = $targeting->getValueIds();
+
+					foreach ( $newTargetingValues as $value ) {
+						if (isset($testTargetingsMapping[$value])) {
+							$newTargetingValues[] = $testTargetingsMapping[$value];
+						}
+					}
+
+					var_dump( 'Set new targeting values' );
+					var_dump( $newTargetingValues );
+
+					$targeting->setValueIds( $newTargetingValues );
+
+					$lineItem->setAllowOverbook( true );
+					$lineItem->setSkipInventoryCheck( true );
+					$this->lineItemService->updatelineItems( [ $lineItem ] );
+					var_dump( 'done' );
+
+				}
+			}
 		}
 	}
 }
