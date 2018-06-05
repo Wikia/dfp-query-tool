@@ -2,7 +2,7 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\v201705\LineItemCreativeAssociation;
+use Google\AdsApi\Dfp\v201805\LineItemCreativeAssociation;
 
 class LineItemCreativeAssociationService {
 	private $customTargetingService;
@@ -30,7 +30,7 @@ class LineItemCreativeAssociationService {
 			if ( empty($lineItemId) ) {
 				return $this->getIncorrectLineItemResult();
 			} else {
-				$lineItemCreativeAssociationService = DfpService::get(\Google\AdsApi\Dfp\v201705\LineItemCreativeAssociationService::class);
+				$lineItemCreativeAssociationService = DfpService::get(\Google\AdsApi\Dfp\v201805\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
 				foreach ( $processedCreativeIds as $extractedCreativeId ) {
