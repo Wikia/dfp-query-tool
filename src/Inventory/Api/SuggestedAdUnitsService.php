@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
-use Google\AdsApi\Dfp\v201705\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
-use Google\AdsApi\Dfp\v201705\SuggestedAdUnitService;
+use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
+use Google\AdsApi\Dfp\v201805\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
+use Google\AdsApi\Dfp\v201805\SuggestedAdUnitService;
 
 class SuggestedAdUnitsService
 {

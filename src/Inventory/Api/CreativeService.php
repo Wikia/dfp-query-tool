@@ -2,14 +2,14 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\v201705\Size;
-use Google\AdsApi\Dfp\v201705\TemplateCreative;
+use Google\AdsApi\Dfp\v201805\Size;
+use Google\AdsApi\Dfp\v201805\TemplateCreative;
 
 class CreativeService {
 	private $creativeService;
 
 	function __construct() {
-		$this->creativeService = DfpService::get(\Google\AdsApi\Dfp\v201705\CreativeService::class);
+		$this->creativeService = DfpService::get(\Google\AdsApi\Dfp\v201805\CreativeService::class);
 	}
 
 	public function createFromTemplate($form) {

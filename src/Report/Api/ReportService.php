@@ -4,11 +4,11 @@ namespace Report\Api;
 
 use Common\Api\Authenticator;
 use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\Util\v201705\DfpDateTimes;
-use Google\AdsApi\Dfp\Util\v201705\ReportDownloader;
-use Google\AdsApi\Dfp\v201705\ReportJob;
-use Google\AdsApi\Dfp\v201705\ReportQuery;
-use Google\AdsApi\Dfp\v201705\ReportService as DfpReportService;
+use Google\AdsApi\Dfp\Util\v201805\DfpDateTimes;
+use Google\AdsApi\Dfp\Util\v201805\ReportDownloader;
+use Google\AdsApi\Dfp\v201805\ReportJob;
+use Google\AdsApi\Dfp\v201805\ReportQuery;
+use Google\AdsApi\Dfp\v201805\ReportService as DfpReportService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ReportService
@@ -233,7 +233,7 @@ class ReportService
 	private function parseHeaders($values, $columns): array {
 		foreach ($values as $value) {
 			$enum = $value;
-			
+
 			if (strpos($value, '.') !== false) {
 				list($key, $enum) = explode('.', $value);
 			} else if (strpos($value, 'CF[') !== false) {
@@ -242,10 +242,10 @@ class ReportService
 					']_Value' => ''
 				]);
 			}
-			
+
 			$columns[] = $enum;
 		}
-		
+
 		return $columns;
 	}
 }
