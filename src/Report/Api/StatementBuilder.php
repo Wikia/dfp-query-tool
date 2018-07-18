@@ -2,7 +2,7 @@
 
 namespace Report\Api;
 
-use Google\AdsApi\Dfp\Util\v201705\StatementBuilder as DfpStatementBuilder;
+use Google\AdsApi\Dfp\Util\v201805\StatementBuilder as DfpStatementBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StatementBuilder

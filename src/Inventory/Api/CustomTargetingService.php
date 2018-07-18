@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
-use Google\AdsApi\Dfp\v201705\CustomTargetingValue;
-use Google\AdsApi\Dfp\v201705\CustomTargetingValueMatchType;
+use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
+use Google\AdsApi\Dfp\v201805\CustomTargetingValue;
+use Google\AdsApi\Dfp\v201805\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -12,7 +12,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('name = :name');
@@ -43,7 +43,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
+			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -76,7 +76,7 @@ class CustomTargetingService
 		$keyId = array_shift($keyIds);
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201705\CustomTargetingService::class);
+		$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 

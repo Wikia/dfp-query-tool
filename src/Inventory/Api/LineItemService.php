@@ -2,20 +2,20 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201705\DfpDateTimes;
-use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
-use Google\AdsApi\Dfp\v201705\AdUnitTargeting;
-use Google\AdsApi\Dfp\v201705\CreativePlaceholder;
-use Google\AdsApi\Dfp\v201705\CustomCriteria;
-use Google\AdsApi\Dfp\v201705\CustomCriteriaSet;
-use Google\AdsApi\Dfp\v201705\EnvironmentType;
-use Google\AdsApi\Dfp\v201705\Goal;
-use Google\AdsApi\Dfp\v201705\InventoryTargeting;
-use Google\AdsApi\Dfp\v201705\LineItem;
-use Google\AdsApi\Dfp\v201705\Money;
-use Google\AdsApi\Dfp\v201705\NetworkService;
-use Google\AdsApi\Dfp\v201705\Size;
-use Google\AdsApi\Dfp\v201705\Targeting;
+use Google\AdsApi\Dfp\Util\v201805\DfpDateTimes;
+use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
+use Google\AdsApi\Dfp\v201805\AdUnitTargeting;
+use Google\AdsApi\Dfp\v201805\CreativePlaceholder;
+use Google\AdsApi\Dfp\v201805\CustomCriteria;
+use Google\AdsApi\Dfp\v201805\CustomCriteriaSet;
+use Google\AdsApi\Dfp\v201805\EnvironmentType;
+use Google\AdsApi\Dfp\v201805\Goal;
+use Google\AdsApi\Dfp\v201805\InventoryTargeting;
+use Google\AdsApi\Dfp\v201805\LineItem;
+use Google\AdsApi\Dfp\v201805\Money;
+use Google\AdsApi\Dfp\v201805\NetworkService;
+use Google\AdsApi\Dfp\v201805\Size;
+use Google\AdsApi\Dfp\v201805\Targeting;
 
 class LineItemService
 {
@@ -25,7 +25,7 @@ class LineItemService
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201705\LineItemService::class);
+		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201805\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 	}
 

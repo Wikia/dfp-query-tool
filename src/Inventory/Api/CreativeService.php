@@ -2,10 +2,10 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201705\StatementBuilder;
-use Google\AdsApi\Dfp\v201705\Size;
-use Google\AdsApi\Dfp\v201705\TemplateCreative;
-use Google\AdsApi\Dfp\v201705\CreativeTemplateService;
+use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
+use Google\AdsApi\Dfp\v201805\Size;
+use Google\AdsApi\Dfp\v201805\TemplateCreative;
+use Google\AdsApi\Dfp\v201805\CreativeTemplateService;
 
 class CreativeService {
 	const PAGE_SIZE = 250;
@@ -14,7 +14,7 @@ class CreativeService {
 	private $creativeTemplateService;
 
 	function __construct() {
-		$this->creativeService = DfpService::get(\Google\AdsApi\Dfp\v201705\CreativeService::class);
+		$this->creativeService = DfpService::get(\Google\AdsApi\Dfp\v201805\CreativeService::class);
 		$this->creativeTemplateService = DfpService::get(CreativeTemplateService::class);
 	}
 
