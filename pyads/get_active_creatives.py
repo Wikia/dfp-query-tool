@@ -110,6 +110,9 @@ def main(client):
         break
 
   print('Numer of  BAD creatives: {}'.format(len(bad_boy_creatives)))
+  for item in bad_boy_creatives:
+    print(creative)
+
 
 if __name__ == '__main__':
   yaml_string = "dfp: " + "\n" + \
