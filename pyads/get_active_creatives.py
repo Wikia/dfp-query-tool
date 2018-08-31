@@ -129,12 +129,11 @@ def main(client):
     if args.fetch:
       fetch_creatives(client, creatives_to_scan)
     else:
-      db_bad_creatives = shelve.open('data/bad_creatives_2.db')
+      db_bad_creatives = shelve.open('data/bad_creatives.db')
 
       bad_creatives = {}
 
-      db_creatives_to_scan = shelve.open('data/bad_creatives.db')
-      # creatives_to_scan = db_creatives_to_scan.keys()
+      db_creatives_to_scan = shelve.open('data/creatives_to_scan.db')
 
       print(len(creatives_to_scan))
 
