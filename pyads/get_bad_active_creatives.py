@@ -4,6 +4,8 @@ from tqdm import tqdm
 import shelve
 from googleads import ad_manager
 import argparse
+import xlsxwriter
+
 
 def fetch_line_items(client):
 
@@ -152,6 +154,16 @@ def main(client):
           continue
 
     print('Numer of bad creatives found: {}'.format(len(bad_creatives)))
+
+    workbook = xlsxwriter.Workbook('bad_creatives.xlsx')
+    worksheet = workbook.add_worksheet()
+
+    row = 0
+    col = 0
+
+    for creative_id in bad_creatives.keys():
+        worksheet.write(row, col, creative_id)
+        row += 1
 
 
 if __name__ == '__main__':
