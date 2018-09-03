@@ -11,6 +11,7 @@ import logging
 TEXT_TO_LOOK_FOR = "http://"
 
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("googleads").setLevel(logging.WARNING)
 
 def fetch_line_items(client):
 
