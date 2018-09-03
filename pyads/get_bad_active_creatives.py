@@ -5,7 +5,12 @@ import shelve
 from googleads import ad_manager
 import argparse
 import xlsxwriter
+import logging
 
+
+TEXT_TO_LOOK_FOR = "http://"
+
+logging.basicConfig(level=logging.INFO)
 
 def fetch_line_items(client):
 
@@ -40,39 +45,47 @@ def fetch_line_items(client):
   db_line_items['active_line_items'] = active_line_items
   db_line_items.close()
 
-  print("LINE ITEMS FETCHED: {}".format(len(active_line_items)))
+  logging.log("LINE ITEMS FETCHED: {}".format(len(active_line_items)))
 
+
+def fetch_DFP_data(statement, fetch_func, func):
+    response = fetch_func(statement.ToStatement())
+    if 'results' in response and len(response['results']):
+      for i in response['results']:
+        func(i)
 
 def fetch_associatiated_creatives(client):
 
   creatives = {}
   db_creatives = shelve.open('data/creatives.db')
+  db_line_items = shelve.open('data/line_items.db')
+
+  active_line_items = db_line_items['active_line_items']
+
+  db_line_items.close()
 
   lica_service = client.GetService(
     'LineItemCreativeAssociationService', version='v201805')
 
   # Get All creatives associated with active line items
-  print('GET CREATIVES FROM LINE ITEMS')
+  logging.info('GET CREATIVES FROM LINE ITEMS')
+
+  def add_lica(lica):
+    if lica['status'] == "ACTIVE":
+      creatives[lica['creativeId']] = lica['lineItemId']
+      db_creatives[str(lica['creativeId'])] = lica['lineItemId']
 
   for line_item_id in tqdm(active_line_items):
-    statement = (ad_manager.StatementBuilder())
+    statement = (ad_manager.StatementBuilder()
+                 .Where('lineItemId = :lineItemId')
+                 .WithBindVariable('lineItemId', line_item_id))
 
-    while True:
-      response = lica_service.getLineItemCreativeAssociationsByStatement(
-        statement.ToStatement())
-      if 'results' in response and len(response['results']):
-        for lica in response['results']:
-          if lica['status'] == "ACTIVE":
-            creatives[lica['creativeId']] = lica['lineItemId']
-            db_creatives[str(lica['creativeId'])] = lica['lineItemId']
-        statement.offset += statement.limit
-      else:
-        break
+    fetch_DFP_data(statement, lica_service.getLineItemCreativeAssociationsByStatement, add_lica)
 
   db_creatives['creatives'] = creatives
   db_creatives.close()
 
-  print('Numer of associations fetched: {}'.format(len(creatives)))
+  logging.info('Numer of associations fetched: {}'.format(len(creatives)))
 
 
 def fetch_creatives(client, creatives_to_scan):
@@ -83,23 +96,16 @@ def fetch_creatives(client, creatives_to_scan):
     'CreativeService', version='v201805')
 
   # Look for text in all creatives
-  print('SCANNING CREATIVES')
+  logging.warning('SCANNING CREATIVES')
 
   for creative_id in tqdm(creatives_to_scan):
     statement = (ad_manager.StatementBuilder()
                  .Where('creativeId = :creativeId')
                  .WithBindVariable('creativeId', creative_id))
 
-    while True:
-      response = creative_service.getCreativesByStatement(statement.ToStatement())
-      if 'results' in response and len(response['results']):
-        for creative in response['results']:
-          db_creatives_to_scan[str(creative['id'])] = creative
-        statement.offset += statement.limit
-      else:
-        break
+    fetch_DFP_data(statement, creative_service.getCreativesByStatement, lambda x: db_creatives_to_scan.update({str(x['id']), x}))
 
-  print('Numer of creatives feteched: {}'.format(len(db_creatives_to_scan.items())))
+  logging.info('Numer of creatives feteched: {}'.format(len(db_creatives_to_scan.items())))
 
 
 def main(client):
@@ -107,26 +113,22 @@ def main(client):
   parser.add_argument('--fetch', help='use if you want to fetch data', action="store_true")
   args = parser.parse_args()
 
-  text_to_look_for = "http://"
-
   if args.fetch:
     input("Press Enter to FETCH ...")
     fetch_line_items(client)
     fetch_associatiated_creatives(client)
   else:
-    creatives_to_scan = {}
-
     db_line_items = shelve.open('data/line_items.db')
     db_creatives = shelve.open('data/creatives.db')
 
     active_line_items = db_line_items['active_line_items']
     creatives = db_creatives['creatives_to_scan']
 
-    for creative_id, line_item_id in tqdm(creatives.items()):
-      if line_item_id in active_line_items:
-        creatives_to_scan[creative_id] = creatives[creative_id]
+    creatives_to_scan = {creative_id: creatives[creative_id]
+      for creative_id, line_item_id in tqdm(creatives.items())
+      if line_item_id in active_line_items}
 
-    print('Numer of creatives associatiated with line items: {}'.format(len(creatives_to_scan)))
+    logging.info('Numer of creatives associatiated with line items: {}'.format(len(creatives_to_scan)))
 
     if args.fetch:
       fetch_creatives(client, creatives_to_scan)
@@ -137,23 +139,23 @@ def main(client):
 
       db_creatives_to_scan = shelve.open('data/creatives_to_scan.db')
 
-      print(len(creatives_to_scan))
+      logging.info('Numer of creatives to scan: {}'.format(len(creatives_to_scan)))
 
       for creative_id, creative in tqdm(db_creatives_to_scan.items()):
-        if 'snippet' in creative and text_to_look_for in creative['snippet']:
+        if 'snippet' in creative and TEXT_TO_LOOK_FOR in creative['snippet']:
           bad_creatives[creative['id']] = creative['name']
           db_bad_creatives[str(creative['id'])] = creative
           continue
-        if 'expandedSnippet' in creative and text_to_look_for in creative['expandedSnippet']:
+        if 'expandedSnippet' in creative and TEXT_TO_LOOK_FOR in creative['expandedSnippet']:
           bad_creatives[creative['id']] = creative['name']
           db_bad_creatives[str(creative['id'])] = creative
           continue
-        if 'htmlSnippet' in creative and text_to_look_for in creative['htmlSnippet']:
+        if 'htmlSnippet' in creative and TEXT_TO_LOOK_FOR in creative['htmlSnippet']:
           bad_creatives[creative['id']] = creative['name']
           db_bad_creatives[str(creative['id'])] = creative
           continue
 
-    print('Numer of bad creatives found: {}'.format(len(bad_creatives)))
+    logging.info('Numer of bad creatives found: {}'.format(len(bad_creatives)))
 
     workbook = xlsxwriter.Workbook('bad_creatives.xlsx')
     worksheet = workbook.add_worksheet()
@@ -169,7 +171,7 @@ def main(client):
 if __name__ == '__main__':
   yaml_string = "ad_manager: " + "\n" + \
                 "  application_name: Wikia - DFP\n" + \
-                "  network_code: " + str(5441) + "\n" + \
+                "  network_code: 5441\n" + \
                 "  path_to_private_key_file: config/access.json\n"
 
   # Initialize the DFP client.
