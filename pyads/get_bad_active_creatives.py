@@ -48,11 +48,11 @@ def fetch_line_items(client):
   logging.log("LINE ITEMS FETCHED: {}".format(len(active_line_items)))
 
 
-def fetch_DFP_data(statement, fetch_func, func):
+def fetch_DFP_data(statement, fetch_func):
     response = fetch_func(statement.ToStatement())
     if 'results' in response and len(response['results']):
       for i in response['results']:
-        func(i)
+        yield i
 
 def fetch_associatiated_creatives(client):
 
@@ -70,17 +70,15 @@ def fetch_associatiated_creatives(client):
   # Get All creatives associated with active line items
   logging.info('GET CREATIVES FROM LINE ITEMS')
 
-  def add_lica(lica):
-    if lica['status'] == "ACTIVE":
-      creatives[lica['creativeId']] = lica['lineItemId']
-      db_creatives[str(lica['creativeId'])] = lica['lineItemId']
-
   for line_item_id in tqdm(active_line_items):
     statement = (ad_manager.StatementBuilder()
                  .Where('lineItemId = :lineItemId')
                  .WithBindVariable('lineItemId', line_item_id))
 
-    fetch_DFP_data(statement, lica_service.getLineItemCreativeAssociationsByStatement, add_lica)
+    for lica in fetch_DFP_data(statement, lica_service.getLineItemCreativeAssociationsByStatement):
+      if lica['status'] == "ACTIVE":
+        creatives[lica['creativeId']] = lica['lineItemId']
+        db_creatives[str(lica['creativeId'])] = lica['lineItemId']
 
   db_creatives['creatives'] = creatives
   db_creatives.close()
@@ -103,7 +101,8 @@ def fetch_creatives(client, creatives_to_scan):
                  .Where('creativeId = :creativeId')
                  .WithBindVariable('creativeId', creative_id))
 
-    fetch_DFP_data(statement, creative_service.getCreativesByStatement, lambda x: db_creatives_to_scan.update({str(x['id']), x}))
+    for creative in fetch_DFP_data(statement, creative_service.getCreativesByStatement):
+      db_creatives_to_scan.update({str(creative['id']), creative})
 
   logging.info('Numer of creatives feteched: {}'.format(len(db_creatives_to_scan.items())))
 
