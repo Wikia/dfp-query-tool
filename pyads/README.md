@@ -2,7 +2,7 @@
 
 ## sample usage:
 
-### Check and save creatives that are not SSL compliant (`bin/dump_wikiconfig.py`)
+### Check and save creatives that are not SSL compliant (`get_bad_active_creatives.py`)
 
 put your DFP access.json in the config folder
 
