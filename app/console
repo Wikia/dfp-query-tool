@@ -33,9 +33,13 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 
 $console = $app['console'];
 
+$console->add(new Creative\Command\CreativeCommand($app));
+$console->add(new Inventory\Command\KeyValuesGetterCommand($app));
+$console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
+$console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
+$console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
+$console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));
 $console->add(new Report\Command\ReportCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
-$console->add(new Inventory\Command\RetargetLineItemsInOrderCommand($app));
-$console->add(new Creative\Command\CreativeCommand($app));
 
 $console->run();

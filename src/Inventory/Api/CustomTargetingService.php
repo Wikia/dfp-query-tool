@@ -28,7 +28,7 @@ class CustomTargetingService
 						$ids[] = $customTargetingKey->getId();
 					}
 				} else {
-					throw new \Exception(sprintf('Key not found (<strong>%s</strong>).', $key));
+					throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
 				}
 			}
 
@@ -60,7 +60,7 @@ class CustomTargetingService
 						$ids[] = $customTargetingValue->getId();
 					}
 				} else {
-					throw new \Exception(sprintf('Value not found (<strong>%s</strong>).', $value));
+					throw new \Exception(sprintf('Value not found (<error>%s</error>).', $value));
 				}
 			}
 		} catch (\Exception $e) {
