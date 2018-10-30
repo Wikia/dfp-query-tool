@@ -86,6 +86,119 @@ class LineItemService
 		}
 	}
 
+	public function getLineItemsInOrder($orderId) {
+		$statementBuilder = new StatementBuilder();
+		$statementBuilder->Where('orderId = :id and isArchived = false');
+		$statementBuilder->OrderBy('id ASC');
+		$statementBuilder->Limit(1000);
+		$statementBuilder->WithBindVariableValue('id', $orderId);
+
+		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+		return $page->getResults();
+	}
+
+	public function getLineItemById($lineItemId) {
+		$statementBuilder = new StatementBuilder();
+		$statementBuilder->Where('id = :id and isArchived = false');
+		$statementBuilder->WithBindVariableValue('id', $lineItemId);
+
+		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+		$results = $page->getResults();
+		if ($results === null) {
+			throw new LineItemException('Cannot find line item');
+		}
+
+		return array_shift($results);
+	}
+
+	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds) {
+		$addedNewKeyValues = false;
+
+		$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+
+		foreach ($targetingSets as $targetingSet) {
+			$keyValuePairs = $targetingSet->getChildren();
+			$wasKeyInSet = false;
+			foreach ($keyValuePairs as $pair) {
+				if ($pair->getKeyId() === $keyId) {
+					$wasKeyInSet = true;
+					$pairValues = $pair->getValueIds();
+					foreach ($valueIds as $valueId) {
+						if (!in_array($valueId, $pairValues)) {
+							$pairValues[] = $valueId;
+							$addedNewKeyValues = true;
+						}
+					}
+					$pair->setValueIds($pairValues);
+					break;
+				}
+			}
+			if (!$wasKeyInSet) {
+				$keyValuePairs[] = new CustomCriteria($keyId, $valueIds, 'IS');
+				$addedNewKeyValues = true;
+			}
+
+			$targetingSet->setChildren($keyValuePairs);
+		}
+
+		if ($addedNewKeyValues) {
+			$lineItem->setAllowOverbook( true );
+			$lineItem->setSkipInventoryCheck( true );
+			$this->lineItemService->updatelineItems( [ $lineItem ] );
+		}
+	}
+
+	public function removeKeyValuePairFromLineItemTargeting($lineItem, $keyId, $valueIds) {
+		$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+		$newTargetingSets = [];
+		$removedKeyValues = false;
+
+		foreach ($targetingSets as $targetingSet) {
+			$keyValuePairs = $targetingSet->getChildren();
+			$newKeyValuePairs = [];
+			foreach ($keyValuePairs as $pair) {
+				if ($pair->getKeyId() === $keyId) {
+					$newValues = [];
+					foreach ($pair->getValueIds() as $valueId) {
+						if (!in_array($valueId, $valueIds)) {
+							$newValues[] = $valueId;
+						}
+					}
+					if (count($newValues) > 0) {
+						if (count($pair->getValueIds()) !== count($newValues)) {
+							$removedKeyValues = true;
+						}
+						$pair->setValueIds($newValues);
+						$newKeyValuePairs[] = $pair;
+					}
+				} else {
+					$newKeyValuePairs[] = $pair;
+				}
+			}
+
+			if (count($newKeyValuePairs) > 0) {
+				if (count($targetingSet->getChildren()) !== count($newKeyValuePairs)) {
+					$removedKeyValues = true;
+				}
+				$targetingSet->setChildren($newKeyValuePairs);
+				$newTargetingSets[] = $targetingSet;
+			}
+		}
+
+		if (count($lineItem->getTargeting()->getCustomTargeting()->getChildren()) !== count($newTargetingSets)) {
+			$lineItem->getTargeting()->getCustomTargeting()->setChildren($newTargetingSets);
+			$removedKeyValues = true;
+		}
+
+		if ($removedKeyValues) {
+			$lineItem->setAllowOverbook( true );
+			$lineItem->setSkipInventoryCheck( true );
+			$this->lineItemService->updatelineItems( [ $lineItem ] );
+		}
+	}
+
 	private function validateForm($form) {
 		$requiredFields = [
 			'orderId',
@@ -193,65 +306,6 @@ class LineItemService
 			$lineItem->setEndDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC'))));
 		} else {
 			$lineItem->setUnlimitedEndDateTime(true);
-		}
-	}
-
-	public function getLineItemsInOrder($orderId) {
-		$statementBuilder = new StatementBuilder();
-		$statementBuilder->Where('orderId = :id and isArchived = false');
-		$statementBuilder->OrderBy('id ASC');
-		$statementBuilder->Limit(1000);
-		$statementBuilder->WithBindVariableValue('id', $orderId);
-
-		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
-
-		return $page->getResults();
-	}
-
-	public function addSrcTestTargeting($lineItem) {
-		$testTargetingsMapping = [
-			49788493452 => 447853743500, // gpt
-			61305943452 => 447853743500, // mobile
-			74235804012 => 447874602729, // mobile_remnant
-			447865435883 => 447853743500, // ns
-			228287954892 => 447874655741, // rec
-			94033620252 => 447874602729, // remnant
-			232614240732 => 447853743500, // premium => test
-			447870422802 => 447874655741, // rec-ns
-			53650108452 => 447853743500, // ooyala => test
-
-		];
-
-		var_dump( $lineItem->getId() );
-
-		$targetingsOrSet = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
-
-		foreach ($targetingsOrSet as $targetingsSet) {
-			$targetingsSet = $targetingsSet->getChildren();
-			var_dump( $targetingsSet );
-
-			foreach ( $targetingsSet as $targeting ) {
-				if ( $targeting->getKeyId() === 419892 ) {
-					$newTargetingValues = $targeting->getValueIds();
-
-					foreach ( $newTargetingValues as $value ) {
-						if (isset($testTargetingsMapping[$value])) {
-							$newTargetingValues[] = $testTargetingsMapping[$value];
-						}
-					}
-
-					var_dump( 'Set new targeting values' );
-					var_dump( $newTargetingValues );
-
-					$targeting->setValueIds( $newTargetingValues );
-
-					$lineItem->setAllowOverbook( true );
-					$lineItem->setSkipInventoryCheck( true );
-					$this->lineItemService->updatelineItems( [ $lineItem ] );
-					var_dump( 'done' );
-
-				}
-			}
 		}
 	}
 }

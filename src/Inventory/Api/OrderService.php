@@ -22,5 +22,3 @@ class OrderService {
 		return $result[0]->getId();
 	}
 }
-
-?>
