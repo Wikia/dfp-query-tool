@@ -153,6 +153,7 @@ class LineItemService
 	public function removeKeyValuePairFromLineItemTargeting($lineItem, $keyId, $valueIds) {
 		$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
 		$newTargetingSets = [];
+		$removedKeyValues = false;
 
 		foreach ($targetingSets as $targetingSet) {
 			$keyValuePairs = $targetingSet->getChildren();
@@ -166,6 +167,9 @@ class LineItemService
 						}
 					}
 					if (count($newValues) > 0) {
+						if (count($pair->getValueIds()) !== count($newValues)) {
+							$removedKeyValues = true;
+						}
 						$pair->setValueIds($newValues);
 						$newKeyValuePairs[] = $pair;
 					}
@@ -175,15 +179,24 @@ class LineItemService
 			}
 
 			if (count($newKeyValuePairs) > 0) {
+				if (count($targetingSet->getChildren()) !== count($newKeyValuePairs)) {
+					$removedKeyValues = true;
+				}
 				$targetingSet->setChildren($newKeyValuePairs);
 				$newTargetingSets[] = $targetingSet;
 			}
 		}
 
-		$lineItem->getTargeting()->getCustomTargeting()->setChildren($newTargetingSets);
-		$lineItem->setAllowOverbook( true );
-		$lineItem->setSkipInventoryCheck( true );
-		$this->lineItemService->updatelineItems( [ $lineItem ] );
+		if (count($lineItem->getTargeting()->getCustomTargeting()->getChildren()) !== count($newTargetingSets)) {
+			$lineItem->getTargeting()->getCustomTargeting()->setChildren($newTargetingSets);
+			$removedKeyValues = true;
+		}
+
+		if ($removedKeyValues) {
+			$lineItem->setAllowOverbook( true );
+			$lineItem->setSkipInventoryCheck( true );
+			$this->lineItemService->updatelineItems( [ $lineItem ] );
+		}
 	}
 
 	private function validateForm($form) {
