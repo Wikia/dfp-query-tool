@@ -22,7 +22,8 @@ class OrderLineItemsKeyValuesAddCommand extends Command
 			->setDescription('Add key-values pair to all line items custom targeting in order')
 			->addArgument('order-id', InputArgument::REQUIRED, 'Order ID')
 			->addArgument('key', InputArgument::REQUIRED, 'Key')
-			->addArgument('values', InputArgument::REQUIRED, 'Values (separated with comma)');
+			->addArgument('values', InputArgument::REQUIRED, 'Values (separated with comma)')
+			->addArgument('operator', InputArgument::OPTIONAL, 'Key-val operator (IS or IS NOT)', 'IS');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -33,6 +34,7 @@ class OrderLineItemsKeyValuesAddCommand extends Command
 		$orderId = $input->getArgument('order-id');
 		$key = $input->getArgument('key');
 		$values = explode(',', $input->getArgument('values'));
+		$operator = $input->getArgument('operator');
 
 		$lineItems = $lineItemService->getLineItemsInOrder($orderId);
 		$count = count($lineItems);
@@ -41,7 +43,7 @@ class OrderLineItemsKeyValuesAddCommand extends Command
 
 		printf("Updating %s line items\n", $count);
 		foreach ($lineItems as $i => $lineItem) {
-			$lineItemService->addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds);
+			$lineItemService->addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator);
 			printf("  - Line item %s updated (%s/%s)\n", $lineItem->getId(), $i + 1, $count);
 		}
 
