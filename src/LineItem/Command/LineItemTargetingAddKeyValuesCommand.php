@@ -22,7 +22,8 @@ class LineItemKeyValuesAddCommand extends Command
 			->setDescription('Add key-values pair to line item custom targeting')
 			->addArgument('line-item-id', InputArgument::REQUIRED, 'Line item ID')
 			->addArgument('key', InputArgument::REQUIRED, 'Key')
-			->addArgument('values', InputArgument::REQUIRED, 'Values (separated with comma)');
+			->addArgument('values', InputArgument::REQUIRED, 'Values (separated with comma)')
+			->addArgument('operator', InputArgument::OPTIONAL, 'Key-val operator (IS or IS NOT)', 'IS');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
@@ -33,12 +34,13 @@ class LineItemKeyValuesAddCommand extends Command
 		$lineItemId = $input->getArgument('line-item-id');
 		$key = $input->getArgument('key');
 		$values = explode(',', $input->getArgument('values'));
+		$operator = $input->getArgument('operator');
 
 		$lineItem = $lineItemService->getLineItemById($lineItemId);
 		$keyId = array_shift($customTargetingService->getKeyIds([$key]));
 		$valueIds = $customTargetingService->getValueIds($keyId, $values);
 
-		$lineItemService->addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds);
+		$lineItemService->addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator);
 
 		printf("Line item %s updated\n", $lineItem->getId());
 	}

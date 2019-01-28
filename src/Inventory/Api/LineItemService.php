@@ -113,7 +113,7 @@ class LineItemService
 		return array_shift($results);
 	}
 
-	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds) {
+	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
 		$addedNewKeyValues = false;
 
 		$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
@@ -136,7 +136,8 @@ class LineItemService
 				}
 			}
 			if (!$wasKeyInSet) {
-				$keyValuePairs[] = new CustomCriteria($keyId, $valueIds, 'IS');
+				$keyValuePairs[] = new CustomCriteria($keyId, $valueIds, $operator);
+
 				$addedNewKeyValues = true;
 			}
 
