@@ -40,6 +40,7 @@ $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));
 $console->add(new Report\Command\ReportCommand($app));
+$console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->run();
