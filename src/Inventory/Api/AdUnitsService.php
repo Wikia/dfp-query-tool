@@ -85,13 +85,7 @@ class AdUnitsService
 				$action,
 				$statementBuilder->toStatement()
 			);
-			if ($result !== null && $result->getNumChanges() > 0) {
-				printf(
-					"Number of ad units archived: %d%s",
-					$result->getNumChanges(),
-					PHP_EOL
-				);
-			} else {
+			if ($result === null || $result->getNumChanges() === 0) {
 				printf("No ad units were archived.%s", PHP_EOL);
 			}
 		}
