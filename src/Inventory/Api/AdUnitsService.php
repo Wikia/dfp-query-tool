@@ -97,5 +97,6 @@ class AdUnitsService
 				}
 			}
 		} while ($statementBuilder->getOffset() < $totalResultSetSize);
+		printf("Finished %s.%s", $ancestorAdUnit->getAdUnitCode(), PHP_EOL);
 	}
 }
