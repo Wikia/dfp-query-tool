@@ -3,11 +3,8 @@
 namespace Inventory\Api;
 
 use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
-use Google\AdsApi\Dfp\v201805\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
 use Google\AdsApi\Dfp\v201805\ArchiveAdUnits;
 use Google\AdsApi\Dfp\v201805\InventoryService;
-use Google\AdsApi\Dfp\v201805\SuggestedAdUnitService;
-use Inventory\Command\ArchiveAdUnitsCommand;
 
 class AdUnitsService
 {
@@ -21,9 +18,11 @@ class AdUnitsService
 
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())
-			->where('parentId = :parentId')
+			->where('adUnitCode = :adUnitCode AND parentId = :parentId')
 			->orderBy('id ASC')
 			->limit($pageSize)
+			->withBindVariableValue('adUnitCode', $adUnitCode)
+			// archive top level only
 			->withBindVariableValue('parentId', $networkAdUnitId);
 
 		$parentId = null;
@@ -34,64 +33,69 @@ class AdUnitsService
 			);
 			if ($page->getResults() !== null) {
 				$totalResultSetSize = $page->getTotalResultSetSize();
+				if (count($page->getResults()) > 1) {
+					throw new \InvalidArgumentException('More than 1 ad unit found.');
+				}
 				foreach ($page->getResults() as $adUnit) {
-					if ($adUnit->getAdUnitCode() === $adUnitCode) {
-						$this->archiveAdUnitAndChildren($adUnit, $adUnit->getAdUnitCode());
-						printf("%s\n", $adUnit->getAdUnitCode());
-					}
+					printf('Archiving %s...' . PHP_EOL, $adUnit->getAdUnitCode());
+					$this->archiveByAncestor($adUnit);
 				}
 			}
 			$statementBuilder->increaseOffsetBy($pageSize);
 		} while ($statementBuilder->getOffset() < $totalResultSetSize);
 	}
 
-	private function archiveAdUnitAndChildren($parentAdUnit, $fullAdUnitCode = '') {
+	private function archiveByAncestor($ancestorAdUnit) {
 		$inventoryService = DfpService::get(InventoryService::class);
 
-		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
+		$pageSize = 100; //StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())
-			->where('(parentId = :parentId or id = :parentId) AND status = :status')
+			->where('ancestorId = :ancestorId AND status != :status')
 			->orderBy('id ASC')
 			->limit($pageSize)
-			->withBindVariableValue('parentId', $parentAdUnit->getId())
-			->withBindVariableValue('status', 'ACTIVE');
+			->withBindVariableValue('ancestorId', $ancestorAdUnit->getId())
+			->withBindVariableValue('status', 'ARCHIVED');
 
+		$times = [];
 		$totalResultSetSize = 0;
 		do {
+			$start = microtime(true);
 			$page = $inventoryService->getAdUnitsByStatement(
 				$statementBuilder->toStatement()
 			);
+			$i = $page->getStartIndex();
 			if ($page->getResults() !== null) {
-				$totalResultSetSize = $page->getTotalResultSetSize();
-				if (count($page->getResults()) === 1) {
-					return;
+				if ($totalResultSetSize === 0) {
+					$totalResultSetSize = $page->getTotalResultSetSize();
 				}
-				foreach ($page->getResults() as $adUnit) {
-					if ($adUnit->getId() === $parentAdUnit->getId()) {
-						continue;
-					}
-					$adUnitCode = implode([ $fullAdUnitCode, $adUnit->getAdUnitCode() ], '/');
-					$this->archiveAdUnitAndChildren($adUnit, $adUnitCode);
-					printf("%s\n", $adUnitCode);
-				}
-			}
-			$statementBuilder->increaseOffsetBy($pageSize);
-		} while ($statementBuilder->getOffset() < $totalResultSetSize);
+				$action = new ArchiveAdUnits();
 
-		if ($totalResultSetSize > 0) {
-			$statementBuilder->removeLimitAndOffset();
-			$action = new ArchiveAdUnits();
-			try {
-				$result = $inventoryService->performAdUnitAction(
-					$action,
-					$statementBuilder->toStatement()
-				);
-				if ($result === null || $result->getNumChanges() === 0) {
-					printf("No ad units were archived.%s", PHP_EOL);
+				try {
+					$result = $inventoryService->performAdUnitAction(
+						$action,
+						$statementBuilder->toStatement()
+					);
+					if ($result === null || $result->getNumChanges() === 0) {
+						printf("No ad units were archived.%s", PHP_EOL);
+						return;
+					}
+
+					$duration = microtime(true) - $start;
+					$times[] = $duration;
+					$meanTime = array_sum($times)/count($times);
+
+					printf(
+						"Archived %d/%d, ETA: %.2fs\n",
+						min($i + $pageSize, $totalResultSetSize),
+						$totalResultSetSize,
+						$meanTime * ($totalResultSetSize - $i) / $pageSize
+					);
+					$statementBuilder->increaseOffsetBy($pageSize);
+				} catch (\Exception $exception) {
+					printf("Couldn't archive some ad units.%s", PHP_EOL);
+					$statementBuilder->increaseOffsetBy($pageSize);
 				}
-			} catch (\Exception $exception) {
-				printf("Couldn't archive some ad units.%s", PHP_EOL);
 			}
-		}
+		} while ($statementBuilder->getOffset() < $totalResultSetSize);
 	}
 }
