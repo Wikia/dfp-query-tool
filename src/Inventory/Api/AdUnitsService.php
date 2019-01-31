@@ -64,6 +64,10 @@ class AdUnitsService
 				$statementBuilder->toStatement()
 			);
 			$i = $page->getStartIndex();
+			if (count($page->getResults) === 0) {
+				$statementBuilder->increaseOffsetBy($pageSize);
+				continue;
+			}
 			if ($page->getResults() !== null) {
 				if ($totalResultSetSize === 0) {
 					$totalResultSetSize = $page->getTotalResultSetSize();
