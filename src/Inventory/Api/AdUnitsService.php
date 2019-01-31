@@ -81,12 +81,16 @@ class AdUnitsService
 		if ($totalResultSetSize > 0) {
 			$statementBuilder->removeLimitAndOffset();
 			$action = new ArchiveAdUnits();
-			$result = $inventoryService->performAdUnitAction(
-				$action,
-				$statementBuilder->toStatement()
-			);
-			if ($result === null || $result->getNumChanges() === 0) {
-				printf("No ad units were archived.%s", PHP_EOL);
+			try {
+				$result = $inventoryService->performAdUnitAction(
+					$action,
+					$statementBuilder->toStatement()
+				);
+				if ($result === null || $result->getNumChanges() === 0) {
+					printf("No ad units were archived.%s", PHP_EOL);
+				}
+			} catch (\Exception $exception) {
+				printf("Couldn't archive some ad units.%s", PHP_EOL);
 			}
 		}
 	}
