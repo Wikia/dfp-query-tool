@@ -19,7 +19,6 @@ class AdUnitsService
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())
 			->where('adUnitCode = :adUnitCode AND parentId = :parentId')
-			->orderBy('id ASC')
 			->limit($pageSize)
 			->withBindVariableValue('adUnitCode', $adUnitCode)
 			// archive top level only
@@ -51,7 +50,6 @@ class AdUnitsService
 		$pageSize = 100; //StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())
 			->where('ancestorId = :ancestorId AND status != :status')
-			->orderBy('id ASC')
 			->limit($pageSize)
 			->withBindVariableValue('ancestorId', $ancestorAdUnit->getId())
 			->withBindVariableValue('status', 'ARCHIVED');
