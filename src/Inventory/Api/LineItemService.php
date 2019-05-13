@@ -16,17 +16,20 @@ use Google\AdsApi\Dfp\v201805\Money;
 use Google\AdsApi\Dfp\v201805\NetworkService;
 use Google\AdsApi\Dfp\v201805\Size;
 use Google\AdsApi\Dfp\v201805\Targeting;
+use Inventory\Form\LineItemForm;
 
 class LineItemService
 {
 	private $customTargetingService;
 	private $lineItemService;
 	private $targetedAdUnits;
+	private $lineItemCreativeAssociationService;
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
 		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201805\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
+		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
 
 	public function create($form) {
@@ -84,6 +87,50 @@ class LineItemService
 		} catch (\Exception $e) {
 			throw new LineItemException('Line item error: ' . $e->getMessage());
 		}
+	}
+
+	public function processLineItemsData($data = []) {
+		$responses = [];
+		$index = 0;
+
+		$lineItemForm = new LineItemForm($data);
+
+		list($isValid, $errorMessages) = $lineItemForm->validate();
+
+		if (!$isValid) {
+			foreach ($errorMessages as $errorMessage) {
+				$responses[] = [
+					'messageType' => 'danger',
+					'message' => $errorMessage,
+					'lineItem' => null,
+					'lica' => null
+				];
+			}
+		} else {
+			$formsSet = $lineItemForm->process();
+
+			foreach($formsSet as $alteredForm) {
+				try {
+					$lineItem = $this->create($alteredForm);
+					$responses[$index]['lineItem'] = $lineItem;
+					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($data['creativeId'], $lineItem['id']);
+					$responses[$index]['messageType'] = 'success';
+					$responses[$index]['message'] = 'Line items successfully created.';
+				} catch (LineItemException $exception) {
+					$responses[$index]['lineItem'] = null;
+					$responses[$index]['message'] = $exception->getMessage();
+					$responses[$index]['messageType'] = 'danger';
+					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->getIncorrectLineItemResult();
+				}
+
+				$index++;
+			}
+		}
+
+		return [
+			'responses' => $responses,
+			'data' => json_encode($data),
+		];
 	}
 
 	public function getLineItemsInOrder($orderId) {

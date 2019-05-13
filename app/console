@@ -35,6 +35,7 @@ $console = $app['console'];
 
 $console->add(new Creative\Command\AssociateCreativesInOrderCommand($app));
 $console->add(new Creative\Command\CreativeCommand($app));
+$console->add(new Inventory\Command\CreateLineItemsCommand($app));
 $console->add(new Inventory\Command\KeyValuesGetterCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
