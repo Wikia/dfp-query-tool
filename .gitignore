@@ -7,3 +7,6 @@ config/db.yml
 log/*
 !log/.gitkeep
 composer.phar
+
+line-item-presets/*.json
+!line-item-presets/*.sample.json
