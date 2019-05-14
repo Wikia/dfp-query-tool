@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d143b6cf62166a0a92e19b0bfc776fa4",
+    "content-hash": "25811806411bd6b73669de570344effa",
     "packages": [
         {
             "name": "dflydev/doctrine-orm-service-provider",
@@ -591,12 +591,12 @@
             "version": "v2.5.5",
             "source": {
                 "type": "git",
-                "url": "https://github.com/doctrine/doctrine2.git",
+                "url": "https://github.com/doctrine/orm.git",
                 "reference": "73e4be7c7b3ba26f96b781a40b33feba4dfa6d45"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/73e4be7c7b3ba26f96b781a40b33feba4dfa6d45",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/73e4be7c7b3ba26f96b781a40b33feba4dfa6d45",
                 "reference": "73e4be7c7b3ba26f96b781a40b33feba4dfa6d45",
                 "shasum": ""
             },
@@ -710,12 +710,12 @@
             "version": "v1.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-auth-library-php.git",
+                "url": "https://github.com/googleapis/google-auth-library-php.git",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
+                "url": "https://api.github.com/repos/googleapis/google-auth-library-php/zipball/8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "reference": "8f7c96146b2c62d3f4c6bbc4b5bb8a8e396b0b71",
                 "shasum": ""
             },
@@ -754,16 +754,16 @@
         },
         {
             "name": "googleads/googleads-php-lib",
-            "version": "35.1.0",
+            "version": "41.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleads/googleads-php-lib.git",
-                "reference": "eeacf8ae5604976421c66bb1e4d60a00063e4c86"
+                "reference": "d552b800ad53c400b1a50c7852e7ad184245d2ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/eeacf8ae5604976421c66bb1e4d60a00063e4c86",
-                "reference": "eeacf8ae5604976421c66bb1e4d60a00063e4c86",
+                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/d552b800ad53c400b1a50c7852e7ad184245d2ea",
+                "reference": "d552b800ad53c400b1a50c7852e7ad184245d2ea",
                 "shasum": ""
             },
             "require": {
@@ -774,17 +774,16 @@
                 "guzzlehttp/guzzle": "^6.0",
                 "guzzlehttp/psr7": "^1.2",
                 "monolog/monolog": "^1.17.1",
-                "php": ">=5.5.9",
+                "php": ">=7.1",
                 "phpdocumentor/reflection-docblock": "^4.0.0 || ^3.0.3",
                 "symfony/serializer": "^2.8.0 || ^3.0.3 || ^4.0.0"
             },
             "require-dev": {
-                "php": ">=5.5.17",
-                "phpunit/phpunit": "^4.8.35 || ^5.7",
+                "phpunit/phpunit": "^7.5",
                 "squizlabs/php_codesniffer": "^2.9 || ^3.2"
             },
             "suggest": {
-                "php-64bit": ">=5.5.9"
+                "php-64bit": ">=7.1"
             },
             "type": "library",
             "autoload": {
@@ -802,9 +801,9 @@
                     "homepage": "https://github.com/googleads/googleads-php-lib/contributors"
                 }
             ],
-            "description": "Google Ads APIs Client Library for PHP (AdWords and DFP)",
+            "description": "Google Ads APIs Client Library for PHP (AdWords and Ad Manager)",
             "homepage": "https://github.com/googleads/googleads-php-lib",
-            "time": "2018-05-24T13:43:12+00:00"
+            "time": "2019-03-27T12:22:13+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1522,6 +1521,7 @@
             "keywords": [
                 "microframework"
             ],
+            "abandoned": "symfony/flex",
             "time": "2016-11-06T18:09:06+00:00"
         },
         {

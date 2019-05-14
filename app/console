@@ -9,7 +9,7 @@ $app = new Silex\Application();
 $config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . '/../config/db.yml'));
 
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
-    'console.name'              => 'DfpTableau',
+    'console.name'              => 'GamTableau',
     'console.version'           => '1.0.0',
     'console.project_directory' => __DIR__.'/..'
 ));

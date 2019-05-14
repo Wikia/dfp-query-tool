@@ -3,7 +3,7 @@
 namespace Common\Api;
 
 use Google\AdsApi\Common\OAuth2TokenBuilder;
-use Google\AdsApi\Dfp\DfpSessionBuilder;
+use Google\AdsApi\AdManager\AdManagerSessionBuilder;
 
 class Authenticator
 {
@@ -14,7 +14,7 @@ class Authenticator
 			->fromFile(self::$credentialsPath)
 			->build();
 
-		return (new DfpSessionBuilder())
+		return (new AdManagerSessionBuilder())
 			->fromFile(self::$credentialsPath)
 			->withOAuth2Credential($oAuth2Credential)
 			->build();

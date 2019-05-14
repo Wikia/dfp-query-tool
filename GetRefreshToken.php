@@ -21,10 +21,10 @@ class GetRefreshToken {
 	const ADWORDS_API_SCOPE = 'https://www.googleapis.com/auth/adwords';
 
 	/**
-	 * @var string the OAuth2 scope for the DFP API
+	 * @var string the OAuth2 scope for the GAM API
 	 * @see https://developers.google.com/doubleclick-publishers/docs/authentication#scope
 	 */
-	const DFP_API_SCOPE = 'https://www.googleapis.com/auth/dfp';
+	const GAM_API_SCOPE = 'https://www.googleapis.com/auth/dfp';
 
 	/**
 	 * @var string the Google OAuth2 authorization URI for OAuth2 requests
@@ -41,8 +41,8 @@ class GetRefreshToken {
 	public static function main() {
 		$PRODUCTS = [
 			['AdWords', self::ADWORDS_API_SCOPE],
-			['DFP', self::DFP_API_SCOPE],
-			['AdWords and DFP', self::ADWORDS_API_SCOPE . ' ' . self::DFP_API_SCOPE]
+			['GAM', self::GAM_API_SCOPE],
+			['AdWords and GAM', self::ADWORDS_API_SCOPE . ' ' . self::GAM_API_SCOPE]
 		];
 
 		$stdin = fopen('php://stdin', 'r');
@@ -53,14 +53,14 @@ class GetRefreshToken {
 		print 'Enter your OAuth2 client secret here: ';
 		$clientSecret = trim(fgets($stdin));
 
-		print "Select the ads API you're using: [0] AdWords [1] DFP [2] Both\n";
+		print "Select the ads API you're using: [0] AdWords [1] GAM [2] Both\n";
 		$api = trim(fgets($stdin));
 
 		while (!is_numeric($api) ||
 			!(strval(intval($api)) === $api) ||
 			!(intval($api) >= 0 && intval($api) <= 2)
 		      ) {
-			print "Please enter a valid number for the ads API you're using: [0] AdWords [1] DFP [2] Both\n";
+			print "Please enter a valid number for the ads API you're using: [0] AdWords [1] GAM [2] Both\n";
 			$api = trim(fgets($stdin));
 		}
 
@@ -68,7 +68,7 @@ class GetRefreshToken {
 
 		if ($api === 2) {
 			print '[OPTIONAL] enter any additional OAuth2 scopes as a space ' .
-				'delimited string here (the AdWords and DFP scopes are already included): ';
+				'delimited string here (the AdWords and GAM scopes are already included): ';
 		} else {
 			printf(
 				'[OPTIONAL] enter any additional OAuth2 scopes as a space delimited string here (the %s scope is already included): ',

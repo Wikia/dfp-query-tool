@@ -2,20 +2,20 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201805\DfpDateTimes;
-use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
-use Google\AdsApi\Dfp\v201805\AdUnitTargeting;
-use Google\AdsApi\Dfp\v201805\CreativePlaceholder;
-use Google\AdsApi\Dfp\v201805\CustomCriteria;
-use Google\AdsApi\Dfp\v201805\CustomCriteriaSet;
-use Google\AdsApi\Dfp\v201805\EnvironmentType;
-use Google\AdsApi\Dfp\v201805\Goal;
-use Google\AdsApi\Dfp\v201805\InventoryTargeting;
-use Google\AdsApi\Dfp\v201805\LineItem;
-use Google\AdsApi\Dfp\v201805\Money;
-use Google\AdsApi\Dfp\v201805\NetworkService;
-use Google\AdsApi\Dfp\v201805\Size;
-use Google\AdsApi\Dfp\v201805\Targeting;
+use Google\AdsApi\AdManager\Util\v201902\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
+use Google\AdsApi\AdManager\v201902\AdUnitTargeting;
+use Google\AdsApi\AdManager\v201902\CreativePlaceholder;
+use Google\AdsApi\AdManager\v201902\CustomCriteria;
+use Google\AdsApi\AdManager\v201902\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v201902\EnvironmentType;
+use Google\AdsApi\AdManager\v201902\Goal;
+use Google\AdsApi\AdManager\v201902\InventoryTargeting;
+use Google\AdsApi\AdManager\v201902\LineItem;
+use Google\AdsApi\AdManager\v201902\Money;
+use Google\AdsApi\AdManager\v201902\NetworkService;
+use Google\AdsApi\AdManager\v201902\Size;
+use Google\AdsApi\AdManager\v201902\Targeting;
 use Inventory\Form\LineItemForm;
 
 class LineItemService
@@ -27,7 +27,7 @@ class LineItemService
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = DfpService::get(\Google\AdsApi\Dfp\v201805\LineItemService::class);
+		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
@@ -265,7 +265,7 @@ class LineItemService
 	}
 
 	private function getRootAdUnit() {
-		$networkService = DfpService::get(NetworkService::class);
+		$networkService = AdManagerService::get(NetworkService::class);
 
 		$network = $networkService->getCurrentNetwork();
 
@@ -346,12 +346,12 @@ class LineItemService
 
 	private function setupTimeRange(LineItem $lineItem, $form) {
 		if ($form['start'] !== '') {
-			$lineItem->setStartDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['start'], new \DateTimeZone('UTC'))));
+			$lineItem->setStartDateTime(AdManagerDateTimes::fromDateTime(new \DateTime($form['start'], new \DateTimeZone('UTC'))));
 		} else {
 			$lineItem->setStartDateTimeType('IMMEDIATELY');
 		}
 		if ($form['end'] !== '') {
-			$lineItem->setEndDateTime(DfpDateTimes::fromDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC'))));
+			$lineItem->setEndDateTime(AdManagerDateTimes::fromDateTime(new \DateTime($form['end'], new \DateTimeZone('UTC'))));
 		} else {
 			$lineItem->setUnlimitedEndDateTime(true);
 		}
