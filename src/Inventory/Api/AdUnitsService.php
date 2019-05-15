@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
-use Google\AdsApi\Dfp\v201805\ArchiveAdUnits;
-use Google\AdsApi\Dfp\v201805\InventoryService;
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
+use Google\AdsApi\AdManager\v201902\ArchiveAdUnits;
+use Google\AdsApi\AdManager\v201902\InventoryService;
 
 class AdUnitsService
 {
@@ -13,7 +13,7 @@ class AdUnitsService
 	}
 
 	private function archiveByAdUnitCode($adUnitCode) {
-		$inventoryService = DfpService::get(InventoryService::class);
+		$inventoryService = AdManagerService::get(InventoryService::class);
 		$networkAdUnitId = 81570852;
 
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
@@ -45,7 +45,7 @@ class AdUnitsService
 	}
 
 	private function archiveByAncestor($ancestorAdUnit) {
-		$inventoryService = DfpService::get(InventoryService::class);
+		$inventoryService = AdManagerService::get(InventoryService::class);
 
 		$pageSize = 100; //StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())

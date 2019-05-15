@@ -2,13 +2,13 @@
 
 namespace Report\Api;
 
-use Google\AdsApi\Dfp\Util\v201805\StatementBuilder as DfpStatementBuilder;
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder as AdManagerStatementBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StatementBuilder
 {
 	public static function build(ParameterBag $parameters) {
-		$statementBuilder = new DfpStatementBuilder();
+		$statementBuilder = new AdManagerStatementBuilder();
 		$statements = [];
 		$i = 1;
 		foreach ($parameters->get('filters') as $type => $value) {
@@ -28,7 +28,7 @@ class StatementBuilder
 		return $statementBuilder->toStatement();
 	}
 
-	private static function buildStatement(DfpStatementBuilder $statementBuilder, $index, $filter, $type, $values) {
+	private static function buildStatement(AdManagerStatementBuilder $statementBuilder, $index, $filter, $type, $values) {
 		if (!is_array($values)) {
 			$values = explode(',', $values);
 		}
@@ -62,7 +62,7 @@ class StatementBuilder
 	 *
 	 * @TODO currently there is no support for multiple values in not statement
 	 */
-	private static function buildNotStatement(DfpStatementBuilder $statementBuilder, $index, $filter, $type, $values ) {
+	private static function buildNotStatement(AdManagerStatementBuilder $statementBuilder, $index, $filter, $type, $values ) {
 		$value = is_array($values) ? $values[0] : $values;
 		$key = sprintf('%s_%d_%d', $type, $index, 1);
 		$keyFormatted = ':' . $key;

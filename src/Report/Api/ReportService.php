@@ -3,12 +3,12 @@
 namespace Report\Api;
 
 use Common\Api\Authenticator;
-use Google\AdsApi\Dfp\DfpServices;
-use Google\AdsApi\Dfp\Util\v201805\DfpDateTimes;
-use Google\AdsApi\Dfp\Util\v201805\ReportDownloader;
-use Google\AdsApi\Dfp\v201805\ReportJob;
-use Google\AdsApi\Dfp\v201805\ReportQuery;
-use Google\AdsApi\Dfp\v201805\ReportService as DfpReportService;
+use Google\AdsApi\AdManager\AdManagerServices;
+use Google\AdsApi\AdManager\Util\v201902\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v201902\ReportDownloader;
+use Google\AdsApi\AdManager\v201902\ReportJob;
+use Google\AdsApi\AdManager\v201902\ReportQuery;
+use Google\AdsApi\AdManager\v201902\ReportService as AdManagerReportService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ReportService
@@ -86,10 +86,10 @@ class ReportService
 		'order_trafficker' => 'ORDER_TRAFFICKER'
 	];
 
-	private $dfpServices;
+	private $adManagerServices;
 
 	public function __construct() {
-		$this->dfpServices = new DfpServices();
+		$this->adManagerServices = new AdManagerServices();
 	}
 
 	public function query(ParameterBag $parameters, \DateTime $startDate) {
@@ -102,7 +102,7 @@ class ReportService
 		$endDate = $this->getEndDate($startDate);
 
 		try {
-			$reportService = $this->dfpServices->get($session, DfpReportService::class);
+			$reportService = $this->adManagerServices->get($session, AdManagerReportService::class);
 
 			$reportQuery = new ReportQuery();
 			$reportQuery->setDimensions($dimensions);
@@ -116,8 +116,8 @@ class ReportService
 				$reportQuery->setCustomFieldIds($parameters->get('custom_field_ids'));
 			}
 			$reportQuery->setDateRangeType('CUSTOM_DATE');
-			$reportQuery->setStartDate(DfpDateTimes::fromDateTime($startDate)->getDate());
-			$reportQuery->setEndDate(DfpDateTimes::fromDateTime($endDate)->getDate());
+			$reportQuery->setStartDate(AdManagerDateTimes::fromDateTime($startDate)->getDate());
+			$reportQuery->setEndDate(AdManagerDateTimes::fromDateTime($endDate)->getDate());
 
 			return $this->run($reportService, $reportQuery);
 		} catch (\Exception $e) {
@@ -141,7 +141,7 @@ class ReportService
 	public function getReport($id) {
 		try {
 			$session = Authenticator::getSession();
-			$reportService = $this->dfpServices->get($session, DfpReportService::class);
+			$reportService = $this->adManagerServices->get($session, AdManagerReportService::class);
 
 			return $this->downloadReport($reportService, $id);
 		} catch (\Exception $e) {

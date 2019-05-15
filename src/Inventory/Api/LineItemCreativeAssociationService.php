@@ -2,7 +2,7 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\v201805\LineItemCreativeAssociation;
+use Google\AdsApi\AdManager\v201902\LineItemCreativeAssociation;
 
 class LineItemCreativeAssociationService {
 	private $customTargetingService;
@@ -30,7 +30,7 @@ class LineItemCreativeAssociationService {
 			if ( empty($lineItemId) ) {
 				return $this->getIncorrectLineItemResult();
 			} else {
-				$lineItemCreativeAssociationService = DfpService::get(\Google\AdsApi\Dfp\v201805\LineItemCreativeAssociationService::class);
+				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
 				foreach ( $processedCreativeIds as $extractedCreativeId ) {
@@ -40,9 +40,15 @@ class LineItemCreativeAssociationService {
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
 				}
 
-				$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
+				$lica = null;
+				for ($i = 0; $i < 10; $i++) {
+					$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
 
-				if ( !isset($lica) ) {
+					if ($lica || isset($lica)) break;
+					echo 'SOAP "createLineItemCreativeAssociations()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
+
+				if ( !$lica || !isset($lica) ) {
 					$response['success'] = false;
 					$response['message'] = 'line item - creative association not created';
 				}

@@ -2,14 +2,14 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
-use Google\AdsApi\Dfp\v201805\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
-use Google\AdsApi\Dfp\v201805\SuggestedAdUnitService;
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
+use Google\AdsApi\AdManager\v201902\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
+use Google\AdsApi\AdManager\v201902\SuggestedAdUnitService;
 
 class SuggestedAdUnitsService
 {
 	public function approve() {
-		$suggestedAdUnitService = DfpService::get(SuggestedAdUnitService::class);
+		$suggestedAdUnitService = AdManagerService::get(SuggestedAdUnitService::class);
 
 		$pageSize = StatementBuilder::SUGGESTED_PAGE_LIMIT;
 		$statementBuilder = (new StatementBuilder())->limit($pageSize);

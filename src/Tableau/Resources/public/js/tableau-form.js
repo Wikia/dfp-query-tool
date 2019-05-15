@@ -68,7 +68,7 @@ window.typesMap = {
 		tableau.connectionData = JSON.stringify({
 			queryData: $('#query-form').serialize()
 		});
-		tableau.connectionName = 'DFP Query';
+		tableau.connectionName = 'GAM Query';
 		tableau.submit();
 	});
 })();

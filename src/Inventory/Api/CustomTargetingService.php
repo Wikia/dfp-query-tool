@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\Util\v201805\StatementBuilder;
-use Google\AdsApi\Dfp\v201805\CustomTargetingValue;
-use Google\AdsApi\Dfp\v201805\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
+use Google\AdsApi\AdManager\v201902\CustomTargetingValue;
+use Google\AdsApi\AdManager\v201902\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -12,7 +12,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('name = :name');
@@ -20,7 +20,13 @@ class CustomTargetingService
 			foreach ($keys as $key) {
 				$statementBuilder->withBindVariableValue('name', $key);
 
-				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+				$page = null;
+				for ($i = 0; $i < 10; $i++) {
+					$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+
+					if ($page) break;
+					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
 
 				$results = $page->getResults();
 				if (!empty($results)) {
@@ -43,7 +49,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -52,7 +58,13 @@ class CustomTargetingService
 			foreach ($values as $value) {
 				$statementBuilder->withBindVariableValue('name', trim($value));
 
-				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+				$page = null;
+				for ($i = 0; $i < 10; $i++) {
+					$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+
+					if ($page) break;
+					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
 
 				$results = $page->getResults();
 				if (!empty($results)) {
@@ -76,7 +88,7 @@ class CustomTargetingService
 		$keyId = array_shift($keyIds);
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = DfpService::get(\Google\AdsApi\Dfp\v201805\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 

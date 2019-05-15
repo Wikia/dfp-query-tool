@@ -2,13 +2,13 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\Dfp\v201805\Order;
+use Google\AdsApi\AdManager\v201902\Order;
 
 class OrderService {
 	private $orderService;
 
 	function __construct() {
-		$this->orderService = DfpService::get(\Google\AdsApi\Dfp\v201805\OrderService::class);
+		$this->orderService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\OrderService::class);
 	}
 
 	public function create($form) {

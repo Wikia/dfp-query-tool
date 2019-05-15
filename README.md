@@ -1,6 +1,6 @@
-# DFP query tool
+# GAM query tool
 
-Application allows communication with DFP through API and serves Tableau web-data-connector. Project developed during the Wikia Summer Hackathon 2016.
+Application allows communication with GAM through API and serves Tableau web-data-connector. Project developed during the Wikia Summer Hackathon 2016.
 
 ## CLI usage
 
