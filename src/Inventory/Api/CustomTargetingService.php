@@ -20,7 +20,13 @@ class CustomTargetingService
 			foreach ($keys as $key) {
 				$statementBuilder->withBindVariableValue('name', $key);
 
-				$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+				$page = null;
+				for ($i = 0; $i < 10; $i++) {
+					$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+
+					if ($page) break;
+					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
 
 				$results = $page->getResults();
 				if (!empty($results)) {
@@ -52,7 +58,13 @@ class CustomTargetingService
 			foreach ($values as $value) {
 				$statementBuilder->withBindVariableValue('name', trim($value));
 
-				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+				$page = null;
+				for ($i = 0; $i < 10; $i++) {
+					$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+
+					if ($page) break;
+					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
 
 				$results = $page->getResults();
 				if (!empty($results)) {

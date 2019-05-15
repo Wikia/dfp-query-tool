@@ -34,6 +34,6 @@ class CreateLineItemsCommand extends Command
 			}
 		}
 
-		printf("%s/%s line items created successfully", $successes, count($result['responses']));
+		printf("%s/%s line items created successfully\n", $successes, count($result['responses']));
 	}
 }

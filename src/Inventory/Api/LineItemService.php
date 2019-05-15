@@ -71,7 +71,13 @@ class LineItemService
 				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
 			}
 
-			$lineItems = $this->lineItemService->createLineItems([ $lineItem ]);
+			$lineItems = [];
+			for ($i = 0; $i < 10; $i++) {
+				$lineItems = $this->lineItemService->createLineItems([ $lineItem ]);
+
+				if ($lineItems && count($lineItems)) break;
+				echo 'SOAP "createLineItemCreativeAssociations()" connection error - retrying (' . ($i + 1) . ")...\n";
+			}
 
 			if (isset($lineItems)) {
 				foreach ($lineItems as $lineItem) {

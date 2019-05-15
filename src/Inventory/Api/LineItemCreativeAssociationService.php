@@ -40,9 +40,15 @@ class LineItemCreativeAssociationService {
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
 				}
 
-				$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
+				$lica = null;
+				for ($i = 0; $i < 10; $i++) {
+					$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
 
-				if ( !isset($lica) ) {
+					if ($lica || isset($lica)) break;
+					echo 'SOAP "createLineItemCreativeAssociations()" connection error - retrying (' . ($i + 1) . ")...\n";
+				}
+
+				if ( !$lica || !isset($lica) ) {
 					$response['success'] = false;
 					$response['message'] = 'line item - creative association not created';
 				}
