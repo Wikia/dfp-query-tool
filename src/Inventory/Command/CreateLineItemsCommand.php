@@ -27,10 +27,14 @@ class CreateLineItemsCommand extends Command
 		$lineItemsService = new LineItemService();
 		$result = $lineItemsService->processLineItemsData($data);
 
+		printf("=== Lines creation summary ===\n");
+
 		$successes = 0;
 		foreach ($result['responses'] as $response) {
 			if ($response['messageType'] === 'success') {
 				$successes++;
+			} else {
+				printf("Error creating line: %s\n", $response['message']);
 			}
 		}
 
