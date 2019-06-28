@@ -14,14 +14,14 @@ use Symfony\Component\Yaml\Yaml;
 class ReportCommand extends Command
 {
 	private static $queriesConfig = __DIR__ . '/../../../config/queries.yml';
+	private $app;
 	private $config;
 	private $database;
 
 	public function __construct($app, $name = null) {
 		parent::__construct($name);
 
-		$this->database = new Database($app);
-		$this->config = $this->getConfig();
+		$this->app = $app;
 	}
 
 	protected function configure() {
@@ -67,6 +67,9 @@ class ReportCommand extends Command
 	}
 
 	public function runQuery($queryId, \DateTime $startDate) {
+        $this->database = new Database($this->app);
+        $this->config = $this->getConfig();
+
 		printf("Running query: %s\n", $queryId);
 		$parameters = new ParameterBag($this->config['queries'][$queryId]);
 		$reportService = new ReportService();
@@ -91,7 +94,7 @@ class ReportCommand extends Command
 		$notParsedDate = $notParsedDate ?: '-1 day';
 		$date = new \DateTime($notParsedDate, new \DateTimeZone('Europe/Warsaw'));
 		$date->setTime(0, 0, 0);
-		
+
 		return $date;
 	}
 }
