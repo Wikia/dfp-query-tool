@@ -1,6 +1,4 @@
 .idea/
-config/
-k8s/
 line-item-presets/
 log/
 pyads/

@@ -9,12 +9,15 @@ RUN docker-php-ext-enable soap
 
 RUN mkdir /home/maka/dfp-query-tool
 WORKDIR /home/maka/dfp-query-tool
-RUN mkdir line-item-presets logs config
+RUN mkdir line-item-presets log config
 RUN touch config/queries.yml
 COPY composer.json composer.json
 COPY composer.lock composer.lock
 COPY app app
+COPY config/db.sample.yml /home/maka/dfp-query-tool/config/db.yml
+COPY k8s-cron-jobs/approve.sh approve.sh
 COPY src src
 RUN chown -R maka:maka /home/maka/dfp-query-tool
+RUN chmod +x approve.sh
 USER maka
 RUN composer install
