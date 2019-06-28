@@ -16,7 +16,7 @@ class ArchiveAdUnitsCommand extends Command
 
 	protected function configure() {
 		$this->setName('adunits:archive')
-			->setDescription('Approve all suggested ad units in queue.')
+			->setDescription('Archive ad units.')
 			->addArgument('adUnitCodes', InputArgument::REQUIRED, 'Ad unit code (separated with comma)');
 	}
 
