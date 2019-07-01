@@ -67,8 +67,8 @@ class ReportCommand extends Command
 	}
 
 	public function runQuery($queryId, \DateTime $startDate) {
-        $this->database = new Database($this->app);
-        $this->config = $this->getConfig();
+		$this->database = new Database($this->app);
+		$this->config = $this->getConfig();
 
 		printf("Running query: %s\n", $queryId);
 		$parameters = new ParameterBag($this->config['queries'][$queryId]);
