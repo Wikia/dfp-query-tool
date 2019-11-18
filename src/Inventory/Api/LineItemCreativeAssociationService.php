@@ -2,7 +2,10 @@
 
 namespace Inventory\Api;
 
+use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
 use Google\AdsApi\AdManager\v201902\LineItemCreativeAssociation;
+use Google\AdsApi\AdManager\v201902\DeactivateLineItemCreativeAssociations;
+
 
 class LineItemCreativeAssociationService {
 	private $customTargetingService;
@@ -71,5 +74,38 @@ class LineItemCreativeAssociationService {
 
 	private function processCreativeId( $creativeId ) {
 		return explode( ',', $creativeId );
+	}
+
+	public function deactivate( $creativeId, $lineItemId ) {
+		$response = [
+			'success' => true,
+		];
+
+		$statementBuilder = (new StatementBuilder())
+			->where('lineItemId = :lineItemId and creativeId = :creativeId')
+			->withBindVariableValue('lineItemId', $lineItemId)
+			->withBindVariableValue('creativeId', $creativeId);
+
+		try {
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\LineItemCreativeAssociationService::class);
+			$action = new DeactivateLineItemCreativeAssociations();
+
+			$result = $lineItemCreativeAssociationService
+				->performLineItemCreativeAssociationAction(
+					$action,
+					$statementBuilder->toStatement()
+				);
+
+			if ($result !== null && $result->getNumChanges() > 0) {
+				$response['success'] = true;
+			} else {
+				$response['message'] = 'Could not deactivate creative in line item ' . $lineItemId;
+			}
+		} catch ( \Exception $e ) {
+			$response['success'] = false;
+			$response['message'] = $e->getMessage();
+		}
+
+		return $response;
 	}
 }
