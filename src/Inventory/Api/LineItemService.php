@@ -16,6 +16,7 @@ use Google\AdsApi\AdManager\v201902\Money;
 use Google\AdsApi\AdManager\v201902\NetworkService;
 use Google\AdsApi\AdManager\v201902\Size;
 use Google\AdsApi\AdManager\v201902\Targeting;
+use Google\AdsApi\AdManager\v201902\RequestPlatformTargeting;
 use Inventory\Form\LineItemForm;
 
 class LineItemService
@@ -45,6 +46,16 @@ class LineItemService
 
 			$orderId = $form['orderId'];
 			$lineItem = new LineItem();
+
+			if ($form['isVideo']) {
+				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
+
+				$requestPlatformTargeting = new RequestPlatformTargeting();
+				$requestPlatformTargeting->setTargetedRequestPlatforms([]);
+
+				$targeting->setRequestPlatformTargeting($requestPlatformTargeting);
+			}
+
 			$lineItem->setName($form['lineItemName']);
 			$lineItem->setOrderId($orderId);
 			$lineItem->setTargeting($targeting);
@@ -66,10 +77,6 @@ class LineItemService
 
 			$lineItem->setCreativePlaceholders($this->getCreativePlaceholders($form['sizes']));
 			$lineItem->setCreativeRotationType('OPTIMIZED');
-
-			if ($form['isVideo']) {
-				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
-			}
 
 			$lineItems = [];
 			for ($i = 0; $i < 10; $i++) {
