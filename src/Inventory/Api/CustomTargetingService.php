@@ -82,6 +82,31 @@ class CustomTargetingService
 		return $ids;
 	}
 
+	public function createKey($name, $values = null) {
+		try {
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\CustomTargetingService::class);
+
+			$key = new \Google\AdsApi\AdManager\v201902\CustomTargetingKey();
+			$key->setName($name);
+			$key->setType($values === null ? \Google\AdsApi\AdManager\v201902\CustomTargetingKeyType::FREEFORM : \Google\AdsApi\AdManager\v201902\CustomTargetingKeyType::PREDEFINED);
+
+			try {
+				$customTargetingService->createCustomTargetingKeys(
+					[$key]
+				);
+			} catch (\Exception $e) {
+				print($e->getMessage());
+				printf("Key %s exists. Skipping creation", $name);
+			}
+
+			if (null !== $values) {
+				$this->addValues($name, $values);
+			}
+		} catch (\Exception $e) {
+			throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
+		}
+	}
+
 	public function addValues($key, $values) {
 		$addedValues = 0;
 		$keyIds = $this->getKeyIds([$key]);
