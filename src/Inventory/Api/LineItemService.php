@@ -173,6 +173,46 @@ class LineItemService
 		return array_shift($results);
 	}
 
+	public function findLineItemIdsByKeys($keyIds) {
+		$statementBuilder = new StatementBuilder();
+		$statementBuilder->Where('isArchived = false');
+		$statementBuilder->Limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+
+		$lineItems = [];
+		$totalResultSetSize = 0;
+		do {
+			$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+			if ($page->getResults() !== null) {
+				$totalResultSetSize = $page->getTotalResultSetSize();
+				foreach ($page->getResults() as $lineItem) {
+					$wasKeyInSet = false;
+					if (null !== $lineItem->getTargeting()->getCustomTargeting()) {
+						$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+						foreach ($targetingSets as $targetingSet) {
+							$keyValuePairs = $targetingSet->getChildren();
+							foreach ($keyValuePairs as $pair) {
+								if (method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds)) {
+									$wasKeyInSet = true;
+								}
+							}
+						}
+						if ($wasKeyInSet) {
+							$lineItems[] = [
+								'line_item_id' => $lineItem->getId(),
+								'order_id' => $lineItem->getOrderId(),
+							];
+						}
+					}
+				}
+			}
+
+			$statementBuilder->increaseOffsetBy(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+		} while ($statementBuilder->getOffset() < $totalResultSetSize);
+
+		return $lineItems;
+	}
+
 	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
 		$addedNewKeyValues = false;
 
