@@ -38,6 +38,7 @@ $console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($
 $console->add(new Creative\Command\CreativeCommand($app));
 $console->add(new Inventory\Command\CreateLineItemsCommand($app));
 $console->add(new Inventory\Command\KeyValuesGetterCommand($app));
+$console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
