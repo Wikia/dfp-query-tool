@@ -5,6 +5,7 @@ namespace Inventory\Api;
 use Google\AdsApi\AdManager\Util\v201911\AdManagerDateTimes;
 use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
 use Google\AdsApi\AdManager\v201911\AdUnitTargeting;
+use Google\AdsApi\AdManager\v201911\ChildContentEligibility;
 use Google\AdsApi\AdManager\v201911\CreativePlaceholder;
 use Google\AdsApi\AdManager\v201911\CustomCriteria;
 use Google\AdsApi\AdManager\v201911\CustomCriteriaSet;
@@ -60,6 +61,7 @@ class LineItemService
 			$lineItem->setOrderId($orderId);
 			$lineItem->setTargeting($targeting);
 			$lineItem->setAllowOverbook(true);
+			$lineItem->setChildContentEligibility(ChildContentEligibility::ALLOWED);
 
 			$lineItem->setDisableSameAdvertiserCompetitiveExclusion(false);
 			if (isset($form['sameAdvertiser'])) {
@@ -298,6 +300,14 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updatelineItems( [ $lineItem ] );
 		}
+	}
+
+	public function setChildContentEligibility($lineItem, $value) {
+		$eligibility = $value ? ChildContentEligibility::ALLOWED : ChildContentEligibility::DISALLOWED;
+
+		$lineItem->setChildContentEligibility($eligibility);
+
+		$this->lineItemService->updatelineItems( [ $lineItem ] );
 	}
 
 	private function validateForm($form) {
