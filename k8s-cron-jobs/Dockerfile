@@ -15,7 +15,7 @@ COPY app app
 COPY config/db.sample.yml /home/maka/dfp-query-tool/config/db.yml
 COPY k8s-cron-jobs/approve.sh approve.sh
 COPY src src
-RUN chown -R 65534:65534 /home/maka/dfp-query-tool
+RUN chown -R 65534:65534 /home/maka
 RUN chmod +x approve.sh
 USER 65534
 RUN composer install
