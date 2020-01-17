@@ -2,21 +2,22 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v201902\AdManagerDateTimes;
-use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
-use Google\AdsApi\AdManager\v201902\AdUnitTargeting;
-use Google\AdsApi\AdManager\v201902\CreativePlaceholder;
-use Google\AdsApi\AdManager\v201902\CustomCriteria;
-use Google\AdsApi\AdManager\v201902\CustomCriteriaSet;
-use Google\AdsApi\AdManager\v201902\EnvironmentType;
-use Google\AdsApi\AdManager\v201902\Goal;
-use Google\AdsApi\AdManager\v201902\InventoryTargeting;
-use Google\AdsApi\AdManager\v201902\LineItem;
-use Google\AdsApi\AdManager\v201902\Money;
-use Google\AdsApi\AdManager\v201902\NetworkService;
-use Google\AdsApi\AdManager\v201902\Size;
-use Google\AdsApi\AdManager\v201902\Targeting;
-use Google\AdsApi\AdManager\v201902\RequestPlatformTargeting;
+use Google\AdsApi\AdManager\Util\v201911\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
+use Google\AdsApi\AdManager\v201911\AdUnitTargeting;
+use Google\AdsApi\AdManager\v201911\ChildContentEligibility;
+use Google\AdsApi\AdManager\v201911\CreativePlaceholder;
+use Google\AdsApi\AdManager\v201911\CustomCriteria;
+use Google\AdsApi\AdManager\v201911\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v201911\EnvironmentType;
+use Google\AdsApi\AdManager\v201911\Goal;
+use Google\AdsApi\AdManager\v201911\InventoryTargeting;
+use Google\AdsApi\AdManager\v201911\LineItem;
+use Google\AdsApi\AdManager\v201911\Money;
+use Google\AdsApi\AdManager\v201911\NetworkService;
+use Google\AdsApi\AdManager\v201911\Size;
+use Google\AdsApi\AdManager\v201911\Targeting;
+use Google\AdsApi\AdManager\v201911\RequestPlatformTargeting;
 use Inventory\Form\LineItemForm;
 
 class LineItemService
@@ -28,7 +29,7 @@ class LineItemService
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\LineItemService::class);
+		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
@@ -60,6 +61,7 @@ class LineItemService
 			$lineItem->setOrderId($orderId);
 			$lineItem->setTargeting($targeting);
 			$lineItem->setAllowOverbook(true);
+			$lineItem->setChildContentEligibility(ChildContentEligibility::ALLOWED);
 
 			$lineItem->setDisableSameAdvertiserCompetitiveExclusion(false);
 			if (isset($form['sameAdvertiser'])) {
@@ -298,6 +300,14 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updatelineItems( [ $lineItem ] );
 		}
+	}
+
+	public function setChildContentEligibility($lineItem, $value) {
+		$eligibility = $value ? ChildContentEligibility::ALLOWED : ChildContentEligibility::DISALLOWED;
+
+		$lineItem->setChildContentEligibility($eligibility);
+
+		$this->lineItemService->updatelineItems( [ $lineItem ] );
 	}
 
 	private function validateForm($form) {

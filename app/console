@@ -34,17 +34,21 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 $console = $app['console'];
 
 $console->add(new Creative\Command\AssociateCreativesInOrderCommand($app));
-$console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($app));
 $console->add(new Creative\Command\CreativeCommand($app));
+$console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($app));
+
+$console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
+$console->add(new Inventory\Command\ChildContentEligibilityUpdateCommand($app));
 $console->add(new Inventory\Command\CreateLineItemsCommand($app));
 $console->add(new Inventory\Command\KeyValuesGetterCommand($app));
+$console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
+
 $console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));
+
 $console->add(new Report\Command\ReportCommand($app));
-$console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
-$console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->run();

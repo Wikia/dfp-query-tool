@@ -2,10 +2,10 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v201902\StatementBuilder;
-use Google\AdsApi\AdManager\v201902\Size;
-use Google\AdsApi\AdManager\v201902\TemplateCreative;
-use Google\AdsApi\AdManager\v201902\CreativeTemplateService;
+use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
+use Google\AdsApi\AdManager\v201911\Size;
+use Google\AdsApi\AdManager\v201911\TemplateCreative;
+use Google\AdsApi\AdManager\v201911\CreativeTemplateService;
 
 class CreativeService {
 	const PAGE_SIZE = 250;
@@ -14,7 +14,7 @@ class CreativeService {
 	private $creativeTemplateService;
 
 	function __construct() {
-		$this->creativeService = AdManagerService::get(\Google\AdsApi\AdManager\v201902\CreativeService::class);
+		$this->creativeService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CreativeService::class);
 		$this->creativeTemplateService = AdManagerService::get(CreativeTemplateService::class);
 	}
 
