@@ -6,6 +6,7 @@ namespace Creative\Command;
 use Inventory\Api\CreativeService;
 use Inventory\Api\LineItemService;
 use Inventory\Api\LineItemCreativeAssociationService;
+use Inventory\Api\OrderService;
 use Knp\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,12 +61,14 @@ class AddCreativeToLinesInOrderCommand extends Command
         printf("Order ID: %d\n", $orderId);
         printf("Creative template ID: %d\n", $creativeTemplateId);
 
+        $orderService = new OrderService();
         $lineItemService = new LineItemService();
         $creativeService = new CreativeService();
         $lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 
+        $order = $orderService->getById($orderId);
         $creativeForm = [
-            'advertiserId' => '31918332',
+            'advertiserId' => $order->getAdvertiserId(),
             'creativeTemplateId' => $creativeTemplateId
         ];
 
@@ -103,7 +106,7 @@ class AddCreativeToLinesInOrderCommand extends Command
         }
 
         printf( "\nCreated %d creative(s)\n", count($createdCratives) );
-        printf( "Updated %d line item(s)\n", count($createdCratives) );
+        printf( "Updated %d line item(s)\n", count($lineItemsWithNewCreatives) );
 
         if ( count($failedLineItems) > 0 ) {
             printf( "\nFailed for %d line item(s)\n", count($failedLineItems) );
