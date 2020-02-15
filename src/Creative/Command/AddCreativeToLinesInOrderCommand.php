@@ -83,26 +83,22 @@ class AddCreativeToLinesInOrderCommand extends Command
                 $creativeForm['creativeName'] = $this->buildCreativeName($lineItem, $creativeNameSuffix);
 
                 $creativeId = $creativeService->createFromTemplate( $creativeForm );
-                if (intval($creativeId) > 0) {g
+                if (intval($creativeId) > 0) {
                     $createdCratives[] = $creativeId;
                     $lineItemId = $lineItem->getId();
                     $response = $lineItemCreativeAssociationService->create($creativeId, $lineItemId);
 
                     if ($response['success'] === true) {
                         $lineItemsWithNewCreatives[] = $lineItemId;
-                        echo ".";
                     } else {
                         $errorMsgs[] = $response['message'];
-                        echo "!";
                     }
                 } else {
                     $errorMsgs[] = 'Could not create a creative';
-                    echo "!";
                 }
             } catch (\Exception $e) {
                 $failedLineItems[] = $lineItem->getId();
                 $errorMsgs[] = $e->getMessage();
-                echo "!";
             }
         }
 
@@ -112,6 +108,7 @@ class AddCreativeToLinesInOrderCommand extends Command
         if ( count($failedLineItems) > 0 ) {
             printf( "\nFailed for %d line item(s)\n", count($failedLineItems) );
             print_r( $failedLineItems );
+            print_r($errorMsgs);
         }
     }
 
