@@ -3,9 +3,9 @@
 namespace Creative\Command;
 
 
-use Google\AdsApi\AdManager\v201911\ApiException;
-use Inventory\Api\LineItemService;
 use Inventory\Api\CreativeService;
+use Inventory\Api\LineItemService;
+use Inventory\Api\LineItemCreativeAssociationService;
 use Knp\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,9 +57,10 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         $lineItemService = new LineItemService();
         $creativeService = new CreativeService();
+        $lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 
-        $form = [
-            'creativeName' => 'Test MR 300x250',
+        $creativeForm = [
+            'creativeName' => 'ztest MR 300x250 ' . time(),
             'sizes' => '300x250',
             'advertiserId' => '31918332',
             'creativeTemplateId' => $creativeTemplateId
@@ -71,23 +72,32 @@ class AddCreativeToLinesInOrderCommand extends Command
         $createdCratives = [];
         $lineItemsWithNewCreatives = [];
         $failedLineItems = [];
+        $errorMsgs = [];
 
         printf("Adding creatives to %s line item(s)\n", $count);
         foreach ($lineItems as $i => $lineItem) {
             try {
-                $creativeId = $creativeService->createFromTemplate( $form );
-
+                $creativeId = $creativeService->createFromTemplate( $creativeForm );
                 $createdCratives[] = $creativeId;
-                $lineItemsWithNewCreatives[] = $lineItem->getId();
 
-                echo ".";
-            } catch (ApiException $e) {
+                $lineItemId = $lineItem->getId();
+                $response = $lineItemCreativeAssociationService->create($creativeId, $lineItemId);
+
+                if ($response['success'] === true) {
+                    $lineItemsWithNewCreatives[] = $lineItemId;
+                    echo ".";
+                } else {
+                    $errorMsgs[] = $response['message'];
+                }
+            } catch (\Exception $e) {
                 $failedLineItems[] = $lineItem->getId();
+                $errorMsgs[] = $e->getMessage();
                 echo "!";
             }
         }
 
         printf( "\nCreated %d creative(s)\n", count($createdCratives) );
+        printf( "Updated %d line item(s)\n", count($createdCratives) );
 
         if ( count($failedLineItems) > 0 ) {
             printf( "\nFailed for %d line item(s)\n", count($failedLineItems) );
