@@ -3,7 +3,9 @@
 namespace Creative\Command;
 
 
+use Inventory\Api\LineItemService;
 use Knp\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,6 +42,14 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         $orderId = $input->getOption('order');
         $creativeTemplateId = $input->getOption('creative-template');
+
+        if ( is_null($orderId) || intval($orderId) === 0 ) {
+            throw new InvalidOptionException('Invalid order ID');
+        }
+
+        if ( is_null($creativeTemplateId) || intval($creativeTemplateId) === 0 ) {
+            throw new InvalidOptionException('Invalid creative template ID');
+        }
 
         printf("Order ID: %d\n", $orderId);
         printf("Creative template ID: %d\n", $creativeTemplateId);
