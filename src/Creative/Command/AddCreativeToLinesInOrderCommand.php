@@ -34,15 +34,20 @@ class AddCreativeToLinesInOrderCommand extends Command
                 'c',
                 InputOption::VALUE_REQUIRED,
                 'Creative template id'
+            )
+            ->addOption(
+                'creative-suffix',
+                's',
+                InputOption::VALUE_OPTIONAL,
+                "Creative's name suffix"
             );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        printf("========== Work in-progress ==========\n");
-
         $orderId = $input->getOption('order');
         $creativeTemplateId = $input->getOption('creative-template');
+        $creativeNameSuffix = $input->getOption('creative-suffix');
 
         if ( is_null($orderId) || intval($orderId) === 0 ) {
             throw new InvalidOptionException('Invalid order ID');
@@ -60,34 +65,39 @@ class AddCreativeToLinesInOrderCommand extends Command
         $lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 
         $creativeForm = [
-            'creativeName' => 'ztest MR 300x250 ' . time(),
-            'sizes' => '300x250',
             'advertiserId' => '31918332',
             'creativeTemplateId' => $creativeTemplateId
         ];
 
         $lineItems = $lineItemService->getLineItemsInOrder($orderId);
-        $count = count($lineItems);
 
         $createdCratives = [];
         $lineItemsWithNewCreatives = [];
         $failedLineItems = [];
         $errorMsgs = [];
 
-        printf("Adding creatives to %s line item(s)\n", $count);
+        printf("Adding creatives to %s line item(s)\n", count($lineItems));
         foreach ($lineItems as $i => $lineItem) {
             try {
+                $creativeForm['sizes'] = $this->getFirstCreativeSizeInString($lineItem);
+                $creativeForm['creativeName'] = $this->buildCreativeName($lineItem, $creativeNameSuffix);
+
                 $creativeId = $creativeService->createFromTemplate( $creativeForm );
-                $createdCratives[] = $creativeId;
+                if (intval($creativeId) > 0) {g
+                    $createdCratives[] = $creativeId;
+                    $lineItemId = $lineItem->getId();
+                    $response = $lineItemCreativeAssociationService->create($creativeId, $lineItemId);
 
-                $lineItemId = $lineItem->getId();
-                $response = $lineItemCreativeAssociationService->create($creativeId, $lineItemId);
-
-                if ($response['success'] === true) {
-                    $lineItemsWithNewCreatives[] = $lineItemId;
-                    echo ".";
+                    if ($response['success'] === true) {
+                        $lineItemsWithNewCreatives[] = $lineItemId;
+                        echo ".";
+                    } else {
+                        $errorMsgs[] = $response['message'];
+                        echo "!";
+                    }
                 } else {
-                    $errorMsgs[] = $response['message'];
+                    $errorMsgs[] = 'Could not create a creative';
+                    echo "!";
                 }
             } catch (\Exception $e) {
                 $failedLineItems[] = $lineItem->getId();
@@ -103,5 +113,31 @@ class AddCreativeToLinesInOrderCommand extends Command
             printf( "\nFailed for %d line item(s)\n", count($failedLineItems) );
             print_r( $failedLineItems );
         }
+    }
+
+    private function getFirstCreativeSize($lineItem) {
+        $creativePlaceholder = $lineItem->getCreativePlaceholders();
+
+        if (!is_array($creativePlaceholder) || empty($creativePlaceholder)) {
+            throw new \Exception('Line item (' . $lineItem->getId() . ') does not have creative placeholder' );
+        }
+
+        return $creativePlaceholder[0]->getSize();
+    }
+
+    private function getFirstCreativeSizeInString($lineItem) {
+        $firstCreativeSize = $this->getFirstCreativeSize($lineItem);
+
+        return $firstCreativeSize->getWidth() . 'x' . $firstCreativeSize->getHeight();
+    }
+
+    private function buildCreativeName($lineItem, $suffix = '') {
+        $name = $lineItem->getName() . ' - ' . $this->getFirstCreativeSizeInString($lineItem);
+
+        if (!empty($suffix)) {
+            $name .= ' ' . $suffix;
+        }
+
+        return $name;
     }
 }
