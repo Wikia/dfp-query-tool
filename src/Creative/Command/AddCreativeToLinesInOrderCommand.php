@@ -3,10 +3,11 @@
 namespace Creative\Command;
 
 
+use Google\AdsApi\AdManager\v201911\ApiException;
 use Inventory\Api\LineItemService;
+use Inventory\Api\CreativeService;
 use Knp\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -53,5 +54,44 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         printf("Order ID: %d\n", $orderId);
         printf("Creative template ID: %d\n", $creativeTemplateId);
+
+        $lineItemService = new LineItemService();
+        $creativeService = new CreativeService();
+
+        $form = [
+            'creativeName' => 'Test MR 300x250',
+            'sizes' => '300x250',
+            'advertiserId' => '31918332',
+            'creativeTemplateId' => $creativeTemplateId
+        ];
+
+        $lineItems = $lineItemService->getLineItemsInOrder($orderId);
+        $count = count($lineItems);
+
+        $createdCratives = [];
+        $lineItemsWithNewCreatives = [];
+        $failedLineItems = [];
+
+        printf("Adding creatives to %s line item(s)\n", $count);
+        foreach ($lineItems as $i => $lineItem) {
+            try {
+                $creativeId = $creativeService->createFromTemplate( $form );
+
+                $createdCratives[] = $creativeId;
+                $lineItemsWithNewCreatives[] = $lineItem->getId();
+
+                echo ".";
+            } catch (ApiException $e) {
+                $failedLineItems[] = $lineItem->getId();
+                echo "!";
+            }
+        }
+
+        printf( "\nCreated %d creative(s)\n", count($createdCratives) );
+
+        if ( count($failedLineItems) > 0 ) {
+            printf( "\nFailed for %d line item(s)\n", count($failedLineItems) );
+            print_r( $failedLineItems );
+        }
     }
 }
