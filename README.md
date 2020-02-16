@@ -14,7 +14,7 @@ composer install
 
 ## Configuration
 
-Duplicate [auth.sample.ini](./config/auth.sample.ini) file, rename it to remove `.sample`. Fill it with Google Ad Manager OAuth2 connection credentials (or ask other team member to use shared, GAM Tableau credentials. Remember to set `networkCode` to `5441`:
+Duplicate [auth.sample.ini](./config/auth.sample.ini) file, rename it to remove `.sample`. Fill it with Google Ad Manager OAuth2 connection credentials (by visiting https://console.cloud.google.com/console and running `php ./GetRefreshToken.php` or ask other team member to use shared, GAM Tableau credentials. Remember to set `networkCode` to `5441`:
 
 ```ini
 [AD_MANAGER]
@@ -56,6 +56,7 @@ lint
 order
   order:key-values:add                         Add key-values pair to all line items custom targeting in order
   order:key-values:remove                      Remove key-values pair from all line item custom targeting in order
+  order:add-creatives                          Add new creatives to all line items in the order
 reports
   reports:fetch                                Downloads data to database.
 suggested-adunits
@@ -80,6 +81,40 @@ Child Content Eligibility is an option in Google Ad Manager lines introduced and
 app/console line-items:child-content-eligibility:update comma,separated,order,ids
 ```
 
+### Add creatives to line items in an order
+
+If you have an order with many line items which you want to reuse the same creative template you need to execute:
+```bash
+app/console order:add-creatives --order ORDER_ID --creative-template CREATIVE_TEMPLATE_ID
+```
+or its simpler version:
+```bash
+app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID
+```
+It will get all line items in the given order (`ORDER_ID`), iterate through them and create new creatives based on the given creative template (`CREATIVE_TEMPLATE_ID`).
+
+The new creatives' names will be built based on the line-item name and its first creative placeholder size.
+
+You can additionally add a suffix to creative template's name by passing optional option:
+```bash
+app/console order:add-creatives --order ORDER_ID --creative-template CREATIVE_TEMPLATE_ID --creative-suffix "SUFFIX"
+```
+or the simpler version:
+```bash
+app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID -s "SUFFIX"
+```
+
+This way the new creatives' names will be built based on the line-item name, its first creative placeholder size and given suffix, for example new creative name can look like:
+`ztest MR 300x250 0.01 - 300x250 (test)`
+where:
+* `ztest MR 300x250 0.01` is the line item name,
+* `300x250` is the first creative placeholder size,
+* `(test)` is the given suffix
+The command which created such creative could have looked like this:
+```bash
+app/console order:add-creatives -o 123456 -c 1234567890 -s "(test)"
+```
+
 ## Cron jobs
 
 A cron job is defined in k8s-cron-jobs directory:
@@ -88,3 +123,9 @@ A cron job is defined in k8s-cron-jobs directory:
 * It uses manually created credentials `adeng-query-tool-credentials`
 
 To see logs, go to https://dashboard.poz-dev.k8s.wikia.net:30080/#!/job?namespace=dev, select job with name starting from `dfp-query-tool-` and click on "Logs" icon.
+
+## Development
+
+Useful resources for future development:
+* https://developers.google.com/ad-manager/api/rel_notes
+* https://github.com/googleads/googleads-php-lib/tree/master/examples/AdManager
