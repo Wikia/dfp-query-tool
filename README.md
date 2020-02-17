@@ -91,9 +91,9 @@ or its simpler version:
 ```bash
 app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID
 ```
-It will get all line items in the given order (`ORDER_ID`), iterate through them and create new creatives based on the given creative template (`CREATIVE_TEMPLATE_ID`).
+It will get all line items in the given order (`ORDER_ID`), create a new creative based on the given creative template (`CREATIVE_TEMPLATE_ID`) and assign it to all the lines.
 
-The new creatives' names will be built based on the line-item name and its first creative placeholder size.
+The new creative's names will be built based on the line-item name and its first creative placeholder size.
 
 You can additionally add a suffix to creative template's name by passing optional option:
 ```bash
@@ -104,16 +104,18 @@ or the simpler version:
 app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID -s "SUFFIX"
 ```
 
-This way the new creatives' names will be built based on the line-item name, its first creative placeholder size and given suffix, for example new creative name can look like:
-`ztest MR 300x250 0.01 - 300x250 (test)`
+This way the new creative's names will be built based on the line-item name, its first creative placeholder size and given suffix, for example new creative's name can look like:
+`ztest MR 300x250 - 300x250 (test)`
 where:
-* `ztest MR 300x250 0.01` is the line item name,
+* `ztest MR 300x250 0.01` was the line item name (the price part was removed),
 * `300x250` is the first creative placeholder size,
 * `(test)` is the given suffix
 The command which created such creative could have looked like this:
 ```bash
 app/console order:add-creatives -o 123456 -c 1234567890 -s "(test)"
 ```
+
+If you want to create new creative per each line in order add `--force-new-creative=1` option or its shorter version: `-f1`
 
 ## Cron jobs
 

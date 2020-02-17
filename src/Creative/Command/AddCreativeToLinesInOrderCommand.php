@@ -41,6 +41,12 @@ class AddCreativeToLinesInOrderCommand extends Command
                 's',
                 InputOption::VALUE_OPTIONAL,
                 "Creative's name suffix"
+            )
+            ->addOption(
+                'force-new-creative',
+                'f',
+                InputOption::VALUE_OPTIONAL,
+                "Force creating new creative per line item"
             );
     }
 
@@ -49,6 +55,7 @@ class AddCreativeToLinesInOrderCommand extends Command
         $orderId = $input->getOption('order');
         $creativeTemplateId = $input->getOption('creative-template');
         $creativeNameSuffix = $input->getOption('creative-suffix');
+        $forceNewCreative = !!$input->getOption('force-new-creative');
 
         if ( is_null($orderId) || intval($orderId) === 0 ) {
             throw new InvalidOptionException('Invalid order ID');
@@ -85,9 +92,12 @@ class AddCreativeToLinesInOrderCommand extends Command
                 $creativeForm['sizes'] = $this->getFirstCreativeSizeInString($lineItem);
                 $creativeForm['creativeName'] = $this->buildCreativeName($lineItem, $creativeNameSuffix);
 
-                $creativeId = $creativeService->createFromTemplate( $creativeForm );
-                if (intval($creativeId) > 0) {
+                if ($i === 0 || $forceNewCreative === true) {
+                    $creativeId = $creativeService->createFromTemplate( $creativeForm );
                     $createdCratives[] = $creativeId;
+                }
+
+                if (intval($creativeId) > 0) {
                     $lineItemId = $lineItem->getId();
                     $response = $lineItemCreativeAssociationService->create($creativeId, $lineItemId);
 
@@ -132,7 +142,9 @@ class AddCreativeToLinesInOrderCommand extends Command
     }
 
     private function buildCreativeName($lineItem, $suffix = '') {
-        $name = $lineItem->getName() . ' - ' . $this->getFirstCreativeSizeInString($lineItem);
+        $pricePattern = "/\s{1}\d{1,}\.\d{2}/";
+        $name = preg_replace($pricePattern, '', $lineItem->getName());
+        $name .= $name . ' - ' . $this->getFirstCreativeSizeInString($lineItem);
 
         if (!empty($suffix)) {
             $name .= ' ' . $suffix;
