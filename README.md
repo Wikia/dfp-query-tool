@@ -95,6 +95,18 @@ It will get all line items in the given order (`ORDER_ID`), create a new creativ
 
 The new creative's names will be built based on the line-item name and its first creative placeholder size.
 
+If your creative requires string variables you can use `--creative-variables` option:
+```
+app/console order:add-creatives --order ORDER_ID --creative-template CREATIVE_TEMPLATE_ID --creative-variables VARIABLES_WITH_VALUES_PAIRS
+```
+or its shortcut `-r`:
+```
+app/console order:add-creatives -o 2666092254 -c 11899731 -r VARIABLES_WITH_VALUES_PAIRS
+```
+The `VARIABLES_WITH_VALUES_PAIRS` is a string of pairs separated by `;`, each pair is a combination of two strings separated by `:`, for example:
+* `creativeVariable:creativeVariableValue` - passed to the script will set one variable and its value in creative,
+* `var1:val1;var2:val2;var3:val3` - passed to the script will set three variables and their values to in creative. 
+
 You can additionally add a suffix to creative template's name by passing optional option:
 ```bash
 app/console order:add-creatives --order ORDER_ID --creative-template CREATIVE_TEMPLATE_ID --creative-suffix "SUFFIX"
@@ -116,6 +128,12 @@ app/console order:add-creatives -o 123456 -c 1234567890 -s "(test)"
 ```
 
 If you want to create new creative per each line in order add `--force-new-creative=1` option or its shorter version: `-f1`
+
+Examples:
+* `app/console order:add-creatives --order=2666092254 --creative-template=11899731 --creative-variables="bidderName:indexExchange;test1:test2"`
+* `app/console order:add-creatives --order 2666092254 --creative-template 11899731 --creative-variables "var1:val1;bidderName:indexExchange;test1:test2"`
+* `app/console order:add-creatives -o 2666092254 -c 11899731 -r "bidderName:indexExchange" -s "(send all-bids)"`
+* `app/console order:add-creatives -o 01234567890 -c 01234567890 -s "(send all-bids)" -f1`
 
 ## Cron jobs
 

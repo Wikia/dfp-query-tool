@@ -37,6 +37,12 @@ class AddCreativeToLinesInOrderCommand extends Command
                 'Creative template id'
             )
             ->addOption(
+                'creative-variables',
+                'r',
+                InputOption::VALUE_OPTIONAL,
+                "Creative's variables in a specific form, for example: var1:val1;var2:val2;var3:val3 ..."
+            )
+            ->addOption(
                 'creative-suffix',
                 's',
                 InputOption::VALUE_OPTIONAL,
@@ -54,6 +60,7 @@ class AddCreativeToLinesInOrderCommand extends Command
     {
         $orderId = $input->getOption('order');
         $creativeTemplateId = $input->getOption('creative-template');
+        $creativeVariables = $input->getOption('creative-variables');
         $creativeNameSuffix = $input->getOption('creative-suffix');
         $forceNewCreative = !!$input->getOption('force-new-creative');
 
@@ -63,6 +70,10 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         if ( is_null($creativeTemplateId) || intval($creativeTemplateId) === 0 ) {
             throw new InvalidOptionException('Invalid creative template ID');
+        }
+
+        if ( !empty($creativeVariables) ) {
+            $creativeVariables = $this->parseCreativeVariables($creativeVariables);
         }
 
         printf("Order ID: %d\n", $orderId);
@@ -77,9 +88,7 @@ class AddCreativeToLinesInOrderCommand extends Command
         $creativeForm = [
             'advertiserId' => $order->getAdvertiserId(),
             'creativeTemplateId' => $creativeTemplateId,
-            'variables' => [
-                'bidderName' => 'indexExchange'
-            ]
+            'variables' => $creativeVariables
         ];
 
         $lineItems = $lineItemService->getLineItemsInOrder($orderId);
@@ -154,5 +163,17 @@ class AddCreativeToLinesInOrderCommand extends Command
         }
 
         return $name;
+    }
+
+    private function parseCreativeVariables($input) {
+        $explodedCreativeVariables = explode(';', $input );
+        $creativeVariables = [];
+
+        foreach( $explodedCreativeVariables as $item ) {
+            $pair = explode( ':', $item);
+            $creativeVariables[$pair[0]] = $pair[1];
+        }
+
+        return $creativeVariables;
     }
 }
