@@ -156,7 +156,7 @@ class AddCreativeToLinesInOrderCommand extends Command
     private function buildCreativeName($lineItem, $suffix = '') {
         $pricePattern = "/\s{1}\d{1,}\.\d{2}/";
         $name = preg_replace($pricePattern, '', $lineItem->getName());
-        $name .= $name . ' - ' . $this->getFirstCreativeSizeInString($lineItem);
+        $name .=  ' - ' . $this->getFirstCreativeSizeInString($lineItem);
 
         if (!empty($suffix)) {
             $name .= ' ' . $suffix;
