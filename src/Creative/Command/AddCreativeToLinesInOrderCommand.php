@@ -76,7 +76,10 @@ class AddCreativeToLinesInOrderCommand extends Command
         $order = $orderService->getById($orderId);
         $creativeForm = [
             'advertiserId' => $order->getAdvertiserId(),
-            'creativeTemplateId' => $creativeTemplateId
+            'creativeTemplateId' => $creativeTemplateId,
+            'variables' => [
+                'bidderName' => 'indexExchange'
+            ]
         ];
 
         $lineItems = $lineItemService->getLineItemsInOrder($orderId);

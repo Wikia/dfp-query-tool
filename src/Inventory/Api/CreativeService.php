@@ -6,6 +6,7 @@ use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
 use Google\AdsApi\AdManager\v201911\Size;
 use Google\AdsApi\AdManager\v201911\TemplateCreative;
 use Google\AdsApi\AdManager\v201911\CreativeTemplateService;
+use Google\AdsApi\AdManager\v201911\StringCreativeTemplateVariableValue;
 
 class CreativeService {
 	const PAGE_SIZE = 250;
@@ -26,6 +27,8 @@ class CreativeService {
 		$creative->setAdvertiserId($form['advertiserId']);
 		$creative->setCreativeTemplateId($form['creativeTemplateId']);
 		$creative->setSize(new Size(intval($width), intval($height), false));
+
+		$this->setCreativeTemplateVariableValues($creative, $form['variables']);
 
 		$result = $this->creativeService->createCreatives([$creative]);
 
@@ -156,5 +159,19 @@ class CreativeService {
 				$fragment
 			);
 		}
+	}
+
+	private function setCreativeTemplateVariableValues($creative, $variables)
+	{
+		if (!is_array($variables) || empty($variables)) {
+		    return;
+		}
+
+		$creativeTemplateVariables = [];
+		foreach($variables as $var => $val) {
+			$creativeTemplateVariables[] = new StringCreativeTemplateVariableValue($var, $val);
+		}
+
+		$creative->setCreativeTemplateVariableValues($creativeTemplateVariables);
 	}
 }
