@@ -97,6 +97,7 @@ class AddCreativeToLinesInOrderCommand extends Command
         $lineItemsWithNewCreatives = [];
         $failedLineItems = [];
         $errorMsgs = [];
+        $creativeId = null;
 
         printf("Adding creatives to %s line item(s)\n", count($lineItems));
         foreach ($lineItems as $i => $lineItem) {
