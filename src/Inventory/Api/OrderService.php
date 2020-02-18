@@ -2,6 +2,7 @@
 
 namespace Inventory\Api;
 
+use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
 use Google\AdsApi\AdManager\v201911\Order;
 
 class OrderService {
@@ -10,6 +11,21 @@ class OrderService {
 	function __construct() {
 		$this->orderService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\OrderService::class);
 	}
+
+	public function getById($orderId) {
+        $statementBuilder = new StatementBuilder();
+        $statementBuilder->Where('id = :id and isArchived = false');
+        $statementBuilder->WithBindVariableValue('id', $orderId);
+
+        $page = $this->orderService->getOrdersByStatement($statementBuilder->toStatement());
+
+        $results = $page->getResults();
+        if ($results === null) {
+            throw new LineItemException('Cannot find order');
+        }
+
+        return array_shift($results);
+    }
 
 	public function create($form) {
 		$order = new Order();
