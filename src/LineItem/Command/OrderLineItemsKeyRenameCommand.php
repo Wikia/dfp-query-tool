@@ -42,7 +42,7 @@ class OrderLineItemsKeyRenameCommand extends Command
 
 			printf('.');
 
-			if ($i % 50) {
+			if (($i+1) % 50 === 0) {
 				printf(" (%s/%s)\n", $i+1, count($lineItems));
 			}
 		}
