@@ -45,6 +45,63 @@ class CustomTargetingService
 		return $ids;
 	}
 
+	public function getAllValueIds($keyId) {
+		$values = [];
+
+		try {
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);
+
+			$statementBuilder = new StatementBuilder();
+			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
+			$statementBuilder->withBindVariableValue('customTargetingKeyId', $keyId);
+
+			$page = null;
+			for ($i = 0; $i < 10; $i++) {
+				$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+
+				if ($page) break;
+				echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+			}
+
+			$results = $page->getResults();
+			if (!empty($results)) {
+				foreach ($results as $customTargetingValue) {
+					$values[$customTargetingValue->getId()] = $customTargetingValue->getName();
+				}
+			} else {
+				throw new \Exception(sprintf('Values not found.'));
+			}
+		} catch (\Exception $e) {
+			throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
+		}
+
+		return $values;
+	}
+
+	public function getValuesNamesFromMap($valuesIds, $valuesMap) {
+		$names = [];
+
+		foreach ($valuesIds as $id) {
+			if (!array_key_exists($id, $valuesMap)) {
+				throw new \InvalidArgumentException(sprintf('Unknown value id: %s', $id));
+			}
+
+			$names[] = $valuesMap[$id];
+		}
+
+		return $names;
+	}
+
+	public function getValuesIdsFromMap($valuesNames, $valuesMap) {
+		$ids = [];
+
+		foreach ($valuesNames as $name) {
+			$ids[] = array_search($name, $valuesMap);
+		}
+
+		return $ids;
+	}
+
 	public function getValueIds($keyId, $values) {
 		$ids = [];
 
@@ -83,9 +140,14 @@ class CustomTargetingService
 	}
 
 	public function addValues($key, $values) {
-		$addedValues = 0;
 		$keyIds = $this->getKeyIds([$key]);
 		$keyId = array_shift($keyIds);
+
+		return $this->addValuesToKeyById($keyId, $values);
+	}
+
+	public function addValuesToKeyById($keyId, $values) {
+		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
 		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);

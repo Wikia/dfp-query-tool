@@ -249,7 +249,7 @@ class LineItemService
 		if ($addedNewKeyValues) {
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
-			$this->lineItemService->updatelineItems( [ $lineItem ] );
+			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
 	}
 
@@ -298,7 +298,7 @@ class LineItemService
 		if ($removedKeyValues) {
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
-			$this->lineItemService->updatelineItems( [ $lineItem ] );
+			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
 	}
 
@@ -307,7 +307,45 @@ class LineItemService
 
 		$lineItem->setChildContentEligibility($eligibility);
 
-		$this->lineItemService->updatelineItems( [ $lineItem ] );
+		$this->lineItemService->updateLineItems( [ $lineItem ] );
+	}
+
+	public function renameKeyInLineItemTargeting($lineItem, $oldKeyId, $newKeyId) {
+		$oldValuesMap = $this->customTargetingService->getAllValueIds($oldKeyId);
+		$newValuesMap = $this->customTargetingService->getAllValueIds($newKeyId);
+
+		$customTargetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+
+		foreach ($customTargetingSets as $customTargetingSet) {
+			if ($customTargetingSet instanceof CustomCriteriaSet) {
+				$keyValuePairs = $customTargetingSet->getChildren();
+
+				foreach ($keyValuePairs as $keyValuePair) {
+					if ($oldKeyId === $keyValuePair->getKeyId()) {
+						$keyValueNames = $this->customTargetingService->getValuesNamesFromMap(
+							$keyValuePair->getValueIds(),
+							$oldValuesMap
+						);
+						$missingValues = array_diff($keyValueNames, array_values($newValuesMap));
+
+						if (count($missingValues) > 0) {
+							$this->customTargetingService->addValuesToKeyById($newKeyId, $missingValues);
+							$newValuesMap = $this->customTargetingService->getAllValueIds($newKeyId);
+						}
+
+						$newValueIds = $this->customTargetingService->getValuesIdsFromMap(
+							$keyValueNames,
+							$newValuesMap
+						);
+
+						$keyValuePair->setKeyId($newKeyId);
+						$keyValuePair->setValueIds($newValueIds);
+					}
+				}
+			}
+		}
+
+		$this->lineItemService->updateLineItems( [ $lineItem ] );
 	}
 
 	private function validateForm($form) {
