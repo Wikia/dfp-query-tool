@@ -108,4 +108,16 @@ class LineItemCreativeAssociationService {
 
 		return $response;
 	}
+
+	public function count( $lineItemId ) {
+		$statementBuilder = (new StatementBuilder())
+			->where('lineItemId = :lineItemId')
+			->withBindVariableValue('lineItemId', $lineItemId);
+
+		$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\LineItemCreativeAssociationService::class);
+
+		$result = $lineItemCreativeAssociationService->getLineItemCreativeAssociationsByStatement($statementBuilder->toStatement());
+
+		return count($result->getResults());
+	}
 }

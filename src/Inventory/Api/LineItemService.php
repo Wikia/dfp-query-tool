@@ -340,6 +340,7 @@ class LineItemService
 							if (count($missingValues) > 0) {
 								$this->customTargetingService->addValuesToKeyById($newKeyId, $missingValues);
 								$valuesMap[$newKeyId] = $this->customTargetingService->getAllValueIds($newKeyId);
+								$newValuesMap = $valuesMap[$newKeyId];
 							}
 
 							$newValueIds = $this->customTargetingService->getValuesIdsFromMap(
@@ -357,7 +358,13 @@ class LineItemService
 		}
 
 		if ($isUpdated) {
-			$this->lineItemService->updateLineItems( [ $lineItem ] );
+			try {
+				$this->lineItemService->updateLineItems( [ $lineItem ] );
+			} catch (\Exception $e) {
+				printf("\n\nError occurred while updating %s line item:\n", $lineItem->getId());
+				printf($e->getMessage());
+				printf("\n\n");
+			}
 		}
 	}
 

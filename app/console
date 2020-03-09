@@ -34,6 +34,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider, array(
 $console = $app['console'];
 
 $console->add(new Creative\Command\AssociateCreativesInOrderCommand($app));
+$console->add(new Creative\Command\CountCreativesInOrderCommand($app));
 $console->add(new Creative\Command\CreativeCommand($app));
 $console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($app));
 $console->add(new Creative\Command\AddCreativeToLinesInOrderCommand($app));
