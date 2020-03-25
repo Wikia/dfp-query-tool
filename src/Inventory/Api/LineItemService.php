@@ -188,21 +188,23 @@ class LineItemService
 			if ($page->getResults() !== null) {
 				$totalResultSetSize = $page->getTotalResultSetSize();
 				foreach ($page->getResults() as $lineItem) {
-					$wasKeyInSet = false;
+					$foundKey = null;
 					if (null !== $lineItem->getTargeting()->getCustomTargeting()) {
 						$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
 						foreach ($targetingSets as $targetingSet) {
 							$keyValuePairs = $targetingSet->getChildren();
 							foreach ($keyValuePairs as $pair) {
 								if (method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds)) {
-									$wasKeyInSet = true;
+									$foundKey = $pair->getKeyId();
 								}
 							}
 						}
-						if ($wasKeyInSet) {
+						if ($foundKey !== null) {
 							$lineItems[] = [
+								'name' => $lineItem->getName(),
 								'line_item_id' => $lineItem->getId(),
 								'order_id' => $lineItem->getOrderId(),
+								'key' => $foundKey,
 							];
 						}
 					}

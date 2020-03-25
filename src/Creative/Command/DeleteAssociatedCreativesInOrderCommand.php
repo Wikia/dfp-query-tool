@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CountCreativesInOrderCommand extends Command
+class DeleteAssociatedCreativesInOrderCommand extends Command
 {
 	public function __construct($app, $name = null)
 	{
@@ -18,9 +18,13 @@ class CountCreativesInOrderCommand extends Command
 
 	protected function configure()
 	{
-		$this->setName('creatives:count')
-			->setDescription('Count creatives in all line items in order')
+		$this->setName('creatives:delete')
+			->setDescription('Deletes associated creatives in all line items in order')
 			->addArgument(
+				'creative-id',
+				InputArgument::REQUIRED,
+				'Creative ID'
+			)->addArgument(
 				'order-id',
 				InputArgument::REQUIRED,
 				'Order ID'
@@ -29,6 +33,7 @@ class CountCreativesInOrderCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$creativeId = $input->getArgument('creative-id');
 		$orderId = $input->getArgument('order-id');
 
 		$lineItemService = new LineItemService();
@@ -36,15 +41,15 @@ class CountCreativesInOrderCommand extends Command
 
 		$lineItems = $lineItemService->getLineItemsInOrder($orderId);
 		$count = count($lineItems);
-		$allCreatives = 0;
 
-		printf("Checking %s line items\n", $count);
+		printf("Updating %s line items\n", $count);
 		foreach ($lineItems as $i => $lineItem) {
-			$creatives = $associationService->count($lineItem->getId());
-			$allCreatives += $creatives;
-			printf("  - Line item %s creatives: %s\n", $lineItem->getId(), $creatives);
+			$result = $associationService->delete($creativeId, $lineItem->getId());
+			if ($result['success']) {
+				printf("  - Line item %s updated (%s/%s)\n", $lineItem->getId(), $i + 1, $count);
+			} else {
+				printf("  - %s (%s/%s)\n", $result['message'], $i + 1, $count);
+			}
 		}
-
-		printf("Number of all creatives: %s\n", $allCreatives);
 	}
 }
