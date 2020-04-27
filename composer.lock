@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "644c528edee3af57c9f7bd7b40a0a61a",
+    "content-hash": "addb5a3344a634a8334375defc50cbac",
     "packages": [
         {
             "name": "dflydev/doctrine-orm-service-provider",
@@ -1062,16 +1062,16 @@
         },
         {
             "name": "googleads/googleads-php-lib",
-            "version": "44.0.0",
+            "version": "46.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleads/googleads-php-lib.git",
-                "reference": "f5ffd579a5e3b53235b78caed0ec5aa5553e9ecb"
+                "reference": "be335568e5d97f599089020146ca19daa3cf381a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/f5ffd579a5e3b53235b78caed0ec5aa5553e9ecb",
-                "reference": "f5ffd579a5e3b53235b78caed0ec5aa5553e9ecb",
+                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/be335568e5d97f599089020146ca19daa3cf381a",
+                "reference": "be335568e5d97f599089020146ca19daa3cf381a",
                 "shasum": ""
             },
             "require": {
@@ -1082,9 +1082,9 @@
                 "guzzlehttp/guzzle": "^6.0",
                 "guzzlehttp/psr7": "^1.2",
                 "monolog/monolog": "^1.17.1 || ^2.0.0",
-                "php": ">=7.1",
-                "phpdocumentor/reflection-docblock": "^4.0.0 || ^3.0.3",
-                "symfony/serializer": "^2.8.0 || ^3.0.3 || ^4.0.0"
+                "php": ">=7.2",
+                "phpdocumentor/reflection-docblock": "^3.0.3 || ^4.0 || ^5.0",
+                "symfony/serializer": "^4.4.0 || ^5.0.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^7.5",
@@ -1111,7 +1111,7 @@
             ],
             "description": "Google Ads APIs Client Library for PHP (AdWords and Ad Manager)",
             "homepage": "https://github.com/googleads/googleads-php-lib",
-            "time": "2019-11-06T14:48:37+00:00"
+            "time": "2020-04-09T20:14:50+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
