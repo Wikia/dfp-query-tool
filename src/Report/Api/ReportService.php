@@ -4,11 +4,11 @@ namespace Report\Api;
 
 use Common\Api\Authenticator;
 use Google\AdsApi\AdManager\AdManagerServices;
-use Google\AdsApi\AdManager\Util\v201911\AdManagerDateTimes;
-use Google\AdsApi\AdManager\Util\v201911\ReportDownloader;
-use Google\AdsApi\AdManager\v201911\ReportJob;
-use Google\AdsApi\AdManager\v201911\ReportQuery;
-use Google\AdsApi\AdManager\v201911\ReportService as AdManagerReportService;
+use Google\AdsApi\AdManager\Util\v202002\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v202002\ReportDownloader;
+use Google\AdsApi\AdManager\v202002\ReportJob;
+use Google\AdsApi\AdManager\v202002\ReportQuery;
+use Google\AdsApi\AdManager\v202002\ReportService as AdManagerReportService;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ReportService

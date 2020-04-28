@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v201911\StatementBuilder;
-use Google\AdsApi\AdManager\v201911\CustomTargetingValue;
-use Google\AdsApi\AdManager\v201911\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v202002\StatementBuilder;
+use Google\AdsApi\AdManager\v202002\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202002\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -12,7 +12,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202002\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('name = :name');
@@ -49,7 +49,7 @@ class CustomTargetingService
 		$values = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202002\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
@@ -106,7 +106,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202002\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -150,7 +150,7 @@ class CustomTargetingService
 		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v201911\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202002\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 
