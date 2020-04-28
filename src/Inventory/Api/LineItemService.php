@@ -178,18 +178,20 @@ class LineItemService
 
 	public function findLineItemIdsByKeys($keyIds, $excludeInactive = true) {
 		$statementBuilder = new StatementBuilder();
-		$statementBuilder->Where('isArchived = false');
+
+		$statement = 'isArchived = false';
 
 		if ($excludeInactive) {
-            $statementBuilder->Where(
-                sprintf('status in ["%s", "%s", "%s"]',
-                    ComputedStatus::READY,
-                    ComputedStatus::DELIVERING,
-                    ComputedStatus::DELIVERY_EXTENDED
-                )
-            );
-        }
-		$statementBuilder->Limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+			$statement .= ' and status in (:activeStatuses)';
+			$statementBuilder->withBindVariableValue('activeStatuses', [
+				ComputedStatus::READY,
+				ComputedStatus::DELIVERING,
+				ComputedStatus::DELIVERY_EXTENDED
+			]);
+		}
+
+		$statementBuilder->where($statement);
+		$statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
 
 		$lineItems = [];
 		$totalResultSetSize = 0;
