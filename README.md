@@ -73,6 +73,10 @@ app/console line-item:create ./line-item-presets/<your-configuration>.json
 
 It will create multiple line items in the provided order with associated creative.
 
+WARNING 1. [prebid20.sample.json](./line-item-presets/prebid20.sample.json) is the default file, [prebid50.sample.json](./line-item-presets/prebid50.sample.json) is for bidders with `maxCpm` set to `EXTENDED_MAX_CPM`.
+
+WARNING 2. While creating video line items add `"isVideo": true,`
+
 ### Update Child Content Eligibility
 
 Child Content Eligibility is an option in Google Ad Manager lines introduced and switched to "Disallow" for all line items late 2019 / early 2020. This query can automatically switch it back to "Allow" for given orders:
