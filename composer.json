@@ -2,7 +2,7 @@
     "license": "Apache-2.0",
     "require": {
         "dflydev/doctrine-orm-service-provider": "^2.0",
-        "googleads/googleads-php-lib": "^46.0",
+        "googleads/googleads-php-lib": "^50.0",
         "knplabs/console-service-provider": "^2.0",
         "silex/silex": "~2.0",
         "symfony/yaml": "^3.1",
@@ -11,7 +11,7 @@
     "autoload": {
         "classmap": [
             "src",
-            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/AdManager/Util/v202002"
+            "vendor/googleads/googleads-php-lib/src/Google/AdsApi/AdManager/Util/v202011"
         ]
     }
 }

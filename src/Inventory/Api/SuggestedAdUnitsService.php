@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202002\StatementBuilder;
-use Google\AdsApi\AdManager\v202002\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
-use Google\AdsApi\AdManager\v202002\SuggestedAdUnitService;
+use Google\AdsApi\AdManager\Util\v202011\StatementBuilder;
+use Google\AdsApi\AdManager\v202011\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
+use Google\AdsApi\AdManager\v202011\SuggestedAdUnitService;
 
 class SuggestedAdUnitsService
 {
