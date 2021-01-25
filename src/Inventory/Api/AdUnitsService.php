@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202002\StatementBuilder;
-use Google\AdsApi\AdManager\v202002\ArchiveAdUnits;
-use Google\AdsApi\AdManager\v202002\InventoryService;
+use Google\AdsApi\AdManager\Util\v202011\StatementBuilder;
+use Google\AdsApi\AdManager\v202011\ArchiveAdUnits;
+use Google\AdsApi\AdManager\v202011\InventoryService;
 
 class AdUnitsService
 {
