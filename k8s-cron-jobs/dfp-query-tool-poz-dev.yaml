@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
           - name: dfp-query-tool
-            image: artifactory.wikia-inc.com/aden/dfp-query-tool
+            image: artifactory.wikia-inc.com/aden/dfp-query-tool:0.0.1
             args:
             - ./approve.sh
             volumeMounts:
