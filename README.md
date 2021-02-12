@@ -173,6 +173,10 @@ To see logs, go to https://dashboard.poz-dev.k8s.wikia.net:30080/#!/job?namespac
 4. Run `make push`
 5. Verify in [k8s dashboard](https://dashboard.poz-dev.k8s.wikia.net:30080/#/search?namespace=dev&q=dfp-query) if the container has been created
 
+### Troubleshooting
+
+If the built image somehow does not get pushed to the k8s check the latest version of [`k8s-deployer`](https://artifactory.wikia-inc.com/ui/repos/tree/General/dockerv2-local%2Fops%2Fk8s-deployer) and update it in the `dfp-query-tool-poz-dev.yaml` file.
+
 ## Development
 
 Useful resources for future development:
