@@ -236,16 +236,19 @@ class LineItemService
 		foreach ($targetingSets as $targetingSet) {
 			$keyValuePairs = $targetingSet->getChildren();
 			$wasKeyInSet = false;
+
 			foreach ($keyValuePairs as $pair) {
 				if ($pair->getKeyId() === $keyId) {
 					$wasKeyInSet = true;
 					$pairValues = $pair->getValueIds();
+
 					foreach ($valueIds as $valueId) {
 						if (!in_array($valueId, $pairValues)) {
 							$pairValues[] = $valueId;
 							$addedNewKeyValues = true;
 						}
 					}
+
 					$pair->setValueIds($pairValues);
 					break;
 				}
@@ -264,6 +267,8 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
+
+		return $addedNewKeyValues;
 	}
 
 	public function removeKeyValuePairFromLineItemTargeting($lineItem, $keyId, $valueIds) {
@@ -274,18 +279,22 @@ class LineItemService
 		foreach ($targetingSets as $targetingSet) {
 			$keyValuePairs = $targetingSet->getChildren();
 			$newKeyValuePairs = [];
+
 			foreach ($keyValuePairs as $pair) {
 				if ($pair->getKeyId() === $keyId) {
 					$newValues = [];
+
 					foreach ($pair->getValueIds() as $valueId) {
 						if (!in_array($valueId, $valueIds)) {
 							$newValues[] = $valueId;
 						}
 					}
+
 					if (count($newValues) > 0) {
 						if (count($pair->getValueIds()) !== count($newValues)) {
 							$removedKeyValues = true;
 						}
+
 						$pair->setValueIds($newValues);
 						$newKeyValuePairs[] = $pair;
 					}
@@ -298,6 +307,7 @@ class LineItemService
 				if (count($targetingSet->getChildren()) !== count($newKeyValuePairs)) {
 					$removedKeyValues = true;
 				}
+
 				$targetingSet->setChildren($newKeyValuePairs);
 				$newTargetingSets[] = $targetingSet;
 			}
@@ -313,6 +323,8 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
+
+		return $removedKeyValues;
 	}
 
 	public function setChildContentEligibility($lineItem, $value) {

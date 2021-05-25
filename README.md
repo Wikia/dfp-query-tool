@@ -51,6 +51,7 @@ line-items
   line-items:find-by-key                       Find line items by used keys in the targeting
   line-items:key-values:add                    Add key-values pair to line item custom targeting
   line-items:key-values:remove                 Remove key-values pair from line item custom targeting
+  line-items:key-values:update                 Update key-values targeting pair in all lines in given order
 lint
   lint:yaml                                    Lints a file and outputs encountered errors
 order
@@ -83,6 +84,22 @@ Child Content Eligibility is an option in Google Ad Manager lines introduced and
 
 ```bash
 app/console line-items:child-content-eligibility:update comma,separated,order,ids
+```
+
+### Update key-values targeting pair
+
+This command allows you to update values for given key in all lines in given orders. You can use key previously not assigned to the line or use already existing one just to add new values.
+
+First parameter is a comma-separated list of orders that needs to be updated.
+
+Second parameter is a targeting key that should be changed
+
+Third parameter is a comma-separated values that key should have after running the command. Be advised: this command is not clearing up old key values before adding new ones. If all values existed in some line - the update of this line will be skipped.
+
+Fourth parameter is a key-val operator (IS or IS NOT).
+
+```bash
+app/console line-items:key-values:update comma,separated,order,ids key comma,separated,values operator
 ```
 
 ### Add creatives to line items in an order
