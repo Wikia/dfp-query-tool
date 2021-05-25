@@ -96,7 +96,7 @@ Second parameter is a targeting key that should be changed
 
 Third parameter is a comma-separated values that key should have after running the command. Be advised: this command is not clearing up old key values before adding new ones. If all values existed in some line - the update of this line will be skipped.
 
-Fourth parameter is a key-val operator (IS or IS NOT).
+Fourth parameter (optional) is a key-val operator (IS or IS NOT, default IS).
 
 ```bash
 app/console line-items:key-values:update comma,separated,order,ids key comma,separated,values operator
