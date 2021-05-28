@@ -46,6 +46,7 @@ $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
+$console->add(new LineItem\Command\LineItemKeyValuesUpdateCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyRenameCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));

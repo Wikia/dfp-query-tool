@@ -2,23 +2,23 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202011\AdManagerDateTimes;
-use Google\AdsApi\AdManager\Util\v202011\StatementBuilder;
-use Google\AdsApi\AdManager\v202011\AdUnitTargeting;
-use Google\AdsApi\AdManager\v202011\ChildContentEligibility;
-use Google\AdsApi\AdManager\v202011\CreativePlaceholder;
-use Google\AdsApi\AdManager\v202011\CustomCriteria;
-use Google\AdsApi\AdManager\v202011\CustomCriteriaSet;
-use Google\AdsApi\AdManager\v202011\EnvironmentType;
-use Google\AdsApi\AdManager\v202011\Goal;
-use Google\AdsApi\AdManager\v202011\InventoryTargeting;
-use Google\AdsApi\AdManager\v202011\LineItem;
-use Google\AdsApi\AdManager\v202011\Money;
-use Google\AdsApi\AdManager\v202011\NetworkService;
-use Google\AdsApi\AdManager\v202011\Size;
-use Google\AdsApi\AdManager\v202011\Targeting;
-use Google\AdsApi\AdManager\v202011\RequestPlatformTargeting;
-use Google\AdsApi\AdManager\v202011\ComputedStatus;
+use Google\AdsApi\AdManager\Util\v202105\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
+use Google\AdsApi\AdManager\v202105\AdUnitTargeting;
+use Google\AdsApi\AdManager\v202105\ChildContentEligibility;
+use Google\AdsApi\AdManager\v202105\CreativePlaceholder;
+use Google\AdsApi\AdManager\v202105\CustomCriteria;
+use Google\AdsApi\AdManager\v202105\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v202105\EnvironmentType;
+use Google\AdsApi\AdManager\v202105\Goal;
+use Google\AdsApi\AdManager\v202105\InventoryTargeting;
+use Google\AdsApi\AdManager\v202105\LineItem;
+use Google\AdsApi\AdManager\v202105\Money;
+use Google\AdsApi\AdManager\v202105\NetworkService;
+use Google\AdsApi\AdManager\v202105\Size;
+use Google\AdsApi\AdManager\v202105\Targeting;
+use Google\AdsApi\AdManager\v202105\RequestPlatformTargeting;
+use Google\AdsApi\AdManager\v202105\ComputedStatus;
 use Inventory\Form\LineItemForm;
 
 class LineItemService
@@ -30,7 +30,7 @@ class LineItemService
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v202011\LineItemService::class);
+		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class);
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
@@ -236,16 +236,19 @@ class LineItemService
 		foreach ($targetingSets as $targetingSet) {
 			$keyValuePairs = $targetingSet->getChildren();
 			$wasKeyInSet = false;
+
 			foreach ($keyValuePairs as $pair) {
 				if ($pair->getKeyId() === $keyId) {
 					$wasKeyInSet = true;
 					$pairValues = $pair->getValueIds();
+
 					foreach ($valueIds as $valueId) {
 						if (!in_array($valueId, $pairValues)) {
 							$pairValues[] = $valueId;
 							$addedNewKeyValues = true;
 						}
 					}
+
 					$pair->setValueIds($pairValues);
 					break;
 				}
@@ -264,6 +267,8 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
+
+		return $addedNewKeyValues;
 	}
 
 	public function removeKeyValuePairFromLineItemTargeting($lineItem, $keyId, $valueIds) {
@@ -274,18 +279,22 @@ class LineItemService
 		foreach ($targetingSets as $targetingSet) {
 			$keyValuePairs = $targetingSet->getChildren();
 			$newKeyValuePairs = [];
+
 			foreach ($keyValuePairs as $pair) {
 				if ($pair->getKeyId() === $keyId) {
 					$newValues = [];
+
 					foreach ($pair->getValueIds() as $valueId) {
 						if (!in_array($valueId, $valueIds)) {
 							$newValues[] = $valueId;
 						}
 					}
+
 					if (count($newValues) > 0) {
 						if (count($pair->getValueIds()) !== count($newValues)) {
 							$removedKeyValues = true;
 						}
+
 						$pair->setValueIds($newValues);
 						$newKeyValuePairs[] = $pair;
 					}
@@ -298,6 +307,7 @@ class LineItemService
 				if (count($targetingSet->getChildren()) !== count($newKeyValuePairs)) {
 					$removedKeyValues = true;
 				}
+
 				$targetingSet->setChildren($newKeyValuePairs);
 				$newTargetingSets[] = $targetingSet;
 			}
@@ -313,6 +323,8 @@ class LineItemService
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
 		}
+
+		return $removedKeyValues;
 	}
 
 	public function setChildContentEligibility($lineItem, $value) {
