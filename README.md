@@ -150,7 +150,7 @@ To see logs, go to https://dashboard.poz-dev.k8s.wikia.net:30080/#!/job?namespac
 
 ### How to build and deploy new version for cron jobs?
 
-1. Bump the version in the TAG variable in `Makefile` and the `dfp-query-tool-poz-dev.yaml` file
+1. Bump the version in the TAG variable in `Makefile` and the `k8s-cron-jobs/dfp-query-tool-poz-dev.yaml` file
 2. Run `make build`
 3. Verify in [artifactory](https://artifactory.wikia-inc.com/ui/repos/tree/General/dockerv2-local%2Faden%2Fdfp-query-tool) if the image with correct tag (version) has been created
 4. Run `make push`
