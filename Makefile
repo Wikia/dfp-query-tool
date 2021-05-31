@@ -1,5 +1,5 @@
 CURRENT_DIR := $(shell pwd)
-DEPLOYER=artifactory.wikia-inc.com/ops/k8s-deployer:0.0.28
+DEPLOYER=artifactory.wikia-inc.com/ops/k8s-deployer:0.0.29
 IMAGE=artifactory.wikia-inc.com/aden/dfp-query-tool
 TAG=0.0.1
 
