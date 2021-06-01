@@ -51,6 +51,7 @@ class LineItemService
 
 			if ($form['isVideo']) {
 				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
+				$lineItem->setVideoMaxDuration( 60000 );
 
 				$requestPlatformTargeting = new RequestPlatformTargeting();
 				$requestPlatformTargeting->setTargetedRequestPlatforms([]);
@@ -263,6 +264,10 @@ class LineItemService
 		}
 
 		if ($addedNewKeyValues) {
+			if ($lineItem->getEnvironmentType() === EnvironmentType::VIDEO_PLAYER) {
+				$lineItem->setVideoMaxDuration( 60000 );
+			}
+
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
@@ -319,6 +324,10 @@ class LineItemService
 		}
 
 		if ($removedKeyValues) {
+			if ($lineItem->getEnvironmentType() === EnvironmentType::VIDEO_PLAYER) {
+				$lineItem->setVideoMaxDuration( 60000 );
+			}
+
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
 			$this->lineItemService->updateLineItems( [ $lineItem ] );
