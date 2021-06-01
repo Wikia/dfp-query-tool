@@ -2,7 +2,6 @@
 
 namespace LineItem\Command;
 
-use Google\AdsApi\AdManager\v202105\LineItem;
 use Inventory\Api\CustomTargetingService;
 use Inventory\Api\LineItemService;
 use Knp\Command\Command;
