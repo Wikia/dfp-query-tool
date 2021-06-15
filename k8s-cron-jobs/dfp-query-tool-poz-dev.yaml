@@ -10,12 +10,18 @@ spec:
   schedule: "0 */4 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
+    metadata:
+      labels:
+        team: adeng
     spec:
       template:
+        metadata:
+          labels:
+            team: adeng
         spec:
           containers:
           - name: dfp-query-tool
-            image: artifactory.wikia-inc.com/aden/dfp-query-tool:0.0.3
+            image: artifactory.wikia-inc.com/aden/dfp-query-tool:0.0.4
             args:
             - ./approve.sh
             volumeMounts:
