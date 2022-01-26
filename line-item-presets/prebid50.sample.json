@@ -10,6 +10,7 @@
   "start": "",
   "end": "",
   "rate": "%%element%%",
+  "adUnit": "",
   "keys": [
     "hb_bidder",
     "hb_pb",

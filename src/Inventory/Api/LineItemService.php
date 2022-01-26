@@ -26,6 +26,7 @@ class LineItemService
 	private $customTargetingService;
 	private $lineItemService;
 	private $targetedAdUnits;
+	private $targetedPlacements = array();
 	private $lineItemCreativeAssociationService;
 
 	public function __construct() {
@@ -41,6 +42,10 @@ class LineItemService
 		try {
 			$inventoryTargeting = new InventoryTargeting();
 			$inventoryTargeting->setTargetedAdUnits($this->targetedAdUnits);
+
+			if (count($this->targetedPlacements)) {
+				$inventoryTargeting->setTargetedPlacementIds($this->targetedPlacements);
+			}
 
 			$targeting = new Targeting();
 			$targeting->setInventoryTargeting($inventoryTargeting);
@@ -124,6 +129,10 @@ class LineItemService
 				];
 			}
 		} else {
+			if ($data['adUnit'] !== '') {
+				$this->setupCustomInventoryTargeting($data['adUnit']);
+			}
+
 			$formsSet = $lineItemForm->process();
 
 			foreach($formsSet as $alteredForm) {
@@ -409,6 +418,17 @@ class LineItemService
 		$adUnit->setIncludeDescendants(true);
 
 		return $adUnit;
+	}
+
+	private function setupCustomInventoryTargeting($adUnitName) {
+		if ($adUnitName === 'wka1b.iu') {
+			$adUnit = new AdUnitTargeting();
+			$adUnit->setAdUnitId(22279857691);
+			$adUnit->setIncludeDescendants(true);
+
+			$this->targetedAdUnits = [$adUnit];
+			$this->targetedPlacements = [2366772];
+		}
 	}
 
 	private function getCustomTargeting($form) {

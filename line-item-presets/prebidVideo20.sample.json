@@ -11,6 +11,7 @@
   "start": "",
   "end": "",
   "rate": "%%element%%",
+  "adUnit": "",
   "keys": [
     "hb_uuid_mediagrid",
     "hb_pb_mediagrid",
