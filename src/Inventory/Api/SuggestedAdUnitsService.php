@@ -51,6 +51,8 @@ class SuggestedAdUnitsService
 			} else {
 				printf("No suggested ad units were approved.\n");
 			}
+		} else {
+			printf("No suggested ad units to be approved found.\n");
 		}
 	}
 }
