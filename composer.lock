@@ -7,6 +7,7 @@
     "content-hash": "a44e8e6afe3c41ceebb1185794b83b19",
     "packages": [
         {
+<<<<<<< HEAD
             "name": "composer/package-versions-deprecated",
             "version": "1.11.99.1",
             "source": {
@@ -62,6 +63,8 @@
             "time": "2020-11-11T10:22:58+00:00"
         },
         {
+=======
+>>>>>>> 6199f34... ADEN-11842 composer update
             "name": "dflydev/doctrine-orm-service-provider",
             "version": "v2.0.1",
             "source": {
@@ -116,6 +119,10 @@
                 "pimple",
                 "silex"
             ],
+            "support": {
+                "issues": "https://github.com/dflydev/dflydev-doctrine-orm-service-provider/issues",
+                "source": "https://github.com/dflydev/dflydev-doctrine-orm-service-provider/tree/v2.0.1"
+            },
             "time": "2015-09-07T12:14:46+00:00"
         },
         {
@@ -269,7 +276,29 @@
                 "redis",
                 "xcache"
             ],
+<<<<<<< HEAD
             "time": "2020-07-07T18:54:01+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/cache/issues",
+                "source": "https://github.com/doctrine/cache/tree/2.2.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fcache",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-20T20:07:39+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "doctrine/collections",
@@ -334,7 +363,15 @@
                 "iterators",
                 "php"
             ],
+<<<<<<< HEAD
             "time": "2020-07-27T17:53:49+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/collections/issues",
+                "source": "https://github.com/doctrine/collections/tree/1.6.8"
+            },
+            "time": "2021-08-10T18:51:53+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "doctrine/common",
@@ -405,6 +442,7 @@
                 "doctrine",
                 "php"
             ],
+<<<<<<< HEAD
             "time": "2020-12-03T21:02:31+00:00"
         },
         {
@@ -423,11 +461,52 @@
             },
             "require": {
                 "doctrine/cache": "^1.0",
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/common/issues",
+                "source": "https://github.com/doctrine/common/tree/3.3.0"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fcommon",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-02-05T18:28:51+00:00"
+        },
+        {
+            "name": "doctrine/dbal",
+            "version": "3.3.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/dbal.git",
+                "reference": "9e7f76dd1cde81c62574fdffa5a9c655c847ad21"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/9e7f76dd1cde81c62574fdffa5a9c655c847ad21",
+                "reference": "9e7f76dd1cde81c62574fdffa5a9c655c847ad21",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2",
+                "doctrine/cache": "^1.11|^2.0",
+                "doctrine/deprecations": "^0.5.3|^1",
+>>>>>>> 6199f34... ADEN-11842 composer update
                 "doctrine/event-manager": "^1.0",
                 "ext-pdo": "*",
                 "php": "^7.3 || ^8"
             },
             "require-dev": {
+<<<<<<< HEAD
                 "doctrine/coding-standard": "^8.1",
                 "jetbrains/phpstorm-stubs": "^2019.1",
                 "phpstan/phpstan": "^0.12.40",
@@ -435,6 +514,18 @@
                 "psalm/plugin-phpunit": "^0.10.0",
                 "symfony/console": "^2.0.5|^3.0|^4.0|^5.0",
                 "vimeo/psalm": "^3.17.2"
+=======
+                "doctrine/coding-standard": "9.0.0",
+                "jetbrains/phpstorm-stubs": "2022.1",
+                "phpstan/phpstan": "1.6.3",
+                "phpstan/phpstan-strict-rules": "^1.2",
+                "phpunit/phpunit": "9.5.20",
+                "psalm/plugin-phpunit": "0.16.1",
+                "squizlabs/php_codesniffer": "3.6.2",
+                "symfony/cache": "^5.2|^6.0",
+                "symfony/console": "^2.7|^3.0|^4.0|^5.0|^6.0",
+                "vimeo/psalm": "4.23.0"
+>>>>>>> 6199f34... ADEN-11842 composer update
             },
             "suggest": {
                 "symfony/console": "For helpful console commands such as SQL execution and import of files."
@@ -498,7 +589,72 @@
                 "sqlserver",
                 "sqlsrv"
             ],
+<<<<<<< HEAD
             "time": "2020-11-14T20:26:58+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/dbal/issues",
+                "source": "https://github.com/doctrine/dbal/tree/3.3.6"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fdbal",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-02T17:21:01+00:00"
+        },
+        {
+            "name": "doctrine/deprecations",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/deprecations.git",
+                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/deprecations/zipball/0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
+                "reference": "0e2a4f1f8cdfc7a92ec3b01c9334898c806b30de",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1|^8.0"
+            },
+            "require-dev": {
+                "doctrine/coding-standard": "^9",
+                "phpunit/phpunit": "^7.5|^8.5|^9.5",
+                "psr/log": "^1|^2|^3"
+            },
+            "suggest": {
+                "psr/log": "Allows logging deprecations via PSR-3 logger implementation"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Doctrine\\Deprecations\\": "lib/Doctrine/Deprecations"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A small layer on top of trigger_error(E_USER_DEPRECATED) or PSR-3 logging with options to disable all deprecations or selectively for packages.",
+            "homepage": "https://www.doctrine-project.org/",
+            "support": {
+                "issues": "https://github.com/doctrine/deprecations/issues",
+                "source": "https://github.com/doctrine/deprecations/tree/v1.0.0"
+            },
+            "time": "2022-05-02T15:47:09+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "doctrine/event-manager",
@@ -573,6 +729,24 @@
                 "event manager",
                 "event system",
                 "events"
+            ],
+            "support": {
+                "issues": "https://github.com/doctrine/event-manager/issues",
+                "source": "https://github.com/doctrine/event-manager/tree/1.1.x"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fevent-manager",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-29T18:28:51+00:00"
         },
@@ -651,7 +825,29 @@
                 "uppercase",
                 "words"
             ],
+<<<<<<< HEAD
             "time": "2020-05-29T15:13:26+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/inflector/issues",
+                "source": "https://github.com/doctrine/inflector/tree/2.0.4"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finflector",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-22T20:16:43+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "doctrine/instantiator",
@@ -702,7 +898,29 @@
                 "constructor",
                 "instantiate"
             ],
+<<<<<<< HEAD
             "time": "2020-11-10T18:47:58+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/instantiator/issues",
+                "source": "https://github.com/doctrine/instantiator/tree/1.4.1"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finstantiator",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-03T08:28:38+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "doctrine/lexer",
@@ -764,6 +982,7 @@
                 "parser",
                 "php"
             ],
+<<<<<<< HEAD
             "time": "2020-05-25T17:44:05+00:00"
         },
         {
@@ -787,9 +1006,53 @@
                 "doctrine/collections": "^1.5",
                 "doctrine/common": "^3.0",
                 "doctrine/dbal": "^2.10.0",
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/lexer/issues",
+                "source": "https://github.com/doctrine/lexer/tree/1.2.3"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Flexer",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-02-28T11:07:21+00:00"
+        },
+        {
+            "name": "doctrine/orm",
+            "version": "2.12.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/orm.git",
+                "reference": "8291a7f09b12d14783ed6537b4586583d155869e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/8291a7f09b12d14783ed6537b4586583d155869e",
+                "reference": "8291a7f09b12d14783ed6537b4586583d155869e",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2",
+                "doctrine/cache": "^1.12.1 || ^2.1.1",
+                "doctrine/collections": "^1.5",
+                "doctrine/common": "^3.0.3",
+                "doctrine/dbal": "^2.13.1 || ^3.2",
+                "doctrine/deprecations": "^0.5.3 || ^1",
+>>>>>>> 6199f34... ADEN-11842 composer update
                 "doctrine/event-manager": "^1.1",
                 "doctrine/inflector": "^1.4|^2.0",
                 "doctrine/instantiator": "^1.3",
+<<<<<<< HEAD
                 "doctrine/lexer": "^1.0",
                 "doctrine/persistence": "^2.0",
                 "ext-pdo": "*",
@@ -802,6 +1065,31 @@
                 "phpunit/phpunit": "^8.5|^9.4",
                 "symfony/yaml": "^3.4|^4.0|^5.0",
                 "vimeo/psalm": "4.1.1"
+=======
+                "doctrine/lexer": "^1.2.3",
+                "doctrine/persistence": "^2.4 || ^3",
+                "ext-ctype": "*",
+                "php": "^7.1 || ^8.0",
+                "psr/cache": "^1 || ^2 || ^3",
+                "symfony/console": "^3.0 || ^4.0 || ^5.0 || ^6.0",
+                "symfony/polyfill-php72": "^1.23",
+                "symfony/polyfill-php80": "^1.16"
+            },
+            "conflict": {
+                "doctrine/annotations": "<1.13 || >= 2.0"
+            },
+            "require-dev": {
+                "doctrine/annotations": "^1.13",
+                "doctrine/coding-standard": "^9.0",
+                "phpbench/phpbench": "^0.16.10 || ^1.0",
+                "phpstan/phpstan": "~1.4.10 || 1.6.3",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+                "psr/log": "^1 || ^2 || ^3",
+                "squizlabs/php_codesniffer": "3.6.2",
+                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+                "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
+                "vimeo/psalm": "4.23.0"
+>>>>>>> 6199f34... ADEN-11842 composer update
             },
             "suggest": {
                 "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
@@ -852,6 +1140,7 @@
                 "database",
                 "orm"
             ],
+<<<<<<< HEAD
             "time": "2020-12-04T19:53:07+00:00"
         },
         {
@@ -885,12 +1174,59 @@
                 "phpstan/phpstan": "^0.12",
                 "phpunit/phpunit": "^7.5.20 || ^8.0 || ^9.0",
                 "vimeo/psalm": "^3.11"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/orm/issues",
+                "source": "https://github.com/doctrine/orm/tree/2.12.2"
+            },
+            "time": "2022-05-02T19:10:07+00:00"
+        },
+        {
+            "name": "doctrine/persistence",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/persistence.git",
+                "reference": "25ec98a8cbd1f850e60fdb62c0ef77c162da8704"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/persistence/zipball/25ec98a8cbd1f850e60fdb62c0ef77c162da8704",
+                "reference": "25ec98a8cbd1f850e60fdb62c0ef77c162da8704",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/collections": "^1.0",
+                "doctrine/event-manager": "^1.0",
+                "php": "^7.2 || ^8.0",
+                "psr/cache": "^1.0 || ^2.0 || ^3.0"
+            },
+            "conflict": {
+                "doctrine/annotations": "<1.7 || >=2.0",
+                "doctrine/common": "<2.10"
+            },
+            "require-dev": {
+                "composer/package-versions-deprecated": "^1.11",
+                "doctrine/annotations": "^1.7",
+                "doctrine/coding-standard": "^9.0",
+                "doctrine/common": "^3.0",
+                "phpstan/phpstan": "1.5.0",
+                "phpstan/phpstan-phpunit": "^1",
+                "phpstan/phpstan-strict-rules": "^1.1",
+                "phpunit/phpunit": "^8.5 || ^9.5",
+                "symfony/cache": "^4.4 || ^5.4 || ^6.0",
+                "vimeo/psalm": "4.22.0"
+>>>>>>> 6199f34... ADEN-11842 composer update
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
+<<<<<<< HEAD
                     "Doctrine\\Common\\": "lib/Doctrine/Common",
                     "Doctrine\\Persistence\\": "lib/Doctrine/Persistence"
+=======
+                    "Doctrine\\Persistence\\": "src/Persistence"
+>>>>>>> 6199f34... ADEN-11842 composer update
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -924,7 +1260,7 @@
                 }
             ],
             "description": "The Doctrine Persistence project is a set of shared interfaces and functionality that the different Doctrine object mappers share.",
-            "homepage": "https://doctrine-project.org/projects/persistence.html",
+            "homepage": "https://www.doctrine-project.org/projects/persistence.html",
             "keywords": [
                 "mapper",
                 "object",
@@ -932,7 +1268,29 @@
                 "orm",
                 "persistence"
             ],
+<<<<<<< HEAD
             "time": "2020-10-24T22:13:54+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/doctrine/persistence/issues",
+                "source": "https://github.com/doctrine/persistence/tree/3.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Fpersistence",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-06T06:10:05+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "firebase/php-jwt",
@@ -982,7 +1340,15 @@
                 "jwt",
                 "php"
             ],
+<<<<<<< HEAD
             "time": "2020-03-25T18:49:23+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v6.2.0"
+            },
+            "time": "2022-05-13T20:54:50+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "google/auth",
@@ -1034,7 +1400,16 @@
                 "google",
                 "oauth2"
             ],
+<<<<<<< HEAD
             "time": "2020-10-16T21:33:48+00:00"
+=======
+            "support": {
+                "docs": "https://googleapis.github.io/google-auth-library-php/main/",
+                "issues": "https://github.com/googleapis/google-auth-library-php/issues",
+                "source": "https://github.com/googleapis/google-auth-library-php/tree/v1.21.0"
+            },
+            "time": "2022-04-13T20:35:52+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "googleads/googleads-php-lib",
@@ -1085,7 +1460,15 @@
             ],
             "description": "Google Ads APIs Client Library for PHP (AdWords and Ad Manager)",
             "homepage": "https://github.com/googleads/googleads-php-lib",
+<<<<<<< HEAD
             "time": "2021-05-11T16:20:45+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/googleads/googleads-php-lib/issues",
+                "source": "https://github.com/googleads/googleads-php-lib/tree/53.1.0"
+            },
+            "time": "2021-07-22T15:16:34+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1165,7 +1548,29 @@
                 "rest",
                 "web service"
             ],
+<<<<<<< HEAD
             "time": "2020-10-10T11:47:56+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/guzzle/guzzle/issues",
+                "source": "https://github.com/guzzle/guzzle/tree/7.4.3"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-25T13:24:33+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "guzzlehttp/promises",
@@ -1216,7 +1621,29 @@
             "keywords": [
                 "promise"
             ],
+<<<<<<< HEAD
             "time": "2020-09-30T07:37:28+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/guzzle/promises/issues",
+                "source": "https://github.com/guzzle/promises/tree/1.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/promises",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-22T20:56:57+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1287,7 +1714,29 @@
                 "uri",
                 "url"
             ],
+<<<<<<< HEAD
             "time": "2020-09-30T07:37:11+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.8.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/psr7",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-20T21:51:18+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "knplabs/console-service-provider",
@@ -1343,6 +1792,10 @@
                 "console",
                 "silex"
             ],
+            "support": {
+                "issues": "https://github.com/KnpLabs/ConsoleServiceProvider/issues",
+                "source": "https://github.com/KnpLabs/ConsoleServiceProvider/tree/master"
+            },
             "time": "2018-02-05T03:09:44+00:00"
         },
         {
@@ -1425,7 +1878,25 @@
                 "logging",
                 "psr-3"
             ],
+<<<<<<< HEAD
             "time": "2020-12-14T13:15:25+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/Seldaek/monolog/issues",
+                "source": "https://github.com/Seldaek/monolog/tree/2.6.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Seldaek",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/monolog/monolog",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-10T09:36:00+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -1474,6 +1945,10 @@
                 "reflection",
                 "static analysis"
             ],
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionCommon/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionCommon/tree/2.x"
+            },
             "time": "2020-06-27T09:03:43+00:00"
         },
         {
@@ -1526,7 +2001,15 @@
                 }
             ],
             "description": "With this component, a library can provide support for annotations via DocBlocks or otherwise retrieve information that is embedded in a DocBlock.",
+<<<<<<< HEAD
             "time": "2020-09-03T19:13:55+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/phpDocumentor/ReflectionDocBlock/issues",
+                "source": "https://github.com/phpDocumentor/ReflectionDocBlock/tree/5.3.0"
+            },
+            "time": "2021-10-19T17:43:47+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "phpdocumentor/type-resolver",
@@ -1571,7 +2054,15 @@
                 }
             ],
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
+<<<<<<< HEAD
             "time": "2020-09-17T18:55:26+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.6.1"
+            },
+            "time": "2022-03-15T21:29:03+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "pimple/pimple",
@@ -1621,7 +2112,14 @@
                 "container",
                 "dependency injection"
             ],
+<<<<<<< HEAD
             "time": "2020-11-24T20:35:42+00:00"
+=======
+            "support": {
+                "source": "https://github.com/silexphp/Pimple/tree/v3.5.0"
+            },
+            "time": "2021-10-28T11:13:42+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "psr/cache",
@@ -1667,6 +2165,9 @@
                 "psr",
                 "psr-6"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/cache/tree/master"
+            },
             "time": "2016-08-06T20:24:11+00:00"
         },
         {
@@ -1716,7 +2217,15 @@
                 "container-interop",
                 "psr"
             ],
+<<<<<<< HEAD
             "time": "2017-02-14T16:28:37+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/2.0.2"
+            },
+            "time": "2021-11-05T16:47:00+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "psr/http-client",
@@ -1765,6 +2274,9 @@
                 "psr",
                 "psr-18"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-client/tree/master"
+            },
             "time": "2020-06-29T06:28:15+00:00"
         },
         {
@@ -1815,6 +2327,9 @@
                 "request",
                 "response"
             ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
             "time": "2016-08-06T14:39:51+00:00"
         },
         {
@@ -1862,7 +2377,14 @@
                 "psr",
                 "psr-3"
             ],
+<<<<<<< HEAD
             "time": "2020-03-23T09:12:05+00:00"
+=======
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/1.1.4"
+            },
+            "time": "2021-05-03T11:20:27+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "ralouphie/getallheaders",
@@ -1902,6 +2424,10 @@
                 }
             ],
             "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
@@ -1988,6 +2514,10 @@
             "keywords": [
                 "microframework"
             ],
+            "support": {
+                "issues": "https://github.com/silexphp/Silex/issues",
+                "source": "https://github.com/silexphp/Silex/tree/v2.3.0"
+            },
             "abandoned": "symfony/flex",
             "time": "2018-04-20T05:17:01+00:00"
         },
@@ -2061,7 +2591,28 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-18T07:41:31+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/console/tree/v4.4.42"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-14T12:35:33+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/debug",
@@ -2113,7 +2664,28 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-10T16:34:26+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/debug/tree/v4.4.41"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-12T15:19:55+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -2163,7 +2735,28 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-09-07T11:33:47+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v2.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-01-02T09:53:40+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/error-handler",
@@ -2215,7 +2808,28 @@
             ],
             "description": "Symfony ErrorHandler Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-09T11:15:38+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/error-handler/tree/v4.4.41"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-12T15:19:55+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/event-dispatcher",
@@ -2281,7 +2895,28 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-18T07:41:31+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher/tree/v4.4.42"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-05T15:33:49+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/event-dispatcher-contracts",
@@ -2343,7 +2978,28 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
             "time": "2020-07-06T13:19:58+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v1.1.12"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-01-02T09:41:36+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/http-client-contracts",
@@ -2405,7 +3061,28 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
             "time": "2020-10-14T17:08:19+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/http-client-contracts/tree/v2.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-13T20:07:29+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/http-foundation",
@@ -2456,7 +3133,28 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-18T07:41:31+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/http-foundation/tree/v4.4.42"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-17T11:15:18+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/http-kernel",
@@ -2543,7 +3241,28 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-18T13:32:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/http-kernel/tree/v4.4.42"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-27T07:04:21+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/mime",
@@ -2606,7 +3325,28 @@
                 "mime",
                 "mime-type"
             ],
+<<<<<<< HEAD
             "time": "2020-12-09T18:54:12+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/mime/tree/v5.4.9"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-21T10:24:18+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -2668,7 +3408,28 @@
                 "polyfill",
                 "portable"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-ctype/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-10-20T20:35:02+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-intl-idn",
@@ -2738,7 +3499,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-idn/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-09-14T14:02:44+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -2805,7 +3587,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T17:09:11+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-02-19T12:13:01+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -2868,7 +3671,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-11-30T18:21:41+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-php72",
@@ -2927,7 +3751,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php72/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-05-27T09:17:38+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-php73",
@@ -2989,7 +3834,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php73/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2021-06-05T21:20:04+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/polyfill-php80",
@@ -3055,7 +3921,28 @@
                 "portable",
                 "shim"
             ],
+<<<<<<< HEAD
             "time": "2021-01-07T16:49:33+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php80/tree/v1.25.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-03-04T08:16:47+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/routing",
@@ -3126,7 +4013,28 @@
                 "uri",
                 "url"
             ],
+<<<<<<< HEAD
             "time": "2020-12-08T16:59:59+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/routing/tree/v4.4.41"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-12T15:19:55+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/serializer",
@@ -3203,7 +4111,28 @@
             ],
             "description": "Symfony Serializer Component",
             "homepage": "https://symfony.com",
+<<<<<<< HEAD
             "time": "2020-12-18T07:41:31+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/serializer/tree/v4.4.42"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-10T09:16:50+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/service-contracts",
@@ -3265,7 +4194,14 @@
                 "interoperability",
                 "standards"
             ],
+<<<<<<< HEAD
             "time": "2020-09-07T11:33:47+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/service-contracts/tree/v1.1.2"
+            },
+            "time": "2019-05-28T07:50:59+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/var-dumper",
@@ -3336,7 +4272,28 @@
                 "debug",
                 "dump"
             ],
+<<<<<<< HEAD
             "time": "2020-12-16T17:02:19+00:00"
+=======
+            "support": {
+                "source": "https://github.com/symfony/var-dumper/tree/v5.4.9"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-05-21T10:24:18+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         },
         {
             "name": "symfony/yaml",
@@ -3390,6 +4347,23 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/yaml/tree/v3.4.47"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-10-24T10:57:07+00:00"
         },
         {
@@ -3503,7 +4477,15 @@
                 "check",
                 "validate"
             ],
+<<<<<<< HEAD
             "time": "2020-07-08T17:02:28+00:00"
+=======
+            "support": {
+                "issues": "https://github.com/webmozarts/assert/issues",
+                "source": "https://github.com/webmozarts/assert/tree/1.10.0"
+            },
+            "time": "2021-03-09T10:59:23+00:00"
+>>>>>>> 6199f34... ADEN-11842 composer update
         }
     ],
     "packages-dev": [],
@@ -3513,5 +4495,6 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
