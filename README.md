@@ -187,3 +187,14 @@ In order to get to the k8s dashboard you need to use [Valut](https://wikia-inc.a
 Useful resources for future development:
 * https://developers.google.com/ad-manager/api/rel_notes
 * https://github.com/googleads/googleads-php-lib/tree/master/examples/AdManager
+
+### Tests
+
+You can run `phpunit` tests executing:
+```sh
+$ ./vendor/bin/phpunit src
+``` 
+or (just a visual difference):
+```sh
+$ ./vendor/bin/phpunit src --color --testdox
+``` 

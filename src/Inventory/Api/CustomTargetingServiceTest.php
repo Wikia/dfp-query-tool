@@ -4,8 +4,32 @@ namespace Inventory\Api;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
+    private function createCustomTargetingServiceMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+    }
+
+    private function createCustomTargetingValueMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
+    }
+
+    private function createCustomTargetingValuePageMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
+    }
+
     public function testGetKeyIds() {
-        $customTargetingService = new CustomTargetingService();
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
+
+        $pageMock = $this->createCustomTargetingValuePageMock();
+        $pageMock->method('getResults')
+            ->willReturn([$valueMock]);
+
+        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
+        $customTargetingServiceMock->method('getCustomTargetingKeysByStatement')
+            ->willReturn($pageMock);
+
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
             [],
@@ -13,23 +37,23 @@ class CustomTargetingServiceTest extends TestCase {
             "Failed empty arrays case"
         );
 
-        $valueMock = $this->createMock(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
-        $valueMock->method('getId')
-            ->willReturn(666);
+        $this->assertSame(
+            [666],
+            $customTargetingService->getKeyIds(['test-key-val-name']),
+            "Failed mocked data with one result case"
+        );
 
-        $pageMock = $this->createMock(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
+        $pageMock = $this->createCustomTargetingValuePageMock();
         $pageMock->method('getResults')
-            ->willReturn([$valueMock]);
+            ->willReturn([]);
 
-        $customTargetingServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
         $customTargetingServiceMock->method('getCustomTargetingKeysByStatement')
             ->willReturn($pageMock);
 
-        $this->assertSame(
-            [666],
-            $customTargetingService->getKeyIds(['src']),
-            "Failed empty arrays case"
-        );
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+        $this->expectException(CustomTargetingException::class);
+        $customTargetingService->getKeyIds(['test-non-existing-key-val-name']);
     }
 
     public function testGetValuesIdsFromMap() {

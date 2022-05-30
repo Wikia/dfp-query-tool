@@ -8,27 +8,23 @@ use Google\AdsApi\AdManager\v202105\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
-	public function getKeyIds($keys) {
+    private $customTargetingService;
+
+    public function __construct($customTargetingService = null) {
+        if ($customTargetingService === null ) {
+            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+        } else {
+            $this->customTargetingService = $customTargetingService;
+        }
+    }
+
+    public function getKeyIds($keys) {
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
-
-			$statementBuilder = new StatementBuilder();
-			$statementBuilder->where('name = :name');
-
 			foreach ($keys as $key) {
-				$statementBuilder->withBindVariableValue('name', $key);
+			    $results = $this->getResultsForGivenKeyVal($key);
 
-				$page = null;
-				for ($i = 0; $i < 10; $i++) {
-					$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
-
-					if ($page) break;
-					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
-				}
-
-				$results = $page->getResults();
 				if (!empty($results)) {
 					foreach ($results as $customTargetingKey) {
 						$ids[] = $customTargetingKey->getId();
@@ -44,6 +40,22 @@ class CustomTargetingService
 
 		return $ids;
 	}
+
+	private function getResultsForGivenKeyVal($key) {
+        $statementBuilder = new StatementBuilder();
+        $statementBuilder->where('name = :name');
+        $statementBuilder->withBindVariableValue('name', $key);
+
+        $page = null;
+        for ($i = 0; $i < 10; $i++) {
+            $page = $this->customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+
+            if ($page) break;
+            echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+        }
+
+        return $page->getResults();
+    }
 
 	public function getAllValueIds($keyId) {
 		$values = [];
