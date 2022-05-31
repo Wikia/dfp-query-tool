@@ -56,6 +56,48 @@ class CustomTargetingServiceTest extends TestCase {
         return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
     }
 
+    public function testGetKeyIdsWithNotExistingKeys() {
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
+
+        $pageMock = $this->createCustomTargetingValuePageMock();
+        $pageMock->method('getResults')
+            ->willReturn([$valueMock]);
+
+        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
+        $customTargetingServiceMock->method('getCustomTargetingKeysByStatement')
+            ->willReturn($pageMock);
+
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+
+        $this->assertSame(
+            $this->makeExpectedResultForGetKeyIdsWithNotExistingKeys(),
+            $customTargetingService->getKeyIdsWithNotExistingKeys([]),
+            "Failed empty arrays case"
+        );
+
+        $this->assertSame(
+            $this->makeExpectedResultForGetKeyIdsWithNotExistingKeys([666]),
+            $customTargetingService->getKeyIdsWithNotExistingKeys(['test-key-val-name']),
+            "Failed mocked data with one result case"
+        );
+        ;
+        $this->assertSame(
+            $this->makeExpectedResultForGetKeyIdsWithNotExistingKeys([666], ['test-not-existing-key-val-name']),
+            $customTargetingService->getKeyIdsWithNotExistingKeys(['test-key-val-name', 'test-not-existing-key-val-name']),
+            "Failed mocked data with one result case"
+        );
+    }
+
+    private function makeExpectedResultForGetKeyIdsWithNotExistingKeys($expectedIds = [], $expectedNotExistingNames = []) {
+        $expectedResult = new \stdClass();
+        $expectedResult->ids = $expectedIds;
+        $expectedResult->notExistingNames = $expectedNotExistingNames;
+
+        return $expectedResult;
+    }
+
     public function testGetValuesIdsFromMap() {
         $customTargetingService = new CustomTargetingService();
 
