@@ -40,6 +40,7 @@ class CustomTargetingService
 
     public function getKeyIdsWithNotExistingKeys($keys) {
         $ids = [];
+        $notExisting = [];
 
         try {
             foreach ($keys as $key) {
@@ -48,14 +49,14 @@ class CustomTargetingService
                 if (!empty($results)) {
                     $ids = $this->getKeyValuesIds($results);
                 } else {
-                    throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
+                    $notExisting[] = $key;
                 }
             }
         } catch (\Exception $e) {
             throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
         }
 
-        return $ids;
+        return ['ids' => $ids, 'notExistingNames' => $notExisting];
     }
 
 	private function searchForCustomTargetingKeyValues($key) {
