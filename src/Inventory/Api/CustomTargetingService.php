@@ -23,12 +23,10 @@ class CustomTargetingService
 
 		try {
 			foreach ($keys as $key) {
-			    $results = $this->getResultsForGivenKeyVal($key);
+			    $results = $this->searchForCustomTargetingKeyValues($key);
 
 				if (!empty($results)) {
-					foreach ($results as $customTargetingKey) {
-						$ids[] = $customTargetingKey->getId();
-					}
+					$ids = $this->getKeyValuesIds($results);
 				} else {
 					throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
 				}
@@ -41,7 +39,7 @@ class CustomTargetingService
 		return $ids;
 	}
 
-	private function getResultsForGivenKeyVal($key) {
+	private function searchForCustomTargetingKeyValues($key) {
         $statementBuilder = new StatementBuilder();
         $statementBuilder->where('name = :name');
         $statementBuilder->withBindVariableValue('name', $key);
@@ -55,6 +53,16 @@ class CustomTargetingService
         }
 
         return $page->getResults();
+    }
+
+    private function getKeyValuesIds($results) {
+        $ids = [];
+
+        foreach ($results as $customTargetingKey) {
+            $ids[] = $customTargetingKey->getId();
+        }
+
+        return $ids;
     }
 
 	public function getAllValueIds($keyId) {
