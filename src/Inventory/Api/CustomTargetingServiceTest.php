@@ -4,19 +4,9 @@ namespace Inventory\Api;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
-    public function testGetKeyIds() {
-        $valueMock = $this->createCustomTargetingValueMock();
-        $valueMock->method('getId')
-            ->willReturn(666);
-
-        $pageMock = $this->createCustomTargetingValuePageMock();
-        $pageMock->method('getResults')
-            ->willReturn([$valueMock]);
-
-        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
-        $customTargetingServiceMock->method('getCustomTargetingKeysByStatement')
-            ->willReturn($pageMock);
-
+    public function testGetKeyIds_forEmptyArray() {
+        $pageMock = $this->createCustomTargetingValuePageReturningMock();
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
@@ -24,36 +14,47 @@ class CustomTargetingServiceTest extends TestCase {
             $customTargetingService->getKeyIds([]),
             "Failed empty arrays case"
         );
+    }
+
+    public function testGetKeyIds_forExistingKey() {
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
+
+        $pageMock = $this->createCustomTargetingValuePageReturningMock([$valueMock]);
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
             [666],
             $customTargetingService->getKeyIds(['test-key-val-name']),
             "Failed mocked data with one result case"
         );
+    }
 
-        $pageMock = $this->createCustomTargetingValuePageMock();
-        $pageMock->method('getResults')
-            ->willReturn([]);
-
-        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
-        $customTargetingServiceMock->method('getCustomTargetingKeysByStatement')
-            ->willReturn($pageMock);
+    public function testGetKeyIds_forNotExistingKey() {
+        $pageMock = $this->createCustomTargetingValuePageReturningMock();
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
 
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
         $this->expectException(CustomTargetingException::class);
         $customTargetingService->getKeyIds(['test-not-existing-key-val-name']);
     }
 
-    private function createCustomTargetingServiceMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
-    }
+    public function testGetKeyIds_forExistingAndNotExistingKey() {
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
 
-    private function createCustomTargetingValueMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
-    }
+        $pageMock = $this->createCustomTargetingValuePageMock();
+        $pageMock->method('getResults')
+            ->willReturnOnConsecutiveCalls([$valueMock], []);
 
-    private function createCustomTargetingValuePageMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
+
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+        $this->expectException(CustomTargetingException::class);
+        $customTargetingService->getKeyIds((['test-key-val-name', 'test-not-existing-key-val-name']));
     }
 
     public function testGetKeyIdsWithNotExistingKeys_forEmptyArray() {
@@ -84,7 +85,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forNonExistingKey() {
+    public function testGetKeyIdsWithNotExistingKeys_forNotExistingKey() {
         $pageMock = $this->createCustomTargetingValuePageReturningMock();
         $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
@@ -96,7 +97,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forExistingAndNonExistingKey() {
+    public function testGetKeyIdsWithNotExistingKeys_forExistingAndNotExistingKey() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
             ->willReturn(666);
@@ -116,6 +117,18 @@ class CustomTargetingServiceTest extends TestCase {
             $customTargetingService->getKeyIdsWithNotExistingKeys(['test-key-val-name', 'test-not-existing-key-val-name']),
             "Failed mocked data with one result case and one not existing case"
         );
+    }
+
+    private function createCustomTargetingServiceMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+    }
+
+    private function createCustomTargetingValueMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
+    }
+
+    private function createCustomTargetingValuePageMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
     }
 
     private function createCustomTargetingValuePageReturningMock($resultsMock = []) {
