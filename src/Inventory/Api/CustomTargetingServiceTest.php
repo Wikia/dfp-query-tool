@@ -4,18 +4,6 @@ namespace Inventory\Api;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
-    private function createCustomTargetingServiceMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
-    }
-
-    private function createCustomTargetingValueMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
-    }
-
-    private function createCustomTargetingValuePageMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
-    }
-
     public function testGetKeyIds() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
@@ -53,7 +41,19 @@ class CustomTargetingServiceTest extends TestCase {
 
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
         $this->expectException(CustomTargetingException::class);
-        $customTargetingService->getKeyIds(['test-non-existing-key-val-name']);
+        $customTargetingService->getKeyIds(['test-not-existing-key-val-name']);
+    }
+
+    private function createCustomTargetingServiceMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+    }
+
+    private function createCustomTargetingValueMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
+    }
+
+    private function createCustomTargetingValuePageMock() {
+        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
     }
 
     public function testGetValuesIdsFromMap() {
