@@ -187,24 +187,10 @@ class LineItemService {
 	}
 
 	public function findLineItemIdsByKeys($keyIds, $excludeInactive = true) {
-		$statementBuilder = new StatementBuilder();
-
-		$statement = 'isArchived = false';
-
-		if ($excludeInactive) {
-			$statement .= ' and status in (:activeStatuses)';
-			$statementBuilder->withBindVariableValue('activeStatuses', [
-				ComputedStatus::READY,
-				ComputedStatus::DELIVERING,
-				ComputedStatus::DELIVERY_EXTENDED
-			]);
-		}
-
-		$statementBuilder->where($statement);
-		$statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
-
+        $statementBuilder = $this->createActiveLineItemsStatement($excludeInactive);
 		$lineItems = [];
 		$totalResultSetSize = 0;
+
 		do {
 			$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
 
@@ -212,16 +198,16 @@ class LineItemService {
 				$totalResultSetSize = $page->getTotalResultSetSize();
 				foreach ($page->getResults() as $lineItem) {
 					$wasKeyInSet = false;
-					if (null !== $lineItem->getTargeting()->getCustomTargeting()) {
+
+					if ($this->isCustomTargetingNotNull($lineItem)) {
 						$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
 						foreach ($targetingSets as $targetingSet) {
 							$keyValuePairs = $targetingSet->getChildren();
 							foreach ($keyValuePairs as $pair) {
-								if (method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds)) {
-									$wasKeyInSet = true;
-								}
+							    $wasKeyInSet = $this->wasKeyInSet($pair, $keyIds);
 							}
 						}
+
 						if ($wasKeyInSet) {
 							$lineItems[] = [
 								'line_item_id' => $lineItem->getId(),
@@ -237,6 +223,34 @@ class LineItemService {
 
 		return $lineItems;
 	}
+
+	private function wasKeyInSet($pair, $keyIds) {
+        return method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds);
+    }
+
+    private function isCustomTargetingNotNull($lineItem) {
+	    return null !== $lineItem->getTargeting()->getCustomTargeting();
+    }
+
+	private function createActiveLineItemsStatement($excludeInactive = true) {
+        $statementBuilder = new StatementBuilder();
+
+        $statement = 'isArchived = false';
+
+        if ($excludeInactive) {
+            $statement .= ' and status in (:activeStatuses)';
+            $statementBuilder->withBindVariableValue('activeStatuses', [
+                ComputedStatus::READY,
+                ComputedStatus::DELIVERING,
+                ComputedStatus::DELIVERY_EXTENDED
+            ]);
+        }
+
+        $statementBuilder->where($statement);
+        $statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+
+        return $statementBuilder;
+    }
 
 	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
 		$addedNewKeyValues = false;
