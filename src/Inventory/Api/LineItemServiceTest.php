@@ -7,13 +7,21 @@ class LineItemServiceTest extends TestCase {
     public function testFindLineItemIdsByKeys_forNotExistingKey() {
         $pageMock = $this->createLineItemPageMock();
         $lineItemServiceMock = $this->createLineItemServiceMock($pageMock);
-        $lineItemService = new LineItemService($lineItemServiceMock);
+        $lineItemService = new LineItemService($this->createNetworkServiceMock(), $lineItemServiceMock);
 
         $this->assertSame(
             [],
             $lineItemService->findLineItemIdsByKeys([123]),
             "Failed no results test case"
         );
+    }
+
+    private function createNetworkServiceMock() {
+        $networkServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202105\NetworkService::class);
+        $networkServiceMock->method('getCurrentNetwork')
+            ->willReturn($this->createStub(\Google\AdsApi\AdManager\v202105\Network::class));
+        
+        return $networkServiceMock;
     }
 
     private function createLineItemPageStub() {
@@ -42,7 +50,7 @@ class LineItemServiceTest extends TestCase {
         $lineItemMock = $this->createLineItemMock();
         $pageMock = $this->createLineItemPageMock([$lineItemMock], 1);
         $lineItemServiceMock = $this->createLineItemServiceMock($pageMock);
-        $lineItemService = new LineItemService($lineItemServiceMock);
+        $lineItemService = new LineItemService($this->createNetworkServiceMock(), $lineItemServiceMock);
 
         $this->assertSame(
             [],
@@ -78,7 +86,7 @@ class LineItemServiceTest extends TestCase {
         $lineItemMock = $this->createLineItemMock($customTargetingMock);
         $pageMock = $this->createLineItemPageMock([$lineItemMock], 1);
         $lineItemServiceMock = $this->createLineItemServiceMock($pageMock);
-        $lineItemService = new LineItemService($lineItemServiceMock);
+        $lineItemService = new LineItemService($this->createNetworkServiceMock(), $lineItemServiceMock);
 
         $this->assertSame(
             [],
@@ -108,7 +116,7 @@ class LineItemServiceTest extends TestCase {
         $lineItemMock = $this->createLineItemMock($customTargetingMock);
         $pageMock = $this->createLineItemPageMock([$lineItemMock], 1);
         $lineItemServiceMock = $this->createLineItemServiceMock($pageMock);
-        $lineItemService = new LineItemService($lineItemServiceMock);
+        $lineItemService = new LineItemService($this->createNetworkServiceMock(), $lineItemServiceMock);
 
         $this->assertSame(
             [

@@ -27,11 +27,14 @@ class LineItemService {
 	private $targetedAdUnits;
 	private $targetedPlacements = array();
 	private $lineItemCreativeAssociationService;
+	private $networkService;
 
-	public function __construct($lineItemService = null, $customTargetingService = null) {
-		$this->customTargetingService = $customTargetingService === null ? new CustomTargetingService() : $customTargetingService;
+	public function __construct($networkService = null, $lineItemService = null, $customTargetingService = null) {
+        $this->networkService = $networkService === null ? AdManagerService::get(NetworkService::class) : $networkService;
         $this->lineItemService = $lineItemService === null ?
             AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class) : $lineItemService;
+
+		$this->customTargetingService = $customTargetingService === null ? new CustomTargetingService() : $customTargetingService;
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
@@ -423,9 +426,7 @@ class LineItemService {
 	}
 
 	private function getRootAdUnit() {
-		$networkService = AdManagerService::get(NetworkService::class);
-
-		$network = $networkService->getCurrentNetwork();
+		$network = $this->networkService->getCurrentNetwork();
 
 		$adUnit = new AdUnitTargeting();
 		$adUnit->setAdUnitId($network->getEffectiveRootAdUnitId());
