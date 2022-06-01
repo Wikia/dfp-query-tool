@@ -21,17 +21,17 @@ use Google\AdsApi\AdManager\v202105\RequestPlatformTargeting;
 use Google\AdsApi\AdManager\v202105\ComputedStatus;
 use Inventory\Form\LineItemForm;
 
-class LineItemService
-{
+class LineItemService {
 	private $customTargetingService;
 	private $lineItemService;
 	private $targetedAdUnits;
 	private $targetedPlacements = array();
 	private $lineItemCreativeAssociationService;
 
-	public function __construct() {
-		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class);
+	public function __construct($lineItemService = null, $customTargetingService = null) {
+		$this->customTargetingService = $customTargetingService === null ? new CustomTargetingService() : $customTargetingService;
+        $this->lineItemService = $lineItemService === null ?
+            AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class) : $lineItemService;
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
