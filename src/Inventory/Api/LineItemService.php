@@ -255,6 +255,58 @@ class LineItemService {
         return $statementBuilder;
     }
 
+    public function findLineItemIdsByKeyValues($keyId, $valuesIds) {
+        $statementBuilder = $this->createActiveLineItemsWithKeyValuesStatement($keyId, $valuesIds);
+
+        $lineItems = [];
+        $totalResultSetSize = 0;
+        do {
+            $page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+            if ($page->getResults() !== null) {
+                $totalResultSetSize = $page->getTotalResultSetSize();
+                $i = $page->getStartIndex();
+                foreach ($page->getResults() as $customTargetingValue) {
+                    printf(
+                        "%d) Custom targeting value with ID %d, name '%s', "
+                        . "and display name '%s' will be deleted.%s",
+                        $i++,
+                        $customTargetingValue->getId(),
+                        $customTargetingValue->getName(),
+                        $customTargetingValue->getDisplayName(),
+                        PHP_EOL
+                    );
+                }
+            }
+
+            $statementBuilder->increaseOffsetBy(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+        } while ($statementBuilder->getOffset() < $totalResultSetSize);
+
+        return $lineItems;
+    }
+
+    private function createActiveLineItemsWithKeyValuesStatement($keyId, $valuesIds) {
+        $statementBuilder = new StatementBuilder();
+
+        $statement = 'isArchived = false';
+
+        $statement .= ' and status in (:activeStatuses)';
+        $statementBuilder->withBindVariableValue('activeStatuses', [
+            ComputedStatus::READY,
+            ComputedStatus::DELIVERING,
+            ComputedStatus::DELIVERY_EXTENDED
+        ]);
+
+        $statement .= ' and customTargetingKeyId = :customTargetingKeyId and id in (:id)';
+        $statementBuilder->withBindVariableValue('customTargetingKeyId', $keyId);
+        $statementBuilder->withBindVariableValue('id', $valuesIds);
+
+        $statementBuilder->where($statement);
+        $statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+
+        return $statementBuilder;
+    }
+
 	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
 		$addedNewKeyValues = false;
 
