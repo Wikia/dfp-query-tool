@@ -20,7 +20,7 @@ class LineItemServiceTest extends TestCase {
         $networkServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202105\NetworkService::class);
         $networkServiceMock->method('getCurrentNetwork')
             ->willReturn($this->createStub(\Google\AdsApi\AdManager\v202105\Network::class));
-        
+
         return $networkServiceMock;
     }
 
@@ -127,6 +127,18 @@ class LineItemServiceTest extends TestCase {
             ],
             $lineItemService->findLineItemIdsByKeys([666]),
             "Failed one custom targeting matching the key test case"
+        );
+    }
+
+    public function testFindLineItemIdsByKeyValues_forNoMatchingLineItems() {
+        $pageMock = $this->createLineItemPageMock();
+        $lineItemServiceMock = $this->createLineItemServiceMock($pageMock);
+        $lineItemService = new LineItemService($this->createNetworkServiceMock(), $lineItemServiceMock);
+
+        $this->assertSame(
+            [],
+            $lineItemService->findLineItemIdsByKeyValues(123, [123, 456]),
+            "Failed no matching line-items test case"
         );
     }
 }
