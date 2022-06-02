@@ -14,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class KeyValuesRemoveCommand extends Command
 {
     private $dryRun = true;
+    private $skipLineItemCheck = false;
 
     private $keyNameFromInput;
     private $keyId;
@@ -38,6 +39,13 @@ class KeyValuesRemoveCommand extends Command
                 InputOption::VALUE_OPTIONAL,
                 'Run without actually removing anything; in order to force the removal go with --dry-run=no',
                 'yes'
+            )
+            ->addOption(
+                'skip-line-item-check',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Run without scanning if the key-values are being used in any line-item custom targeting',
+                'no'
             );
     }
 
@@ -45,6 +53,7 @@ class KeyValuesRemoveCommand extends Command
         $this->keyNameFromInput = $input->getArgument('key');
         $this->valuesFromInput = explode(',', $input->getArgument('values'));
         $this->dryRun = $input->getOption( 'dry-run' ) === 'no' ? false : true;
+        $this->skipLineItemCheck = $input->getOption( 'skip-line-item-check' ) === 'no' ? false : true;
 
         try {
             $this->displayDryRunOrRealRunWarning();
@@ -62,7 +71,7 @@ class KeyValuesRemoveCommand extends Command
         if ($this->dryRun) {
             echo $this->printInColors(' DRY RUN ENABLED ', '1;30', '43') . PHP_EOL . PHP_EOL;
         } else {
-            echo $this->printInColors('THIS IS NOT A DRY RUN !!!', '1;37', '41') . PHP_EOL . PHP_EOL;
+            echo $this->printInColors(' THIS IS NOT A DRY RUN !!! ', '1;37', '41') . PHP_EOL . PHP_EOL;
         }
     }
 
@@ -93,14 +102,18 @@ class KeyValuesRemoveCommand extends Command
 
     private function displayMessageAboutScanningForLineItems() {
         if ( !empty($this->valuesIdsToRemove) ) {
-            echo 'Looking for line-items using the key-vals pair...' . PHP_EOL;
+            if ($this->skipLineItemCheck) {
+                echo 'Skipping check for line-items using the key-vals!' . PHP_EOL;
+            } else {
+                echo 'Looking for line-items using the key-vals...' . PHP_EOL;
+            }
         } else {
-            echo 'Nothing more to do. Done.' . PHP_EOL;
+            echo 'Nothing more to do.' . PHP_EOL;
         }
     }
 
     private function checkLineItemsForKeyValsToRemove() {
-        if ( !empty($this->valuesIdsToRemove) ) {
+        if ( !empty($this->valuesIdsToRemove) && !$this->skipLineItemCheck) {
             $lineItemService = new LineItemService();
             $lineItemsFound = $lineItemService->findLineItemIdsByKeyValues($this->keyId, $this->valuesIdsToRemove);
             foreach($lineItemsFound as $lineItem) {
