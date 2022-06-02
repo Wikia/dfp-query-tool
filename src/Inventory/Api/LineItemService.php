@@ -256,7 +256,7 @@ class LineItemService {
     }
 
     public function findLineItemIdsByKeyValues($keyId, $valuesIds) {
-        $statementBuilder = $this->createActiveLineItemsWithKeyValuesStatement($keyId, $valuesIds);
+        $statementBuilder = $this->createActiveLineItemsStatement(true);
 
         $lineItems = [];
         $totalResultSetSize = 0;
@@ -265,17 +265,26 @@ class LineItemService {
 
             if ($page->getResults() !== null) {
                 $totalResultSetSize = $page->getTotalResultSetSize();
-                $i = $page->getStartIndex();
-                foreach ($page->getResults() as $customTargetingValue) {
-                    printf(
-                        "%d) Custom targeting value with ID %d, name '%s', "
-                        . "and display name '%s' will be deleted.%s",
-                        $i++,
-                        $customTargetingValue->getId(),
-                        $customTargetingValue->getName(),
-                        $customTargetingValue->getDisplayName(),
-                        PHP_EOL
-                    );
+                foreach ($page->getResults() as $lineItem) {
+                    $foundMatch = false;
+
+                    if ($this->isCustomTargetingNotNull($lineItem)) {
+                        $targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+                        foreach ($targetingSets as $targetingSet) {
+                            $keyValuePairs = $targetingSet->getChildren();
+                            foreach ($keyValuePairs as $pair) {
+                                $foundMatch = $this->wasKeyAndValueInSet($pair, $keyId, $valuesIds);
+                            }
+                        }
+
+                        if ($foundMatch) {
+                            $lineItems[] = [
+                                'line_item_id' => $lineItem->getId(),
+                                'order_id' => $lineItem->getOrderId(),
+                                'found_value_id' => $foundMatch,
+                            ];
+                        }
+                    }
                 }
             }
 
@@ -285,26 +294,21 @@ class LineItemService {
         return $lineItems;
     }
 
-    private function createActiveLineItemsWithKeyValuesStatement($keyId, $valuesIds) {
-        $statementBuilder = new StatementBuilder();
+    private function wasKeyAndValueInSet($pair, $keyId, $valuesIds) {
+        if (
+            method_exists($pair, 'getKeyId') &&
+            method_exists($pair, 'getValueIds') &&
+            $pair->getKeyId() == $keyId
+        ) {
+            $lineItemsValuesIds = $pair->getValueIds();
+            foreach($valuesIds as $valueId) {
+                if( in_array($valueId, $lineItemsValuesIds) ) {
+                    return $valueId;
+                }
+            }
+        }
 
-        $statement = 'isArchived = false';
-
-        $statement .= ' and status in (:activeStatuses)';
-        $statementBuilder->withBindVariableValue('activeStatuses', [
-            ComputedStatus::READY,
-            ComputedStatus::DELIVERING,
-            ComputedStatus::DELIVERY_EXTENDED
-        ]);
-
-        $statement .= ' and customTargetingKeyId = :customTargetingKeyId and id in (:id)';
-        $statementBuilder->withBindVariableValue('customTargetingKeyId', $keyId);
-        $statementBuilder->withBindVariableValue('id', $valuesIds);
-
-        $statementBuilder->where($statement);
-        $statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
-
-        return $statementBuilder;
+        return false;
     }
 
 	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
