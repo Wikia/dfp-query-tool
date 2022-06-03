@@ -192,9 +192,9 @@ Useful resources for future development:
 
 You can run `phpunit` tests executing:
 ```sh
-$ ./vendor/bin/phpunit src
+$ ./vendor/bin/phpunit test
 ``` 
 or (just a visual difference):
 ```sh
-$ ./vendor/bin/phpunit src --color --testdox
+$ ./vendor/bin/phpunit test --color --testdox
 ``` 
