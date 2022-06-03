@@ -208,4 +208,24 @@ class CustomTargetingService
 
 		return $addedValues;
 	}
+
+	public function removeValueFromKeyById($keyId, $valueId) {
+        $statementBuilder = (new StatementBuilder())->where(
+            'customTargetingKeyId = :customTargetingKeyId AND id = :id'
+        )
+            ->orderBy('id ASC')
+            ->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT)
+            ->withBindVariableValue(
+                'customTargetingKeyId',
+                $keyId
+            )
+            ->withBindVariableValue('id', $valueId);
+
+        $result = $this->customTargetingService->performCustomTargetingValueAction(
+            new \Google\AdsApi\AdManager\v202105\DeleteCustomTargetingValues(),
+            $statementBuilder->toStatement()
+        );
+
+        return $result !== null && $result->getNumChanges() > 0;
+    }
 }

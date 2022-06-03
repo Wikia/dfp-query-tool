@@ -178,4 +178,43 @@ class CustomTargetingServiceTest extends TestCase {
             "Failed search for more values (notice ignored 'b' for 'B')"
         );
     }
+
+    public function testRemoveValueFromKeyById_noResults() {
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenUpdateResult(null);
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+
+        $this->assertSame(
+            false,
+            $customTargetingService->removeValueFromKeyById(123, 456),
+            "Failed no results case"
+        );
+    }
+
+    public function testRemoveValueFromKeyById_someResults() {
+        $updateResultMock = $this->createUpdateResultsMock();
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenUpdateResult($updateResultMock);
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+
+        $this->assertSame(
+            true,
+            $customTargetingService->removeValueFromKeyById(123, 456),
+            "Failed some results case"
+        );
+    }
+
+    private function createCustomTargetingServiceReturningGivenUpdateResult($updateResultMock) {
+        $customTargetingServiceMock = $this->createCustomTargetingServiceMock();
+        $customTargetingServiceMock->method('performCustomTargetingValueAction')
+            ->willReturn($updateResultMock);
+
+        return $customTargetingServiceMock;
+    }
+
+    private function createUpdateResultsMock() {
+        $updateResultMock = $this->createStub(\Google\AdsApi\AdManager\v202105\UpdateResult::class);
+        $updateResultMock->method('getNumChanges')
+            ->willReturn(7);
+
+        return $updateResultMock;
+    }
 }
