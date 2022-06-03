@@ -77,14 +77,22 @@ class KeyValuesRemoveCommand extends Command
 
     private function displayDryRunOrRealRunWarning() {
         if ($this->dryRun) {
-            echo $this->printInColors(' DRY RUN ENABLED ', '1;30', '43') . PHP_EOL . PHP_EOL;
+            echo $this->info(' DRY RUN ENABLED ') . PHP_EOL . PHP_EOL;
         } else {
-            echo $this->printInColors(' THIS IS NOT A DRY RUN !!! ', '1;37', '41') . PHP_EOL . PHP_EOL;
+            echo $this->warning(' THIS IS NOT A DRY RUN !!! ') . PHP_EOL . PHP_EOL;
         }
     }
 
     private function printInColors($message, $foregroundColor = '0;32', $backgroundColor = '40') {
         return sprintf("\e[%s;%sm%s\e[0m", $foregroundColor, $backgroundColor, $message);
+    }
+
+    private function info($message) {
+        return $this->printInColors($message, '1;30', '43');
+    }
+
+    private function warning($message) {
+        return $this->printInColors($message, '1;37', '41');
     }
 
     private function checkKeyId() {
@@ -146,7 +154,7 @@ class KeyValuesRemoveCommand extends Command
             $this->displayRemovedValueMessage($valueId);
             return;
         }
-        
+
         if ($this->customTargetingService->removeValueFromKeyById($this->keyId, $valueId)) {
             $this->displayRemovedValueMessage($valueId);
         } else {
@@ -155,7 +163,7 @@ class KeyValuesRemoveCommand extends Command
     }
 
     private function displayValueNotRemovedMessage($valueId) {
-        echo $this->printInColors(
+        echo $this->info(
             sprintf(
                 ' ! Value %d (%s) of key %d (%s) has not been deleted because it used in line-item ID %d ' . PHP_EOL,
                 $valueId,
@@ -163,14 +171,12 @@ class KeyValuesRemoveCommand extends Command
                 $this->keyId,
                 $this->keyNameFromInput,
                 $this->keyValsFoundUsed[$valueId]
-            ),
-            '0;30',
-            '43'
+            )
         );
     }
 
     private function displayRemovedValueMessage($valueId) {
-        printf(
+        echo sprintf(
             ' ✔ Value %d (%s) of key %d (%s) has been removed' . PHP_EOL,
             $valueId,
             $this->getValueIdName($valueId),
@@ -180,17 +186,14 @@ class KeyValuesRemoveCommand extends Command
     }
 
     private function displayCouldNotRemoveValueMessage($valueId) {
-        echo $this->printInColors(
+        echo $this->info(
             sprintf(
-                ' ⅹ Value %d (%s) of key %d (%s) has not been deleted because it used in line-item ID %d ' . PHP_EOL,
+                ' ⅹ Value %d (%s) of key %d (%s) has not been deleted because of an error - try again ' . PHP_EOL,
                 $valueId,
                 $this->getValueIdName($valueId),
                 $this->keyId,
-                $this->keyNameFromInput,
-                $this->keyValsFoundUsed[$valueId]
-            ),
-            '0;30',
-            '43'
+                $this->keyNameFromInput
+            )
         );
     }
 
