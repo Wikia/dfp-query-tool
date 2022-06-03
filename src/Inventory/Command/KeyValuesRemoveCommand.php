@@ -20,12 +20,18 @@ class KeyValuesRemoveCommand extends Command
     private $keyId;
 
     private $valuesFromInput;
-    private $valuesIdsToRemove;
+    private $valuesIdsToRemove = [];
 
-    private $keyValsFoundUsed;
+    private $keyValsFoundUsed = [];
+
+    private $customTargetingService;
+    private $lineItemService;
 
     public function __construct($app, $name = null) {
         parent::__construct($name);
+
+        $this->customTargetingService = new CustomTargetingService();
+        $this->lineItemService = new LineItemService();
     }
 
     protected function configure() {
@@ -61,7 +67,9 @@ class KeyValuesRemoveCommand extends Command
             $this->checkValuesIds();
             $this->displayMessageAboutScanningForLineItems();
             $this->checkLineItemsForKeyValsToRemove();
-            $this->deleteKeyValsIfDryModeIsDisabled();
+            $this->removeValuesIfDryModeIsDisabled();
+
+            echo PHP_EOL . 'Done.' . PHP_EOL;
         } catch (CustomTargetingException $e) {
             echo 'Unexpected exception: ' . $e->getMessage() . PHP_EOL;
         }
@@ -80,10 +88,8 @@ class KeyValuesRemoveCommand extends Command
     }
 
     private function checkKeyId() {
-        $targetingService = new CustomTargetingService();
-
         try {
-            $keysIds = $targetingService->getKeyIds([$this->keyNameFromInput]);
+            $keysIds = $this->customTargetingService->getKeyIds([$this->keyNameFromInput]);
             $this->keyId = array_shift($keysIds);
         } catch (CustomTargetingException $e) {
             throw $e;
@@ -91,56 +97,76 @@ class KeyValuesRemoveCommand extends Command
     }
 
     private function checkValuesIds() {
-        $targetingService = new CustomTargetingService();
-
         try {
-            $this->valuesIdsToRemove = $targetingService->getValueIds($this->keyId, $this->valuesFromInput);
+            $this->valuesIdsToRemove = $this->customTargetingService->getValueIds($this->keyId, $this->valuesFromInput);
+
+            if ( empty($this->valuesIdsToRemove) ) {
+                throw new \Exception('Nothing to remove.');
+            }
         } catch (CustomTargetingException $e) {
             throw $e;
         }
     }
 
     private function displayMessageAboutScanningForLineItems() {
-        if ( !empty($this->valuesIdsToRemove) ) {
-            if ($this->skipLineItemCheck) {
-                echo 'Skipping check for line-items using the key-vals!' . PHP_EOL;
-            } else {
-                echo 'Looking for line-items using the key-vals...' . PHP_EOL;
-            }
+        if ($this->skipLineItemCheck) {
+            echo $this->printInColors(' Skipping check for line-items using the key-vals! ', '1;37', '41') . PHP_EOL . PHP_EOL;
         } else {
-            echo 'Nothing more to do.' . PHP_EOL;
+            echo 'Looking for line-items using the key-val values...' . PHP_EOL;
         }
     }
 
     private function checkLineItemsForKeyValsToRemove() {
-        if ( !empty($this->valuesIdsToRemove) && !$this->skipLineItemCheck) {
-            $lineItemService = new LineItemService();
-            $lineItemsFound = $lineItemService->findLineItemIdsByKeyValues($this->keyId, $this->valuesIdsToRemove);
+        if (!$this->skipLineItemCheck) {
+            $lineItemsFound = $this->lineItemService->findLineItemIdsByKeyValues($this->keyId, $this->valuesIdsToRemove);
             foreach($lineItemsFound as $lineItem) {
                 $this->keyValsFoundUsed[$lineItem['found_value_id']] = $lineItem['line_item_id'];
             }
         }
     }
 
-    private function deleteKeyValsIfDryModeIsDisabled() {
-        if (!$this->dryRun && !empty($this->valuesIdsToRemove)) {
-            echo 'Removing key-vals...' . PHP_EOL;
+    private function removeValuesIfDryModeIsDisabled() {
+        if ($this->dryRun) {
+            echo PHP_EOL . 'Dry-run summary:' . PHP_EOL;
+        } else {
+            echo 'Removing key-val values...' . PHP_EOL;
         }
 
-        if ($this->dryRun && !empty($this->valuesIdsToRemove)) {
-            echo PHP_EOL . 'Dry-run summary:' . PHP_EOL;
-            foreach( $this->valuesIdsToRemove as $valueId ) {
-                if (!empty($this->keyValsFoundUsed)) {
-                    if (in_array($valueId, array_keys($this->keyValsFoundUsed))) {
-                        $this->displayValueNotRemovedMessage($valueId);
-                    } else {
-                        $this->displayRemovedValueMessage($valueId);
-                    }
-                } else {
-                    $this->displayRemovedValueMessage($valueId);
-                }
+        foreach( $this->valuesIdsToRemove as $valueId ) {
+            if (in_array($valueId, array_keys($this->keyValsFoundUsed))) {
+                $this->displayValueNotRemovedMessage($valueId);
+            } else {
+                $this->removeValueIfDryModeIsDisabled($valueId);
             }
         }
+    }
+
+    private function removeValueIfDryModeIsDisabled($valueId) {
+        if ($this->dryRun) {
+            $this->displayRemovedValueMessage($valueId);
+            return;
+        }
+        
+        if ($this->customTargetingService->removeValueFromKeyById($this->keyId, $valueId)) {
+            $this->displayRemovedValueMessage($valueId);
+        } else {
+            $this->displayCouldNotRemoveValueMessage($valueId);
+        }
+    }
+
+    private function displayValueNotRemovedMessage($valueId) {
+        echo $this->printInColors(
+            sprintf(
+                ' ! Value %d (%s) of key %d (%s) has not been deleted because it used in line-item ID %d ' . PHP_EOL,
+                $valueId,
+                $this->getValueIdName($valueId),
+                $this->keyId,
+                $this->keyNameFromInput,
+                $this->keyValsFoundUsed[$valueId]
+            ),
+            '0;30',
+            '43'
+        );
     }
 
     private function displayRemovedValueMessage($valueId) {
@@ -153,7 +179,7 @@ class KeyValuesRemoveCommand extends Command
         );
     }
 
-    private function displayValueNotRemovedMessage($valueId) {
+    private function displayCouldNotRemoveValueMessage($valueId) {
         echo $this->printInColors(
             sprintf(
                 ' ⅹ Value %d (%s) of key %d (%s) has not been deleted because it used in line-item ID %d ' . PHP_EOL,
