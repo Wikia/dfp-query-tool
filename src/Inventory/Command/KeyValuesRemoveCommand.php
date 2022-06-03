@@ -27,6 +27,18 @@ class KeyValuesRemoveCommand extends Command
     private $customTargetingService;
     private $lineItemService;
 
+    static $FOREGROUND_COLOR = [
+        'black' => 30,
+        'green' => 32,
+        'white' => 37,
+    ];
+
+    static $BACKGROUND_COLOR = [
+        'black' => 40,
+        'red' => 41,
+        'yellow' => 43,
+    ];
+
     public function __construct($app, $name = null) {
         parent::__construct($name);
 
@@ -83,16 +95,21 @@ class KeyValuesRemoveCommand extends Command
         }
     }
 
-    private function printInColors($message, $foregroundColor = '0;32', $backgroundColor = '40') {
-        return sprintf("\e[%s;%sm%s\e[0m", $foregroundColor, $backgroundColor, $message);
+    private function printInColors($message, $foregroundColor, $backgroundColor) {
+        return sprintf(
+            "\e[0;%s;%sm%s\e[0m",
+            $foregroundColor === null ? static::$FOREGROUND_COLOR['green'] : $foregroundColor,
+            $backgroundColor === null ? static::$BACKGROUND_COLOR['black'] : $backgroundColor,
+            $message
+        );
     }
 
     private function info($message) {
-        return $this->printInColors($message, '1;30', '43');
+        return $this->printInColors($message, static::$FOREGROUND_COLOR['black'], static::$BACKGROUND_COLOR['yellow']);
     }
 
     private function warning($message) {
-        return $this->printInColors($message, '1;37', '41');
+        return $this->printInColors($message, static::$FOREGROUND_COLOR['white'], static::$BACKGROUND_COLOR['red']);
     }
 
     private function checkKeyId() {
@@ -118,7 +135,7 @@ class KeyValuesRemoveCommand extends Command
 
     private function displayMessageAboutScanningForLineItems() {
         if ($this->skipLineItemCheck) {
-            echo $this->printInColors(' Skipping check for line-items using the key-vals! ', '1;37', '41') . PHP_EOL . PHP_EOL;
+            echo $this->warning(' Skipping check for line-items using the key-vals! ') . PHP_EOL . PHP_EOL;
         } else {
             echo 'Looking for line-items using the key-val values...' . PHP_EOL;
         }
