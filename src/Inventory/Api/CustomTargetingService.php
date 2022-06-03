@@ -36,27 +36,6 @@ class CustomTargetingService
 		return $ids;
 	}
 
-    public function getKeyIdsWithNotExistingKeys($keys) {
-        $ids = [];
-        $notExisting = [];
-
-        try {
-            foreach ($keys as $key) {
-                $results = $this->searchForCustomTargetingKeyValues($key);
-
-                if (!empty($results)) {
-                    $ids = $this->getKeyValuesIds($results);
-                } else {
-                    $notExisting[] = $key;
-                }
-            }
-        } catch (\Exception $e) {
-            throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
-        }
-
-        return ['ids' => $ids, 'notExistingNames' => $notExisting];
-    }
-
 	private function searchForCustomTargetingKeyValues($key) {
         $statementBuilder = new StatementBuilder();
         $statementBuilder->where('name = :name');
