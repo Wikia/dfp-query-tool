@@ -11,11 +11,9 @@ class CustomTargetingService
     private $customTargetingService;
 
     public function __construct($customTargetingService = null) {
-        if ($customTargetingService === null ) {
-            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
-        } else {
+        $this->customTargetingService = $customTargetingService === null ?
+            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class) :
             $this->customTargetingService = $customTargetingService;
-        }
     }
 
     public function getKeyIds($keys) {

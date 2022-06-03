@@ -4,7 +4,7 @@ namespace Inventory\Api;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
-    public function testGetKeyIds_forEmptyArray() {
+    public function testGetKeyIds_emptyArray() {
         $pageMock = $this->createCustomTargetingValuePageReturningMock();
         $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
@@ -16,7 +16,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIds_forExistingKey() {
+    public function testGetKeyIds_existingKey() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
             ->willReturn(666);
@@ -32,7 +32,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIds_forNotExistingKey() {
+    public function testGetKeyIds_notExistingKey() {
         $pageMock = $this->createCustomTargetingValuePageReturningMock();
         $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
 
@@ -41,7 +41,7 @@ class CustomTargetingServiceTest extends TestCase {
         $customTargetingService->getKeyIds(['test-not-existing-key-val-name']);
     }
 
-    public function testGetKeyIds_forExistingAndNotExistingKey() {
+    public function testGetKeyIds_existingAndNotExistingKey() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
             ->willReturn(666);
@@ -57,7 +57,7 @@ class CustomTargetingServiceTest extends TestCase {
         $customTargetingService->getKeyIds((['test-key-val-name', 'test-not-existing-key-val-name']));
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forEmptyArray() {
+    public function testGetKeyIdsWithNotExistingKeys_emptyArray() {
         $pageMock = $this->createCustomTargetingValuePageReturningMock();
         $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
@@ -69,7 +69,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forExistingKey() {
+    public function testGetKeyIdsWithNotExistingKeys_existingKey() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
             ->willReturn(666);
@@ -85,7 +85,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forNotExistingKey() {
+    public function testGetKeyIdsWithNotExistingKeys_notExistingKey() {
         $pageMock = $this->createCustomTargetingValuePageReturningMock();
         $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
@@ -97,7 +97,7 @@ class CustomTargetingServiceTest extends TestCase {
         );
     }
 
-    public function testGetKeyIdsWithNotExistingKeys_forExistingAndNotExistingKey() {
+    public function testGetKeyIdsWithNotExistingKeys_existingAndNotExistingKey() {
         $valueMock = $this->createCustomTargetingValueMock();
         $valueMock->method('getId')
             ->willReturn(666);
