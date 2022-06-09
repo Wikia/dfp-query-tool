@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\CustomTargetingValue;
-use Google\AdsApi\AdManager\v202105\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202205\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -12,7 +12,7 @@ class CustomTargetingService
 
     public function __construct($customTargetingService = null) {
         $this->customTargetingService = $customTargetingService === null ?
-            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class) :
+            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class) :
             $this->customTargetingService = $customTargetingService;
     }
 
@@ -66,7 +66,7 @@ class CustomTargetingService
 		$values = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
@@ -123,7 +123,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -167,7 +167,7 @@ class CustomTargetingService
 		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 
@@ -199,7 +199,7 @@ class CustomTargetingService
             ->withBindVariableValue('id', $valueId);
 
         $result = $this->customTargetingService->performCustomTargetingValueAction(
-            new \Google\AdsApi\AdManager\v202105\DeleteCustomTargetingValues(),
+            new \Google\AdsApi\AdManager\v202205\DeleteCustomTargetingValues(),
             $statementBuilder->toStatement()
         );
 

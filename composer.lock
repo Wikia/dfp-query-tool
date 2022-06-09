@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5208b722dead5837d44dc0b89422f59",
+    "content-hash": "a935dcfaf96cffe476ad1eac0a38af76",
     "packages": [
         {
             "name": "dflydev/doctrine-orm-service-provider",
@@ -1126,16 +1126,16 @@
         },
         {
             "name": "googleads/googleads-php-lib",
-            "version": "53.1.0",
+            "version": "57.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleads/googleads-php-lib.git",
-                "reference": "ec3f7a1a5fa83fac80e395e541dab389de3220ba"
+                "reference": "49d897dd63957c93c53673fc4b8f4823e76908ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/ec3f7a1a5fa83fac80e395e541dab389de3220ba",
-                "reference": "ec3f7a1a5fa83fac80e395e541dab389de3220ba",
+                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/49d897dd63957c93c53673fc4b8f4823e76908ac",
+                "reference": "49d897dd63957c93c53673fc4b8f4823e76908ac",
                 "shasum": ""
             },
             "require": {
@@ -1175,9 +1175,9 @@
             "homepage": "https://github.com/googleads/googleads-php-lib",
             "support": {
                 "issues": "https://github.com/googleads/googleads-php-lib/issues",
-                "source": "https://github.com/googleads/googleads-php-lib/tree/53.1.0"
+                "source": "https://github.com/googleads/googleads-php-lib/tree/57.0.0"
             },
-            "time": "2021-07-22T15:16:34+00:00"
+            "time": "2022-05-18T14:21:47+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
