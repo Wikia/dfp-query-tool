@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
-use Google\AdsApi\AdManager\v202105\SuggestedAdUnitService;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\ApproveSuggestedAdUnits as ApproveSuggestedAdUnitsAction;
+use Google\AdsApi\AdManager\v202205\SuggestedAdUnitService;
 
 class SuggestedAdUnitsService
 {
@@ -51,6 +51,8 @@ class SuggestedAdUnitsService
 			} else {
 				printf("No suggested ad units were approved.\n");
 			}
+		} else {
+			printf("No suggested ad units to be approved found.\n");
 		}
 	}
 }

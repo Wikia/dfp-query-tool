@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\LineItemCreativeAssociation;
-use Google\AdsApi\AdManager\v202105\DeactivateLineItemCreativeAssociations;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\LineItemCreativeAssociation;
+use Google\AdsApi\AdManager\v202205\DeactivateLineItemCreativeAssociations;
 
 
 class LineItemCreativeAssociationService {
@@ -33,7 +33,7 @@ class LineItemCreativeAssociationService {
 			if ( empty($lineItemId) ) {
 				return $this->getIncorrectLineItemResult();
 			} else {
-				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemCreativeAssociationService::class);
+				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
 				foreach ( $processedCreativeIds as $extractedCreativeId ) {
@@ -87,7 +87,7 @@ class LineItemCreativeAssociationService {
 			->withBindVariableValue('creativeId', $creativeId);
 
 		try {
-			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemCreativeAssociationService::class);
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\LineItemCreativeAssociationService::class);
 			$action = new DeactivateLineItemCreativeAssociations();
 
 			$result = $lineItemCreativeAssociationService

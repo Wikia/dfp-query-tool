@@ -2,36 +2,39 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\AdManagerDateTimes;
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\AdUnitTargeting;
-use Google\AdsApi\AdManager\v202105\ChildContentEligibility;
-use Google\AdsApi\AdManager\v202105\CreativePlaceholder;
-use Google\AdsApi\AdManager\v202105\CustomCriteria;
-use Google\AdsApi\AdManager\v202105\CustomCriteriaSet;
-use Google\AdsApi\AdManager\v202105\EnvironmentType;
-use Google\AdsApi\AdManager\v202105\Goal;
-use Google\AdsApi\AdManager\v202105\InventoryTargeting;
-use Google\AdsApi\AdManager\v202105\LineItem;
-use Google\AdsApi\AdManager\v202105\Money;
-use Google\AdsApi\AdManager\v202105\NetworkService;
-use Google\AdsApi\AdManager\v202105\Size;
-use Google\AdsApi\AdManager\v202105\Targeting;
-use Google\AdsApi\AdManager\v202105\RequestPlatformTargeting;
-use Google\AdsApi\AdManager\v202105\ComputedStatus;
+use Google\AdsApi\AdManager\Util\v202205\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\AdUnitTargeting;
+use Google\AdsApi\AdManager\v202205\ChildContentEligibility;
+use Google\AdsApi\AdManager\v202205\CreativePlaceholder;
+use Google\AdsApi\AdManager\v202205\CustomCriteria;
+use Google\AdsApi\AdManager\v202205\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v202205\EnvironmentType;
+use Google\AdsApi\AdManager\v202205\Goal;
+use Google\AdsApi\AdManager\v202205\InventoryTargeting;
+use Google\AdsApi\AdManager\v202205\LineItem;
+use Google\AdsApi\AdManager\v202205\Money;
+use Google\AdsApi\AdManager\v202205\NetworkService;
+use Google\AdsApi\AdManager\v202205\Size;
+use Google\AdsApi\AdManager\v202205\Targeting;
+use Google\AdsApi\AdManager\v202205\RequestPlatformTargeting;
+use Google\AdsApi\AdManager\v202205\ComputedStatus;
 use Inventory\Form\LineItemForm;
 
-class LineItemService
-{
+class LineItemService {
 	private $customTargetingService;
 	private $lineItemService;
 	private $targetedAdUnits;
 	private $targetedPlacements = array();
 	private $lineItemCreativeAssociationService;
+	private $networkService;
 
-	public function __construct() {
-		$this->customTargetingService = new CustomTargetingService();
-		$this->lineItemService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class);
+	public function __construct($networkService = null, $lineItemService = null, $customTargetingService = null) {
+        $this->networkService = $networkService === null ? AdManagerService::get(NetworkService::class) : $networkService;
+        $this->lineItemService = $lineItemService === null ?
+            AdManagerService::get(\Google\AdsApi\AdManager\v202205\LineItemService::class) : $lineItemService;
+
+		$this->customTargetingService = $customTargetingService === null ? new CustomTargetingService() : $customTargetingService;
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
@@ -187,24 +190,10 @@ class LineItemService
 	}
 
 	public function findLineItemIdsByKeys($keyIds, $excludeInactive = true) {
-		$statementBuilder = new StatementBuilder();
-
-		$statement = 'isArchived = false';
-
-		if ($excludeInactive) {
-			$statement .= ' and status in (:activeStatuses)';
-			$statementBuilder->withBindVariableValue('activeStatuses', [
-				ComputedStatus::READY,
-				ComputedStatus::DELIVERING,
-				ComputedStatus::DELIVERY_EXTENDED
-			]);
-		}
-
-		$statementBuilder->where($statement);
-		$statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
-
+        $statementBuilder = $this->createActiveLineItemsStatement($excludeInactive);
 		$lineItems = [];
 		$totalResultSetSize = 0;
+
 		do {
 			$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
 
@@ -212,16 +201,16 @@ class LineItemService
 				$totalResultSetSize = $page->getTotalResultSetSize();
 				foreach ($page->getResults() as $lineItem) {
 					$wasKeyInSet = false;
-					if (null !== $lineItem->getTargeting()->getCustomTargeting()) {
+
+					if ($this->isCustomTargetingNotNull($lineItem)) {
 						$targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
 						foreach ($targetingSets as $targetingSet) {
 							$keyValuePairs = $targetingSet->getChildren();
 							foreach ($keyValuePairs as $pair) {
-								if (method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds)) {
-									$wasKeyInSet = true;
-								}
+							    $wasKeyInSet = $this->wasKeyInSet($pair, $keyIds);
 							}
 						}
+
 						if ($wasKeyInSet) {
 							$lineItems[] = [
 								'line_item_id' => $lineItem->getId(),
@@ -237,6 +226,90 @@ class LineItemService
 
 		return $lineItems;
 	}
+
+	private function wasKeyInSet($pair, $keyIds) {
+        return method_exists($pair, 'getKeyId') && in_array($pair->getKeyId(), $keyIds);
+    }
+
+    private function isCustomTargetingNotNull($lineItem) {
+	    return null !== $lineItem->getTargeting()->getCustomTargeting();
+    }
+
+	private function createActiveLineItemsStatement($excludeInactive = true) {
+        $statementBuilder = new StatementBuilder();
+
+        $statement = 'isArchived = false';
+
+        if ($excludeInactive) {
+            $statement .= ' and status in (:activeStatuses)';
+            $statementBuilder->withBindVariableValue('activeStatuses', [
+                ComputedStatus::READY,
+                ComputedStatus::DELIVERING,
+                ComputedStatus::DELIVERY_EXTENDED
+            ]);
+        }
+
+        $statementBuilder->where($statement);
+        $statementBuilder->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+
+        return $statementBuilder;
+    }
+
+    public function findLineItemIdsByKeyValues($keyId, $valuesIds) {
+        $statementBuilder = $this->createActiveLineItemsStatement(true);
+
+        $lineItems = [];
+        $totalResultSetSize = 0;
+        do {
+            $page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+            if ($page->getResults() !== null) {
+                $totalResultSetSize = $page->getTotalResultSetSize();
+                foreach ($page->getResults() as $lineItem) {
+                    $foundMatch = false;
+
+                    if ($this->isCustomTargetingNotNull($lineItem)) {
+                        $targetingSets = $lineItem->getTargeting()->getCustomTargeting()->getChildren();
+                        foreach ($targetingSets as $targetingSet) {
+                            $keyValuePairs = $targetingSet->getChildren();
+                            foreach ($keyValuePairs as $pair) {
+                                $foundMatch = $this->wasKeyAndValueInSet($pair, $keyId, $valuesIds);
+                            }
+                        }
+
+                        if ($foundMatch) {
+                            $lineItems[] = [
+                                'line_item_id' => $lineItem->getId(),
+                                'order_id' => $lineItem->getOrderId(),
+                                'found_value_id' => $foundMatch,
+                            ];
+                        }
+                    }
+                }
+            }
+
+            $statementBuilder->increaseOffsetBy(StatementBuilder::SUGGESTED_PAGE_LIMIT);
+        } while ($statementBuilder->getOffset() < $totalResultSetSize);
+
+        return $lineItems;
+    }
+
+    private function wasKeyAndValueInSet($pair, $keyId, $valuesIds) {
+        if (
+            method_exists($pair, 'getKeyId') &&
+            method_exists($pair, 'getValueIds') &&
+            $pair->getKeyId() == $keyId
+        ) {
+            $lineItemsValuesIds = $pair->getValueIds();
+            foreach($valuesIds as $valueId) {
+                if( in_array($valueId, $lineItemsValuesIds) ) {
+                    return $valueId;
+                }
+            }
+        }
+
+        return false;
+    }
 
 	public function addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator = 'IS') {
 		$addedNewKeyValues = false;
@@ -409,9 +482,7 @@ class LineItemService
 	}
 
 	private function getRootAdUnit() {
-		$networkService = AdManagerService::get(NetworkService::class);
-
-		$network = $networkService->getCurrentNetwork();
+		$network = $this->networkService->getCurrentNetwork();
 
 		$adUnit = new AdUnitTargeting();
 		$adUnit->setAdUnitId($network->getEffectiveRootAdUnitId());

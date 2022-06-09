@@ -2,42 +2,33 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\CustomTargetingValue;
-use Google\AdsApi\AdManager\v202105\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202205\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
-	public function getKeyIds($keys) {
+    private $customTargetingService;
+
+    public function __construct($customTargetingService = null) {
+        $this->customTargetingService = $customTargetingService === null ?
+            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class) :
+            $this->customTargetingService = $customTargetingService;
+    }
+
+    public function getKeyIds($keys) {
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
-
-			$statementBuilder = new StatementBuilder();
-			$statementBuilder->where('name = :name');
-
 			foreach ($keys as $key) {
-				$statementBuilder->withBindVariableValue('name', $key);
+			    $results = $this->searchForCustomTargetingKeyValues($key);
 
-				$page = null;
-				for ($i = 0; $i < 10; $i++) {
-					$page = $customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
-
-					if ($page) break;
-					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
-				}
-
-				$results = $page->getResults();
 				if (!empty($results)) {
-					foreach ($results as $customTargetingKey) {
-						$ids[] = $customTargetingKey->getId();
-					}
+					$ids = $this->getKeyValuesIds($results);
 				} else {
 					throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
 				}
 			}
-
 		} catch (\Exception $e) {
 			throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
 		}
@@ -45,11 +36,37 @@ class CustomTargetingService
 		return $ids;
 	}
 
+	private function searchForCustomTargetingKeyValues($key) {
+        $statementBuilder = new StatementBuilder();
+        $statementBuilder->where('name = :name');
+        $statementBuilder->withBindVariableValue('name', $key);
+
+        $page = null;
+        for ($i = 0; $i < 10; $i++) {
+            $page = $this->customTargetingService->getCustomTargetingKeysByStatement($statementBuilder->toStatement());
+
+            if ($page) break;
+            echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+        }
+
+        return $page->getResults();
+    }
+
+    private function getKeyValuesIds($results) {
+        $ids = [];
+
+        foreach ($results as $customTargetingKey) {
+            $ids[] = $customTargetingKey->getId();
+        }
+
+        return $ids;
+    }
+
 	public function getAllValueIds($keyId) {
 		$values = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
@@ -106,7 +123,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -150,7 +167,7 @@ class CustomTargetingService
 		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 
@@ -168,4 +185,24 @@ class CustomTargetingService
 
 		return $addedValues;
 	}
+
+	public function removeValueFromKeyById($keyId, $valueId) {
+        $statementBuilder = (new StatementBuilder())->where(
+            'customTargetingKeyId = :customTargetingKeyId AND id = :id'
+        )
+            ->orderBy('id ASC')
+            ->limit(StatementBuilder::SUGGESTED_PAGE_LIMIT)
+            ->withBindVariableValue(
+                'customTargetingKeyId',
+                $keyId
+            )
+            ->withBindVariableValue('id', $valueId);
+
+        $result = $this->customTargetingService->performCustomTargetingValueAction(
+            new \Google\AdsApi\AdManager\v202205\DeleteCustomTargetingValues(),
+            $statementBuilder->toStatement()
+        );
+
+        return $result !== null && $result->getNumChanges() > 0;
+    }
 }

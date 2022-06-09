@@ -42,6 +42,7 @@ $console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
 $console->add(new Inventory\Command\ChildContentEligibilityUpdateCommand($app));
 $console->add(new Inventory\Command\CreateLineItemsCommand($app));
 $console->add(new Inventory\Command\KeyValuesGetterCommand($app));
+$console->add(new Inventory\Command\KeyValuesRemoveCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
