@@ -2,7 +2,7 @@
 
 namespace Report\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder as AdManagerStatementBuilder;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder as AdManagerStatementBuilder;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class StatementBuilder

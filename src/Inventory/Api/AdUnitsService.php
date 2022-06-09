@@ -2,16 +2,16 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\ArchiveAdUnits;
-use Google\AdsApi\AdManager\v202105\InventoryService;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\ArchiveAdUnits;
+use Google\AdsApi\AdManager\v202205\InventoryService;
 
 class AdUnitsService
 {
 	public function archive($adUnitCode) {
 		$this->archiveByAdUnitCode($adUnitCode);
 	}
-
+g
 	private function archiveByAdUnitCode($adUnitCode) {
 		$inventoryService = AdManagerService::get(InventoryService::class);
 		$networkAdUnitId = 81570852;

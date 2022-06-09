@@ -2,23 +2,23 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202105\AdManagerDateTimes;
-use Google\AdsApi\AdManager\Util\v202105\StatementBuilder;
-use Google\AdsApi\AdManager\v202105\AdUnitTargeting;
-use Google\AdsApi\AdManager\v202105\ChildContentEligibility;
-use Google\AdsApi\AdManager\v202105\CreativePlaceholder;
-use Google\AdsApi\AdManager\v202105\CustomCriteria;
-use Google\AdsApi\AdManager\v202105\CustomCriteriaSet;
-use Google\AdsApi\AdManager\v202105\EnvironmentType;
-use Google\AdsApi\AdManager\v202105\Goal;
-use Google\AdsApi\AdManager\v202105\InventoryTargeting;
-use Google\AdsApi\AdManager\v202105\LineItem;
-use Google\AdsApi\AdManager\v202105\Money;
-use Google\AdsApi\AdManager\v202105\NetworkService;
-use Google\AdsApi\AdManager\v202105\Size;
-use Google\AdsApi\AdManager\v202105\Targeting;
-use Google\AdsApi\AdManager\v202105\RequestPlatformTargeting;
-use Google\AdsApi\AdManager\v202105\ComputedStatus;
+use Google\AdsApi\AdManager\Util\v202205\AdManagerDateTimes;
+use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
+use Google\AdsApi\AdManager\v202205\AdUnitTargeting;
+use Google\AdsApi\AdManager\v202205\ChildContentEligibility;
+use Google\AdsApi\AdManager\v202205\CreativePlaceholder;
+use Google\AdsApi\AdManager\v202205\CustomCriteria;
+use Google\AdsApi\AdManager\v202205\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v202205\EnvironmentType;
+use Google\AdsApi\AdManager\v202205\Goal;
+use Google\AdsApi\AdManager\v202205\InventoryTargeting;
+use Google\AdsApi\AdManager\v202205\LineItem;
+use Google\AdsApi\AdManager\v202205\Money;
+use Google\AdsApi\AdManager\v202205\NetworkService;
+use Google\AdsApi\AdManager\v202205\Size;
+use Google\AdsApi\AdManager\v202205\Targeting;
+use Google\AdsApi\AdManager\v202205\RequestPlatformTargeting;
+use Google\AdsApi\AdManager\v202205\ComputedStatus;
 use Inventory\Form\LineItemForm;
 
 class LineItemService {
@@ -32,7 +32,7 @@ class LineItemService {
 	public function __construct($networkService = null, $lineItemService = null, $customTargetingService = null) {
         $this->networkService = $networkService === null ? AdManagerService::get(NetworkService::class) : $networkService;
         $this->lineItemService = $lineItemService === null ?
-            AdManagerService::get(\Google\AdsApi\AdManager\v202105\LineItemService::class) : $lineItemService;
+            AdManagerService::get(\Google\AdsApi\AdManager\v202205\LineItemService::class) : $lineItemService;
 
 		$this->customTargetingService = $customTargetingService === null ? new CustomTargetingService() : $customTargetingService;
 		$this->targetedAdUnits = [$this->getRootAdUnit()];
