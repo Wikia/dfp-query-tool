@@ -6,29 +6,11 @@ set_time_limit(0);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $app = new Silex\Application();
-$config = Symfony\Component\Yaml\Yaml::parse(file_get_contents(__DIR__ . '/../config/db.yml'));
 
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
     'console.name'              => 'GamTableau',
     'console.version'           => '1.0.0',
     'console.project_directory' => __DIR__.'/..'
-));
-
-$dbOptions = [
-	'driver'    => 'pdo_mysql',
-	'host'      => $config['database']['host'],
-	'dbname'    => $config['database']['name'],
-	'user'      => $config['database']['user'],
-	'password'  => $config['database']['password'],
-	'charset'   => 'utf8mb4',
-];
-
-if (!empty($config['database']['port'])) {
-	$dbOptions['port'] = $config['database']['port'];
-}
-
-$app->register(new Silex\Provider\DoctrineServiceProvider, array(
-	'db.options' => $dbOptions
 ));
 
 $console = $app['console'];
