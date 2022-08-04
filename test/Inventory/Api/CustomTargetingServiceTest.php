@@ -26,7 +26,7 @@ class CustomTargetingServiceTest extends TestCase {
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
-            [666],
+            [[666]],
             $customTargetingService->getKeyIds(['test-key-val-name']),
             "Failed mocked data with one result case"
         );
