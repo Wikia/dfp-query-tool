@@ -21,10 +21,10 @@ class CustomTargetingService
 
 		try {
 			foreach ($keys as $key) {
-			    $results = $this->searchForCustomTargetingKeyValues($key);
+				$results = $this->searchForCustomTargetingKeyValues($key);
 
 				if (!empty($results)) {
-					$ids = $this->getKeyValuesIds($results);
+					$ids[] = $this->getKeyValuesIds($results);
 				} else {
 					throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
 				}
@@ -146,7 +146,7 @@ class CustomTargetingService
 						$ids[] = $customTargetingValue->getId();
 					}
 				} else {
-					throw new \Exception(sprintf('Value not found (<error>%s</error>).', $value));
+					throw new \Exception(sprintf('Value not found (<error>%s</error>) (for key: %s).', $value, $keyId));
 				}
 			}
 		} catch (\Exception $e) {

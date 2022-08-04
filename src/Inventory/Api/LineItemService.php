@@ -515,8 +515,9 @@ class LineItemService {
 
 		$countValues = count($form['values']);
 		for ($i = 0; $i < $countValues; $i++) {
-			$keyId = $keyIds[$i];
+			$keyId = $keyIds[$i][0];
 			$values = explode(',', $form['values'][$i]);
+
 			$valueIds = $this->customTargetingService->getValueIds($keyId, $values);
 
 			$criteria = new CustomCriteria();
