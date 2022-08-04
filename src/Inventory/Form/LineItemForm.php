@@ -14,7 +14,10 @@ class LineItemForm {
 		$formsSet = [];
 		if (!empty($this->data['iterator'])) {
 			$elements = explode(',', $this->data['iterator']);
-			$priceMapElements = explode(',', $this->data['priceMap']);
+
+			if (isset($this->data['priceMap'])) {
+				$priceMapElements = explode(',', $this->data['priceMap']);
+			}
 
 			foreach ( $elements as $index => $element ) {
 				$alteredForm = $this->data;
