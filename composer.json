@@ -5,8 +5,7 @@
         "googleads/googleads-php-lib": "^57.0",
         "knplabs/console-service-provider": "^2.0",
         "silex/silex": "~2.0",
-        "symfony/yaml": "^3.1",
-        "twig/twig": "^1.27"
+        "symfony/yaml": "^3.1"
     },
     "autoload": {
         "classmap": [
