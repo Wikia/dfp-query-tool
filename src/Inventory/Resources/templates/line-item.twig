@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>GAM inventory</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/bootstrap.min.css') }}"/>
+	<link rel="stylesheet" href="{{ getResourcePath('Common:css/style.css') }}"/>
+</head>
+<body>
+<nav class="navbar navbar-static-top navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<div class="navbar-brand">
+				GAM inventory
+			</div>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+			<li>
+				<a href="https://developers.google.com/doubleclick-publishers/docs/reference/v201608/LineItemService"
+				   target="_blank">
+					API reference (includes list of errors)
+				</a>
+			</li>
+		</ul>
+	</div>
+</nav>
+<div class="container" style="margin-bottom: 20px;">
+	<div class="row">
+		<h3>Create line item</h3>
+	</div>
+</div>
+{% for response in responses %}
+	{% if response.message is not null %}
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-offset-1 col-sm-10">
+					<div class="alert alert-{{ response.messageType }} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+									aria-hidden="true">&times;</span></button>
+						<p>{{ response.message|raw }}</p>
+						{% if response.lineItem is not null %}
+							<p>
+							<ul>
+								<li>
+									<a href="https://admanager.google.com/5441#delivery/LineItemDetail/lineItemId={{ response.lineItem.id }}"
+									   target="_blank">
+										{{ response.lineItem.name }}
+									</a><br/>
+									<small>id: {{ response.lineItem.id }},
+										order: {{ response.lineItem.orderId }} {% if response.lica.creativeSet %}, creative: {{ response.lica.creativeId }} {% endif %}</small>
+								</li>
+							</ul>
+							</p>
+						{% endif %}
+					</div>
+					{% if response.lica and response.lica.creativeSet and not response.lica.success %}
+						<div class="alert alert-warning alert-dismissible" role="alert">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+										aria-hidden="true">&times;</span></button>
+							<p>There were problems with line item and creative association</p>
+							<p>{{ response.lica.message|raw }}</p>
+						</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+{% endfor %}
+<div class="container">
+	<div class="row">
+		<form method="post" action="{{ action }}">
+			<div class="col-sm-offset-2 col-sm-8">
+				<div class="form-horizontal col-sm-12">
+					<div class="form-group">
+						<label for="orderId">Order ID</label>
+						<input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order ID"/>
+					</div>
+					<div class="form-group">
+						<label for="creativeId">Creative ID</label>
+						<input type="text" class="form-control" id="creativeId" name="creativeId"
+							   placeholder="Creative ID"/>
+					</div>
+                    {% include 'partials/line-item-form-fields.twig' %}
+				<hr/>
+				<div class="row text-right">
+					<button class="btn btn-wikia"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> SUBMIT
+						LINE ITEM
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script src="{{ getResourcePath('Common:js/jquery.min.js') }}" type="text/javascript"></script>
+<script src="{{ getResourcePath('Common:js/bootstrap.min.js') }}" type="text/javascript"></script>
+<script type="text/javascript">
+	var submittedForm = {{ form|raw }};
+</script>
+<script src="{{ getResourcePath('Inventory:js/line-item.js') }}" type="text/javascript"></script>
+</body>
+</html>
