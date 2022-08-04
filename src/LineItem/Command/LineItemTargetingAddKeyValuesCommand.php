@@ -37,7 +37,8 @@ class LineItemKeyValuesAddCommand extends Command
 		$operator = $input->getArgument('operator');
 
 		$lineItem = $lineItemService->getLineItemById($lineItemId);
-		$keyId = array_shift($customTargetingService->getKeyIds([$key]));
+		$keyIds = $customTargetingService->getKeyIds([$key]);
+		$keyId = array_shift($keyIds);
 		$valueIds = $customTargetingService->getValueIds($keyId, $values);
 
 		$lineItemService->addKeyValuePairToLineItemTargeting($lineItem, $keyId, $valueIds, $operator);

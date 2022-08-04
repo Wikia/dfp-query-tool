@@ -26,8 +26,24 @@ class CustomTargetingServiceTest extends TestCase {
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
-            [[666]],
+            ['test-key-val-name' => 666],
             $customTargetingService->getKeyIds(['test-key-val-name']),
+            "Failed mocked data with one result case"
+        );
+    }
+
+    public function testGetKeyIds_existingKeys() {
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
+
+        $pageMock = $this->createCustomTargetingValuePageReturningMock([$valueMock]);
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+
+        $this->assertSame(
+            ['test-key-val-name' => 666, 'test-key-val-name2' => 666],
+            $customTargetingService->getKeyIds(['test-key-val-name', 'test-key-val-name2']),
             "Failed mocked data with one result case"
         );
     }

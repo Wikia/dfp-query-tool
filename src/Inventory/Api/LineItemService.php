@@ -190,7 +190,7 @@ class LineItemService {
 	}
 
 	public function findLineItemIdsByKeys($keyIds, $excludeInactive = true) {
-        $statementBuilder = $this->createActiveLineItemsStatement($excludeInactive);
+		$statementBuilder = $this->createActiveLineItemsStatement($excludeInactive);
 		$lineItems = [];
 		$totalResultSetSize = 0;
 
@@ -515,7 +515,8 @@ class LineItemService {
 
 		$countValues = count($form['values']);
 		for ($i = 0; $i < $countValues; $i++) {
-			$keyId = $keyIds[$i][0];
+			$keyName = $form['keys'][$i];
+			$keyId = $keyIds[$keyName];
 			$values = explode(',', $form['values'][$i]);
 
 			$valueIds = $this->customTargetingService->getValueIds($keyId, $values);
