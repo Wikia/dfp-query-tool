@@ -45,6 +45,10 @@ class FindLineItemByKeyCommand extends Command
 		foreach ($lineItems as $lineItem) {
 			printf(" - order: %s, line item: %s\n", $lineItem['order_id'], $lineItem['line_item_id']);
 		}
+
+		if (empty($lineItems)) {
+			printf( "No line-items found for given keys" );
+		}
 	}
 }
 
