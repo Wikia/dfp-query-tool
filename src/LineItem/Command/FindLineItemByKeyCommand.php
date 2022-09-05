@@ -42,6 +42,11 @@ class FindLineItemByKeyCommand extends Command
 
 		$lineItems = $lineItemService->findLineItemIdsByKeys($keyIds, $excludeInactive);
 
+		if (empty($lineItems)) {
+			printf( "No line-items found for given keys" );
+			return;
+		}
+
 		foreach ($lineItems as $lineItem) {
 			printf(" - order: %s, line item: %s\n", $lineItem['order_id'], $lineItem['line_item_id']);
 		}

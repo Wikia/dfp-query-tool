@@ -35,6 +35,4 @@ $console->add(new LineItem\Command\OrderLineItemsKeyRenameCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));
 
-$console->add(new Report\Command\ReportCommand($app));
-
 $console->run();
