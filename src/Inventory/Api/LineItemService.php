@@ -426,6 +426,15 @@ class LineItemService {
 		$this->lineItemService->updateLineItems( [ $lineItem ] );
 	}
 
+	public function alterSizes($lineItem, $sizes) {
+		$lineSizes = $this->getCreativePlaceholders($sizes);
+		$lineItem->setCreativePlaceholders($lineSizes);
+		$lineItem->setAllowOverbook(true);
+		$lineItem->setSkipInventoryCheck(true);
+
+		$this->lineItemService->updateLineItems( [ $lineItem ] );
+	}
+
 	public function renameKeyInLineItemTargeting($lineItem, $oldKeyId, $newKeyId) {
 		$oldValuesMap = $this->customTargetingService->getAllValueIds($oldKeyId);
 		$newValuesMap = $this->customTargetingService->getAllValueIds($newKeyId);
@@ -530,7 +539,7 @@ class LineItemService {
 		return $set;
 	}
 
-	private function getCreativePlaceholders($sizeList) {
+	public function getCreativePlaceholders($sizeList) {
 		$placeholders = [];
 		$sizes = explode(',', $sizeList);
 

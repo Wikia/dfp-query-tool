@@ -3,8 +3,10 @@
 namespace Inventory\Api;
 
 use Google\AdsApi\AdManager\Util\v202208\StatementBuilder;
+use Google\AdsApi\AdManager\v202208\DeleteLineItemCreativeAssociations;
 use Google\AdsApi\AdManager\v202208\LineItemCreativeAssociation;
 use Google\AdsApi\AdManager\v202208\DeactivateLineItemCreativeAssociations;
+use Google\AdsApi\AdManager\v202208\Size;
 
 
 class LineItemCreativeAssociationService {
@@ -14,7 +16,7 @@ class LineItemCreativeAssociationService {
 		$this->customTargetingService = new CustomTargetingService();
 	}
 
-	public function create( $creativeId, $lineItemId ) {
+	public function create( $creativeId, $lineItemId, $sizes ) {
 
 		if ( empty($creativeId) ) {
 			return [
@@ -28,6 +30,10 @@ class LineItemCreativeAssociationService {
 			'creativeId' => $creativeId
 		];
 
+		if ($sizes) {
+			$sizes = $this->getOverrideSizes($sizes);
+		}
+
 		$processedCreativeIds = $this->processCreativeId( $creativeId );
 		try {
 			if ( empty($lineItemId) ) {
@@ -40,6 +46,11 @@ class LineItemCreativeAssociationService {
 					$lineItemCreativeAssociation = new LineItemCreativeAssociation();
 					$lineItemCreativeAssociation->setCreativeId(trim( $extractedCreativeId ));
 					$lineItemCreativeAssociation->setLineItemId($lineItemId);
+
+					if ($sizes) {
+						$lineItemCreativeAssociation->setSizes($sizes);
+					}
+
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
 				}
 
@@ -62,6 +73,18 @@ class LineItemCreativeAssociationService {
 		}
 
 		return $response;
+	}
+
+	private function getOverrideSizes($sizeList) {
+		$sizesOverride = [];
+		$sizes = explode(',', $sizeList);
+
+		foreach ($sizes as $size) {
+			list($width, $height) = explode('x', trim($size));
+			$sizesOverride[] = new Size(intval($width), intval($height), false);
+		}
+
+		return $sizesOverride;
 	}
 
 	public function getIncorrectLineItemResult() {
@@ -100,6 +123,38 @@ class LineItemCreativeAssociationService {
 				$response['success'] = true;
 			} else {
 				$response['message'] = 'Could not deactivate creative in line item ' . $lineItemId;
+			}
+		} catch ( \Exception $e ) {
+			$response['success'] = false;
+			$response['message'] = $e->getMessage();
+		}
+
+		return $response;
+	}
+
+	public function remove( $lineItemId ) {
+		$response = [
+			'success' => true,
+		];
+
+		$statementBuilder = (new StatementBuilder())
+			->where('lineItemId = :lineItemId')
+			->withBindVariableValue('lineItemId', $lineItemId);
+
+		try {
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\LineItemCreativeAssociationService::class);
+			$action = new DeleteLineItemCreativeAssociations();
+
+			$result = $lineItemCreativeAssociationService
+				->performLineItemCreativeAssociationAction(
+					$action,
+					$statementBuilder->toStatement()
+				);
+
+			if ($result !== null && $result->getNumChanges() > 0) {
+				$response['success'] = true;
+			} else {
+				$response['message'] = 'Could not remove creatives in line item ' . $lineItemId;
 			}
 		} catch ( \Exception $e ) {
 			$response['success'] = false;

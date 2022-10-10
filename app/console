@@ -15,10 +15,11 @@ $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
 
 $console = $app['console'];
 
+$console->add(new Creative\Command\AddCreativeToLinesInOrderCommand($app));
 $console->add(new Creative\Command\AssociateCreativesInOrderCommand($app));
 $console->add(new Creative\Command\CreativeCommand($app));
 $console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($app));
-$console->add(new Creative\Command\AddCreativeToLinesInOrderCommand($app));
+$console->add(new Creative\Command\RemoveCreativesInOrderCommand($app));
 
 $console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
 $console->add(new Inventory\Command\ChildContentEligibilityUpdateCommand($app));
@@ -28,6 +29,7 @@ $console->add(new Inventory\Command\KeyValuesRemoveCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
+$console->add(new LineItem\Command\LineItemSizesAlterCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesUpdateCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
