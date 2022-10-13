@@ -435,6 +435,19 @@ class LineItemService {
 		$this->lineItemService->updateLineItems( [ $lineItem ] );
 	}
 
+	public function replaceInName($lineItem, $find, $replace) {
+		$name = $lineItem->getName();
+		$newName = str_replace($find, $replace, $name);
+
+		if ($name === $newName) {
+			return;
+		}
+
+		$lineItem->setName($newName);
+
+		$this->lineItemService->updateLineItems( [ $lineItem ] );
+	}
+
 	public function renameKeyInLineItemTargeting($lineItem, $oldKeyId, $newKeyId) {
 		$oldValuesMap = $this->customTargetingService->getAllValueIds($oldKeyId);
 		$newValuesMap = $this->customTargetingService->getAllValueIds($newKeyId);

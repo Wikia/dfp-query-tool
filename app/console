@@ -29,6 +29,7 @@ $console->add(new Inventory\Command\KeyValuesRemoveCommand($app));
 $console->add(new Inventory\Command\SuggestedAdUnitsCommand($app));
 
 $console->add(new LineItem\Command\FindLineItemByKeyCommand($app));
+$console->add(new LineItem\Command\LineItemRenameCommand($app));
 $console->add(new LineItem\Command\LineItemSizesAlterCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesUpdateCommand($app));
