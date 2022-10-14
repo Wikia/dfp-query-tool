@@ -57,7 +57,7 @@ class CustomTargetingService
             echo "WARNING! There were more than one IDs for a key\n";
         }
 
-        /** @var \Google\AdsApi\AdManager\v202205\CustomTargetingKey $customTargetingKey */
+        /** @var \Google\AdsApi\AdManager\v202208\CustomTargetingKey $customTargetingKey */
         $customTargetingKey = $results[0];
         return $customTargetingKey->getId();
     }
