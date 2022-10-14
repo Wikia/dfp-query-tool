@@ -26,7 +26,8 @@ class KeyValuesGetterCommand extends Command
 		$values = explode(',', $input->getArgument('values'));
 
 		$targetingService = new CustomTargetingService();
-		$keyId = array_shift($targetingService->getKeyIds([$key]));
+		$keyIds = $targetingService->getKeyIds([$key]);
+		$keyId = array_shift($keyIds);
 
 		printf("%s (%s) values:\n", $key, $keyId);
 		$valueIds = $targetingService->getValueIds($keyId, $values);

@@ -34,7 +34,7 @@ class OrderLineItemsKeyRenameCommand extends Command
 		$oldKeyName = substr($input->getArgument('old-key'), 0, 20);
 		$newKeyName = substr($input->getArgument('new-key'), 0, 20);
 
-		list($oldKeyId, $newKeyId) = $customTargetingService->getKeyIds([$oldKeyName, $newKeyName]);
+		list($oldKeyId, $newKeyId) = array_values($customTargetingService->getKeyIds([$oldKeyName, $newKeyName]));
 		$lineItems = $lineItemService->getLineItemsInOrder($orderId);
 
 		foreach ($lineItems as $i => $lineItem) {

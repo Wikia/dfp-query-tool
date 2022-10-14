@@ -36,7 +36,8 @@ class LineItemKeyValuesUpdateCommand extends Command
 		$values = explode(',', $input->getArgument('values'));
 		$operator = $input->getArgument('operator');
 
-		$keyId = array_shift($customTargetingService->getKeyIds([$key]));
+		$keyIds = $customTargetingService->getKeyIds([$key]);
+		$keyId = array_shift($keyIds);
 		$valueIds = $customTargetingService->getValueIds($keyId, $values);
 
 		$counterAllUpdated = 0;

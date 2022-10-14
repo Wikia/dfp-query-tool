@@ -21,10 +21,10 @@ class CustomTargetingService
 
 		try {
 			foreach ($keys as $key) {
-			    $results = $this->searchForCustomTargetingKeyValues($key);
+				$results = $this->searchForCustomTargetingKeyValues($key);
 
 				if (!empty($results)) {
-					$ids = $this->getKeyValuesIds($results);
+					$ids[$key] = $this->getKeyValuesIds($results);
 				} else {
 					throw new \Exception(sprintf('Key not found (<error>%s</error>).', $key));
 				}
@@ -53,13 +53,13 @@ class CustomTargetingService
     }
 
     private function getKeyValuesIds($results) {
-        $ids = [];
-
-        foreach ($results as $customTargetingKey) {
-            $ids[] = $customTargetingKey->getId();
+        if(count($results) > 1) {
+            echo "WARNING! There were more than one IDs for a key\n";
         }
 
-        return $ids;
+        /** @var \Google\AdsApi\AdManager\v202205\CustomTargetingKey $customTargetingKey */
+        $customTargetingKey = $results[0];
+        return $customTargetingKey->getId();
     }
 
 	public function getAllValueIds($keyId) {
@@ -146,7 +146,7 @@ class CustomTargetingService
 						$ids[] = $customTargetingValue->getId();
 					}
 				} else {
-					throw new \Exception(sprintf('Value not found (<error>%s</error>).', $value));
+					throw new \Exception(sprintf('Value not found (<error>%s</error>) (for key: %s).', $value, $keyId));
 				}
 			}
 		} catch (\Exception $e) {
