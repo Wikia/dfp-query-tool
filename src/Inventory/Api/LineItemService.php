@@ -142,7 +142,7 @@ class LineItemService {
 				try {
 					$lineItem = $this->create($alteredForm);
 					$responses[$index]['lineItem'] = $lineItem;
-					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($data['creativeId'], $lineItem['id']);
+					$responses[$index]['lica'] = $this->lineItemCreativeAssociationService->create($data['creativeId'], $lineItem['id'], $data['sizes']);
 					$responses[$index]['messageType'] = 'success';
 					$responses[$index]['message'] = 'Line items successfully created.';
 				} catch (LineItemException $exception) {
