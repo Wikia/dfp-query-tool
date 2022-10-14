@@ -57,7 +57,7 @@ class LineItemService {
 			$orderId = $form['orderId'];
 			$lineItem = new LineItem();
 
-			if ($form['isVideo']) {
+			if (isset($form['isVideo']) && $form['isVideo']) {
 				$lineItem->setEnvironmentType(EnvironmentType::VIDEO_PLAYER);
 				$lineItem->setVideoMaxDuration( 60000 );
 
