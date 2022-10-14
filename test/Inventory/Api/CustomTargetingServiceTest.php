@@ -26,8 +26,24 @@ class CustomTargetingServiceTest extends TestCase {
         $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
 
         $this->assertSame(
-            [666],
+            ['test-key-val-name' => 666],
             $customTargetingService->getKeyIds(['test-key-val-name']),
+            "Failed mocked data with one result case"
+        );
+    }
+
+    public function testGetKeyIds_existingKeys() {
+        $valueMock = $this->createCustomTargetingValueMock();
+        $valueMock->method('getId')
+            ->willReturn(666);
+
+        $pageMock = $this->createCustomTargetingValuePageReturningMock([$valueMock]);
+        $customTargetingServiceMock = $this->createCustomTargetingServiceReturningGivenPageMock($pageMock);
+        $customTargetingService = new CustomTargetingService($customTargetingServiceMock);
+
+        $this->assertSame(
+            ['test-key-val-name' => 666, 'test-key-val-name2' => 666],
+            $customTargetingService->getKeyIds(['test-key-val-name', 'test-key-val-name2']),
             "Failed mocked data with one result case"
         );
     }
@@ -58,15 +74,15 @@ class CustomTargetingServiceTest extends TestCase {
     }
 
     private function createCustomTargetingServiceMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingService::class);
+        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
     }
 
     private function createCustomTargetingValueMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValue::class);
+        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingValue::class);
     }
 
     private function createCustomTargetingValuePageMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202105\CustomTargetingValuePage::class);
+        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingValuePage::class);
     }
 
     private function createCustomTargetingValuePageReturningMock($resultsMock = []) {
@@ -149,7 +165,7 @@ class CustomTargetingServiceTest extends TestCase {
     }
 
     private function createUpdateResultsMock() {
-        $updateResultMock = $this->createStub(\Google\AdsApi\AdManager\v202105\UpdateResult::class);
+        $updateResultMock = $this->createStub(\Google\AdsApi\AdManager\v202205\UpdateResult::class);
         $updateResultMock->method('getNumChanges')
             ->willReturn(7);
 

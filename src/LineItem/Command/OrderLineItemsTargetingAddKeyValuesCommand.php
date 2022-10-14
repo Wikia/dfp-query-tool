@@ -38,7 +38,8 @@ class OrderLineItemsKeyValuesAddCommand extends Command
 
 		$lineItems = $lineItemService->getLineItemsInOrder($orderId);
 		$count = count($lineItems);
-		$keyId = array_shift($customTargetingService->getKeyIds([$key]));
+		$keyIds = $customTargetingService->getKeyIds([$key]);
+		$keyId = array_shift($keyIds);
 		$valueIds = $customTargetingService->getValueIds($keyId, $values);
 
 		printf("Updating %s line items\n", $count);
