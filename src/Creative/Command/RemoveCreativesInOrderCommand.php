@@ -9,7 +9,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class AssociateCreativesInOrderCommand extends Command
+class RemoveCreativesInOrderCommand extends Command
 {
 	public function __construct($app, $name = null)
 	{
@@ -18,28 +18,18 @@ class AssociateCreativesInOrderCommand extends Command
 
 	protected function configure()
 	{
-		$this->setName('creatives:associate')
-			->setDescription('Associates existing creative to all line items in order')
+		$this->setName('creatives:remove')
+			->setDescription('Remove all creatives in all line items in order')
 			->addArgument(
-				'creative-id',
-				InputArgument::REQUIRED,
-				'Creative ID'
-			)->addArgument(
 				'order-id',
 				InputArgument::REQUIRED,
 				'Order ID'
-			)->addArgument(
-				'sizes',
-				InputArgument::OPTIONAL,
-				'Sizes override (width\'x\'height, separated with comma)'
 			);
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$creativeId = $input->getArgument('creative-id');
 		$orderId = $input->getArgument('order-id');
-		$sizes = $input->getArgument('sizes');
 
 		$lineItemService = new LineItemService();
 		$associationService = new LineItemCreativeAssociationService();
@@ -49,8 +39,12 @@ class AssociateCreativesInOrderCommand extends Command
 
 		printf("Updating %s line items\n", $count);
 		foreach ($lineItems as $i => $lineItem) {
-			$associationService->create($creativeId, $lineItem->getId(), $sizes);
-			printf("  - Line item %s updated (%s/%s)\n", $lineItem->getId(), $i + 1, $count);
+			$result = $associationService->remove($lineItem->getId());
+			if ($result['success']) {
+				printf("  - Line item %s updated (%s/%s)\n", $lineItem->getId(), $i + 1, $count);
+			} else {
+				printf("  - %s (%s/%s)\n", $result['message'], $i + 1, $count);
+			}
 		}
 	}
 }

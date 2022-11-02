@@ -15,25 +15,19 @@
   "keys": [
     "hb_uuid_mediagrid",
     "hb_pb_mediagrid",
-    "hb_size_mediagrid",
     "pos",
-    "src",
-    "s1"
+    "src"
   ],
   "operators": [
     "IS_NOT",
     "IS",
     "IS",
-    "IS",
-    "IS",
-    "IS_NOT"
+    "IS"
   ],
   "values": [
     "disabled",
     "%%element%%",
-    "640x480",
     "featured",
-    "gpt",
-    "_adtest"
+    "gpt"
   ]
 }

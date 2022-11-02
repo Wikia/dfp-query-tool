@@ -2,9 +2,9 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202205\StatementBuilder;
-use Google\AdsApi\AdManager\v202205\CustomTargetingValue;
-use Google\AdsApi\AdManager\v202205\CustomTargetingValueMatchType;
+use Google\AdsApi\AdManager\Util\v202208\StatementBuilder;
+use Google\AdsApi\AdManager\v202208\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202208\CustomTargetingValueMatchType;
 
 class CustomTargetingService
 {
@@ -12,7 +12,7 @@ class CustomTargetingService
 
     public function __construct($customTargetingService = null) {
         $this->customTargetingService = $customTargetingService === null ?
-            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class) :
+            $this->customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class) :
             $this->customTargetingService = $customTargetingService;
     }
 
@@ -57,7 +57,7 @@ class CustomTargetingService
             echo "WARNING! There were more than one IDs for a key\n";
         }
 
-        /** @var \Google\AdsApi\AdManager\v202205\CustomTargetingKey $customTargetingKey */
+        /** @var \Google\AdsApi\AdManager\v202208\CustomTargetingKey $customTargetingKey */
         $customTargetingKey = $results[0];
         return $customTargetingKey->getId();
     }
@@ -66,7 +66,7 @@ class CustomTargetingService
 		$values = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
@@ -123,7 +123,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -167,7 +167,7 @@ class CustomTargetingService
 		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 
@@ -199,7 +199,7 @@ class CustomTargetingService
             ->withBindVariableValue('id', $valueId);
 
         $result = $this->customTargetingService->performCustomTargetingValueAction(
-            new \Google\AdsApi\AdManager\v202205\DeleteCustomTargetingValues(),
+            new \Google\AdsApi\AdManager\v202208\DeleteCustomTargetingValues(),
             $statementBuilder->toStatement()
         );
 
