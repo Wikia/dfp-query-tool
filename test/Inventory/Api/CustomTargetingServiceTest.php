@@ -1,6 +1,8 @@
 <?php
 namespace Inventory\Api;
 
+use Google\AdsApi\AdManager\v202208\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202208\CustomTargetingValuePage;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
@@ -74,15 +76,15 @@ class CustomTargetingServiceTest extends TestCase {
     }
 
     private function createCustomTargetingServiceMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingService::class);
+        return $this->createStub(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class);
     }
 
     private function createCustomTargetingValueMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingValue::class);
+        return $this->createStub(CustomTargetingValue::class);
     }
 
     private function createCustomTargetingValuePageMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202205\CustomTargetingValuePage::class);
+        return $this->createStub(CustomTargetingValuePage::class);
     }
 
     private function createCustomTargetingValuePageReturningMock($resultsMock = []) {

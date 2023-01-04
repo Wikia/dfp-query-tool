@@ -1,6 +1,14 @@
 <?php
 namespace Inventory\Api;
 
+use Google\AdsApi\AdManager\v202208\LineItem;
+use Google\AdsApi\AdManager\v202208\Targeting;
+use Google\AdsApi\AdManager\v202208\CustomCriteria;
+use Google\AdsApi\AdManager\v202208\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v202208\LineItemPage;
+use Google\AdsApi\AdManager\v202208\Network;
+use Google\AdsApi\AdManager\v202208\NetworkService;
+
 use PHPUnit\Framework\TestCase;
 
 class LineItemServiceTest extends TestCase {
@@ -17,15 +25,15 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createNetworkServiceMock() {
-        $networkServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202205\NetworkService::class);
+        $networkServiceMock = $this->createStub(NetworkService::class);
         $networkServiceMock->method('getCurrentNetwork')
-            ->willReturn($this->createStub(\Google\AdsApi\AdManager\v202205\Network::class));
+            ->willReturn($this->createStub(Network::class));
 
         return $networkServiceMock;
     }
 
     private function createLineItemPageStub() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202205\LineItemPage::class);
+        return $this->createStub(LineItemPage::class);
     }
 
     private function createLineItemPageMock($getResultsMock = null, $getTotalResultSetSizeMock = 0) {
@@ -39,7 +47,7 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createLineItemServiceMock($pageMock) {
-        $lineItemServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202205\LineItemService::class);
+        $lineItemServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202208\LineItemService::class);
         $lineItemServiceMock->method('getLineItemsByStatement')
             ->willReturn($pageMock);
 
@@ -60,7 +68,7 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createLineItemMock($getCustomTargetingMock = null, $getIdMock = 1234567890, $getOrderIdMock = 9876543210) {
-        $targetingMock = $this->createStub(\Google\AdsApi\AdManager\v202205\Targeting::class);
+        $targetingMock = $this->createStub(Targeting::class);
         $targetingMock->method('getCustomTargeting')
             ->willReturn($getCustomTargetingMock);
 
@@ -78,7 +86,7 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createLineItemStub() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202205\LineItem::class);
+        return $this->createStub(LineItem::class);
     }
 
     public function testFindLineItemIdsByKeys_forOneLineItemWithTargetingWithoutTheKeyVal() {
@@ -96,17 +104,17 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createCustomCriteriaSetMock($getKeyIdMock = 666, $getValueIdsMock = []) {
-        $customCriteriaMock = $this->createStub(\Google\AdsApi\AdManager\v202205\CustomCriteria::class);
+        $customCriteriaMock = $this->createStub(CustomCriteria::class);
         $customCriteriaMock->method('getKeyId')
             ->willReturn($getKeyIdMock);
         $customCriteriaMock->method('getValueIds')
             ->willReturn($getValueIdsMock);
 
-        $customCriteriaNodeMock = $this->createStub(\Google\AdsApi\AdManager\v202205\CustomCriteriaSet::class);
+        $customCriteriaNodeMock = $this->createStub(CustomCriteriaSet::class);
         $customCriteriaNodeMock->method('getChildren')
             ->willReturn([$customCriteriaMock]);
 
-        $customCriteriaSetMock = $this->createStub(\Google\AdsApi\AdManager\v202205\CustomCriteriaSet::class);
+        $customCriteriaSetMock = $this->createStub(CustomCriteriaSet::class);
         $customCriteriaSetMock->method('getChildren')
             ->willReturn([$customCriteriaNodeMock]);
 
