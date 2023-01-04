@@ -3,7 +3,6 @@
 namespace Code\Command;
 
 use Knp\Command\Command;
-use phpDocumentor\Reflection\File;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,6 +10,37 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateBidderContextFileCommand extends Command
 {
     const SUPPORTED_BIDDERS = [ 'pubmatic' ];
+    const CODE_TEMPLATE = <<<CODE
+export function getPubmaticContext(): object {
+	return {
+		enabled: false,
+		publisherId: '156260',
+		slots: {
+			[%%SLOTS_CONFIG%%]
+		}
+	};
+}
+CODE;
+
+    /**
+     * top_boxad: {
+     *   sizes: [
+     *     [300, 250],
+     *     [300, 600],
+     *   ],
+     *   ids: ['/5441/TOP_RIGHT_BOXAD_300x250@300x250', '/5441/TOP_RIGHT_BOXAD_300x600@300x600'],
+     * },
+     */
+    const SLOT_TEMPLATE = <<<CODE
+[%%SLOT_NAME%%]: {
+    sizes: [
+        [%%SLOT_SIZES%%]
+    ],
+    ids: [[%%SLOT_IDS%%]],
+},
+CODE;
+
+
 
     public function __construct($app, $name = null)
     {
@@ -32,8 +62,9 @@ class CreateBidderContextFileCommand extends Command
 
         $isValid = $this->validate($output, $bidderName, $csv);
 
-        if( $isValid ){
-            $output->writeln('Generating the context code...' );
+        if( $isValid ) {
+            $output->writeln('Generated context code for %s bidder:');
+            $output->writeln(str_replace('[%%SLOTS_CONFIG%%]', '', self::CODE_TEMPLATE));
         }
     }
 
