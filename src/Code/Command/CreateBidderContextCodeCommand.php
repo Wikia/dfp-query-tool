@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreateBidderContextFileCommand extends Command
+class CreateBidderContextCodeCommand extends Command
 {
     const SUPPORTED_BIDDERS = [ 'pubmatic' ];
     const CODE_TEMPLATE = <<<CODE
@@ -40,8 +40,6 @@ CODE;
 },
 CODE;
 
-
-
     public function __construct($app, $name = null)
     {
         parent::__construct($name);
@@ -49,7 +47,7 @@ CODE;
 
     protected function configure()
     {
-        $this->setName('code:create-bidder-context-code')
+        $this->setName('code-generator:create-bidder-context-code')
             ->setDescription('Creates JavaScript code for given bidder based on given input file')
             ->addOption('bidder', 'b', InputOption::VALUE_REQUIRED, 'Name of the bidder')
             ->addOption('csv', 'f', InputOption::VALUE_REQUIRED, 'CSV file with IDs');
@@ -63,8 +61,12 @@ CODE;
         $isValid = $this->validate($output, $bidderName, $csv);
 
         if( $isValid ) {
-            $output->writeln('Generated context code for %s bidder:');
-            $output->writeln(str_replace('[%%SLOTS_CONFIG%%]', '', self::CODE_TEMPLATE));
+            $output->writeln(sprintf('Generated context code for %s bidder:', $bidderName));
+            $output->writeln(str_replace(
+                '[%%SLOTS_CONFIG%%]',
+                '',
+                self::CODE_TEMPLATE
+            ));
         }
     }
 
