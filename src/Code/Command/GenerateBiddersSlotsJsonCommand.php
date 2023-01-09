@@ -7,20 +7,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CreateBidderContextCodeCommand extends Command
+class GenerateBiddersSlotsJsonCommand extends Command
 {
     const SUPPORTED_BIDDERS = [ 'pubmatic' ];
-    const CODE_TEMPLATE = <<<CODE
-export function getPubmaticContext(): object {
-	return {
-		enabled: false,
-		publisherId: '156260',
-		slots: {
-			[%%SLOTS_CONFIG%%]
-		}
-	};
-}
-CODE;
 
     /**
      * top_boxad: {
@@ -47,26 +36,25 @@ CODE;
 
     protected function configure()
     {
-        $this->setName('code-generator:create-bidder-context-code')
-            ->setDescription('Creates JavaScript code for given bidder based on given input file')
+        $this->setName('generate:bidders-slots-json')
+            ->setDescription('Creates JSON for given bidder based on given input file')
             ->addOption('bidder', 'b', InputOption::VALUE_REQUIRED, 'Name of the bidder')
-            ->addOption('csv', 'f', InputOption::VALUE_REQUIRED, 'CSV file with IDs');
+            ->addOption('csv', 'f', InputOption::VALUE_REQUIRED, 'CSV file with IDs')
+            ->addOption( 'separator', 's', InputOption::VALUE_OPTIONAL, 'CSV file separator (default: ',')', ',');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $bidderName = $input->getOption('bidder');
-        $csv = $input->getOption('csv');
+        $csvFile = $input->getOption('csv');
+        $csvSeparator = $input->getOption('separator');
 
-        $isValid = $this->validate($output, $bidderName, $csv);
+        $isValid = $this->validate($output, $bidderName, $csvFile);
 
         if( $isValid ) {
-            $output->writeln(sprintf('Generated context code for %s bidder:', $bidderName));
-            $output->writeln(str_replace(
-                '[%%SLOTS_CONFIG%%]',
-                '',
-                self::CODE_TEMPLATE
-            ));
+            $csv = $this->getCsvContentAsArray($csvFile, $csvSeparator);
+            $output->writeln(sprintf('Generated slots JSON for %s bidder:', $bidderName));
+            print_r($csv);
         }
     }
 
@@ -82,5 +70,11 @@ CODE;
         }
 
         return true;
+    }
+
+    private function getCsvContentAsArray($csvFile, $csvSeparator): array {
+        return array_map( function($row) use ($csvSeparator) {
+            return str_getcsv($row, $csvSeparator);
+        }, file($csvFile));
     }
 }
