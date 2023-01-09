@@ -24,7 +24,8 @@ class GenerateBiddersSlotsJsonCommand extends Command
             ->addOption('bidder', 'b', InputOption::VALUE_REQUIRED, 'Name of the bidder')
             ->addOption('csv', 'f', InputOption::VALUE_REQUIRED, 'CSV file with IDs')
             ->addOption( 'separator', 's', InputOption::VALUE_OPTIONAL, 'CSV file separator (default: \',\')', ',')
-            ->addOption( 'skip-first-row', 'skip', InputOption::VALUE_OPTIONAL, 'Skip first row (default: true) - most of the times these are headers', true);
+            ->addOption( 'skip-first-row', 'r', InputOption::VALUE_OPTIONAL, 'Skip first row (default: true) - most of the times these are headers', true)
+            ->addOption( 'pretty-print', 'p', InputOption::VALUE_OPTIONAL, 'Should the JSON output be pretty-printed (default: true)', true);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -32,14 +33,15 @@ class GenerateBiddersSlotsJsonCommand extends Command
         $bidderName = $input->getOption('bidder');
         $csvFile = $input->getOption('csv');
         $csvSeparator = $input->getOption('separator');
-        $skipFirstRow = $input->getOption('skip-first-row');
+        $skipFirstRow = !($input->getOption('skip-first-row') === 'false');
+        $prettyPrint = !($input->getOption('pretty-print') === 'false');
 
         $isValid = $this->validate($output, $bidderName, $csvFile);
 
         if( $isValid ) {
             $csv = $this->getCsvContentAsArray($csvFile, $csvSeparator);
             $output->writeln(sprintf('Generated slots JSON for %s bidder:', $bidderName));
-            $output->writeln($this->generateJSON($csv, $skipFirstRow));
+            $output->writeln($this->generateJSON($csv, $skipFirstRow, $prettyPrint));
         }
     }
 
@@ -63,7 +65,7 @@ class GenerateBiddersSlotsJsonCommand extends Command
         }, file($csvFile));
     }
 
-    private function generateJSON(array $csvContent, bool $skipFirstRow): string {
+    private function generateJSON(array $csvContent, bool $skipFirstRow, bool $prettyPrint): string {
         $slotConfig = [];
 
         foreach($csvContent as $rowNo => $row) {
@@ -86,6 +88,6 @@ class GenerateBiddersSlotsJsonCommand extends Command
             }
         }
 
-        return json_encode($slotConfig);
+        return json_encode($slotConfig, $prettyPrint ? JSON_PRETTY_PRINT : 0);
     }
 }
