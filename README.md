@@ -164,6 +164,10 @@ Most likely when adding a new bidder you'll get a link to spreadsheet with all t
 
 `app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv -s ';'`
 
+Different bidders require different slot configs and CSV structures another example is the AppNexus one:
+
+`app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv -s ';'`
+
 ## Cron jobs
 
 A cron job is defined in k8s-cron-jobs directory:

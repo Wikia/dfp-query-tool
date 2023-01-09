@@ -3,14 +3,14 @@
 namespace Code\Command;
 
 use Knp\Command\Command;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateBiddersSlotsJsonCommand extends Command
 {
-    const SUPPORTED_BIDDERS = [ 'pubmatic' ];
+    const SUPPORTED_BIDDERS = [ 'pubmatic', 'appnexus' ];
+    protected string $selectedBidder;
 
     public function __construct($app, $name = null)
     {
@@ -30,23 +30,23 @@ class GenerateBiddersSlotsJsonCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $bidderName = $input->getOption('bidder');
+        $this->selectedBidder = $input->getOption('bidder');
         $csvFile = $input->getOption('csv');
         $csvSeparator = $input->getOption('separator');
         $skipFirstRow = !($input->getOption('skip-first-row') === 'false');
         $prettyPrint = !($input->getOption('pretty-print') === 'false');
 
-        $isValid = $this->validate($output, $bidderName, $csvFile);
+        $isValid = $this->validate($output, $csvFile);
 
         if( $isValid ) {
             $csv = $this->getCsvContentAsArray($csvFile, $csvSeparator);
-            $output->writeln(sprintf('Generated slots JSON for %s bidder:', $bidderName));
+            $output->writeln(sprintf('Generated JSON for %s bidder:', $this->selectedBidder));
             $output->writeln($this->generateJSON($csv, $skipFirstRow, $prettyPrint));
         }
     }
 
-    private function validate($output, $bidderName, $csv) {
-        if ( !in_array($bidderName, self::SUPPORTED_BIDDERS) ) {
+    private function validate($output, $csv) {
+        if ( !in_array($this->selectedBidder, self::SUPPORTED_BIDDERS) ) {
             $output->writeln('Invalid bidder name!');
             return false;
         }
@@ -66,7 +66,7 @@ class GenerateBiddersSlotsJsonCommand extends Command
     }
 
     private function generateJSON(array $csvContent, bool $skipFirstRow, bool $prettyPrint): string {
-        $slotConfig = [];
+        $generator = $this->getGenerator();
 
         foreach($csvContent as $rowNo => $row) {
             if ($skipFirstRow && $rowNo === 0 ) {
@@ -77,17 +77,21 @@ class GenerateBiddersSlotsJsonCommand extends Command
             $slotSizes = [$row[1], $row[2]];
             $slotBidderId = $row[3];
 
-            if( empty($slotConfig[$slotName]) ) {
-                $slotConfig[$slotName] = [
-                    'sizes' => [$slotSizes],
-                    'ids' => [$slotBidderId],
-                ];
-            } else {
-                $slotConfig[$slotName]['sizes'][] = $slotSizes;
-                $slotConfig[$slotName]['ids'][] = $slotBidderId;
-            }
+            $generator->updateAfterRowIteration($slotName, $slotSizes, $slotBidderId, $row);
         }
+        $generator->updateAfterLoop();
 
-        return json_encode($slotConfig, $prettyPrint ? JSON_PRETTY_PRINT : 0);
+        return json_encode($generator->getBidderConfig(), $prettyPrint ? JSON_PRETTY_PRINT : 0);
+    }
+
+    private function getGenerator(): PrebidSlotConfigGenerator {
+        switch($this->selectedBidder) {
+            case 'pubmatic':
+                return new PubmaticSlotConfigGenerator();
+            case 'appnexus':
+                return new AppNexusSlotConfigGenerator();
+            default:
+                throw new \Exception('Unknown bidder slot config generator');
+        }
     }
 }
