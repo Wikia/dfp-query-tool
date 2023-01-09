@@ -11,24 +11,6 @@ class GenerateBiddersSlotsJsonCommand extends Command
 {
     const SUPPORTED_BIDDERS = [ 'pubmatic' ];
 
-    /**
-     * top_boxad: {
-     *   sizes: [
-     *     [300, 250],
-     *     [300, 600],
-     *   ],
-     *   ids: ['/5441/TOP_RIGHT_BOXAD_300x250@300x250', '/5441/TOP_RIGHT_BOXAD_300x600@300x600'],
-     * },
-     */
-    const SLOT_TEMPLATE = <<<CODE
-[%%SLOT_NAME%%]: {
-    sizes: [
-        [%%SLOT_SIZES%%]
-    ],
-    ids: [[%%SLOT_IDS%%]],
-},
-CODE;
-
     public function __construct($app, $name = null)
     {
         parent::__construct($name);
@@ -54,7 +36,7 @@ CODE;
         if( $isValid ) {
             $csv = $this->getCsvContentAsArray($csvFile, $csvSeparator);
             $output->writeln(sprintf('Generated slots JSON for %s bidder:', $bidderName));
-            print_r($csv);
+            $output->writeln($this->generateJSON($csv));
         }
     }
 
@@ -76,5 +58,27 @@ CODE;
         return array_map( function($row) use ($csvSeparator) {
             return str_getcsv($row, $csvSeparator);
         }, file($csvFile));
+    }
+
+    private function generateJSON(array $csvContent): string {
+        $slotConfig = [];
+
+        foreach($csvContent as $row) {
+            $slotName = $row[0];
+            $slotSizes = [$row[1], $row[2]];
+            $slotBidderId = $row[3];
+
+            if( empty($slotConfig[$slotName]) ) {
+                $slotConfig[$slotName] = [
+                    'sizes' => [$slotSizes],
+                    'ids' => [$slotBidderId],
+                ];
+            } else {
+                $slotConfig[$slotName]['sizes'][] = $slotSizes;
+                $slotConfig[$slotName]['ids'][] = $slotBidderId;
+            }
+        }
+
+        return json_encode($slotConfig);
     }
 }
