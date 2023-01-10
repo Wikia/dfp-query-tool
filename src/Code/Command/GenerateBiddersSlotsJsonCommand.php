@@ -74,7 +74,7 @@ class GenerateBiddersSlotsJsonCommand extends Command
             }
 
             $slotName = $row[0];
-            $slotSizes = [$row[1], $row[2]];
+            $slotSizes = [(int) $row[1], (int) $row[2]];
             $slotBidderId = $row[3];
 
             $generator->updateAfterRowIteration($slotName, $slotSizes, $slotBidderId, $row);
