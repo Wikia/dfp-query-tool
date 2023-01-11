@@ -62,6 +62,8 @@ reports
   reports:fetch                                Downloads data to database.
 suggested-adunits
   suggested-adunits:approve                    Approve all suggested ad units in queue.
+generate
+  bidders-slots-json                           Generates and prints in the output JSON config for slots for selected Prebid.js bidder
 ```
 
 ### Create line items
@@ -155,6 +157,16 @@ Examples:
 * `app/console order:add-creatives --order 2666092254 --creative-template 11899731 --creative-variables "var1:val1;bidderName:indexExchange;test1:test2"`
 * `app/console order:add-creatives -o 2666092254 -c 11899731 -r "bidderName:indexExchange" -s "(send all-bids)"`
 * `app/console order:add-creatives -o 01234567890 -c 01234567890 -s "(send all-bids)" -f1`
+
+### Generate JSON slots config for Prebid.js bidder
+
+Most likely when adding a new bidder you'll get a link to spreadsheet with all the slots, sizes and IDs needed for the integration to work. If you just copy the slot name, sizes and ID columns and put to a CSV similar to the example placed in generate-bidders-slots-json/generate-bidders-slots-json-sample.csv you can run one command to get the slots' config which you can put in AdEngine JS file. For example for Pubmatic bidder the command looks like this:
+
+`app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv -s ';'`
+
+Different bidders require different slot configs and CSV structures another example is the AppNexus one:
+
+`app/console generate:bidders-slots-json -b appnexus -f generate-bidders-slots-json/generate-bidders-slots-json-appnexus-sample.csv -s ';'`
 
 ## Cron jobs
 

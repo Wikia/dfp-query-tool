@@ -38,4 +38,6 @@ $console->add(new LineItem\Command\OrderLineItemsKeyRenameCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));
 
+$console->add(new Code\Command\GenerateBiddersSlotsJsonCommand($app));
+
 $console->run();
