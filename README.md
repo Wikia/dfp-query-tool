@@ -162,11 +162,11 @@ Examples:
 
 Most likely when adding a new bidder you'll get a link to spreadsheet with all the slots, sizes and IDs needed for the integration to work. If you just copy the slot name, sizes and ID columns and put to a CSV similar to the example placed in generate-bidders-slots-json/generate-bidders-slots-json-sample.csv you can run one command to get the slots' config which you can put in AdEngine JS file. For example for Pubmatic bidder the command looks like this:
 
-`app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv -s ';'`
+`app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv`
 
 Different bidders require different slot configs and CSV structures another example is the AppNexus one:
 
-`app/console generate:bidders-slots-json -b appnexus -f generate-bidders-slots-json/generate-bidders-slots-json-appnexus-sample.csv -s ';'`
+`app/console generate:bidders-slots-json -b appnexus -f generate-bidders-slots-json/generate-bidders-slots-json-appnexus-sample.csv`
 
 ## Cron jobs
 

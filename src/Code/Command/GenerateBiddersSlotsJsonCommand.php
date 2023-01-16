@@ -23,7 +23,7 @@ class GenerateBiddersSlotsJsonCommand extends Command
             ->setDescription('Creates JSON for given bidder based on given input file')
             ->addOption('bidder', 'b', InputOption::VALUE_REQUIRED, 'Name of the bidder')
             ->addOption('csv', 'f', InputOption::VALUE_REQUIRED, 'CSV file with IDs')
-            ->addOption( 'separator', 's', InputOption::VALUE_OPTIONAL, 'CSV file separator (default: \',\')', ',')
+            ->addOption( 'separator', 's', InputOption::VALUE_OPTIONAL, 'CSV file separator (default: \';\')', ';')
             ->addOption( 'skip-first-row', 'r', InputOption::VALUE_OPTIONAL, 'Skip first row (default: true) - most of the times these are headers', true)
             ->addOption( 'pretty-print', 'p', InputOption::VALUE_OPTIONAL, 'Should the JSON output be pretty-printed (default: true)', true);
     }
