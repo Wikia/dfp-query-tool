@@ -1,0 +1,24 @@
+#!/usr/bin/env php
+<?php
+echo "Running unit tests..." . PHP_EOL;
+exec('./vendor/bin/phpunit test', $output, $returnCode);
+
+if ($returnCode !== 0) {
+    // Show full output
+    $phpVersion = explode('.', PHP_VERSION);
+
+    if ((int) $phpVersion[0] < 7 || ((int) $phpVersion[1] >= 4)) {
+        echo PHP_EOL . implode(PHP_EOL, $output) . PHP_EOL;
+    } else {
+        // legacy PHP
+        echo PHP_EOL . implode( $output, PHP_EOL) . PHP_EOL;
+    }
+
+    echo "Aborting commit..." . PHP_EOL;
+    exit(1);
+}
+
+// Show summary (last line)
+echo array_pop($output) . PHP_EOL;
+
+exit(0);
