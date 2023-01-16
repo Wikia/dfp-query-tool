@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateBiddersSlotsJsonCommand extends Command
 {
-    const SUPPORTED_BIDDERS = [ 'pubmatic', 'appnexus' ];
+    const SUPPORTED_BIDDERS = [ 'appnexus', 'magnite', 'pubmatic' ];
     protected string $selectedBidder;
 
     public function __construct($app, $name = null)
@@ -86,10 +86,12 @@ class GenerateBiddersSlotsJsonCommand extends Command
 
     private function getGenerator(): PrebidSlotConfigGenerator {
         switch($this->selectedBidder) {
-            case 'pubmatic':
-                return new PubmaticSlotConfigGenerator();
             case 'appnexus':
                 return new AppNexusSlotConfigGenerator();
+            case 'pubmatic':
+                return new PubmaticSlotConfigGenerator();
+            case 'magnite':
+                return new MagniteSlotConfigGenerator();
             default:
                 throw new \Exception('Unknown bidder slot config generator');
         }

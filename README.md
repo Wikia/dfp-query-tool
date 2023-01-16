@@ -164,9 +164,9 @@ Most likely when adding a new bidder you'll get a link to spreadsheet with all t
 
 `app/console generate:bidders-slots-json -b pubmatic -f generate-bidders-slots-json/generate-bidders-slots-json-sample.csv`
 
-Different bidders require different slot configs and CSV structures another example is the AppNexus one:
-
-`app/console generate:bidders-slots-json -b appnexus -f generate-bidders-slots-json/generate-bidders-slots-json-appnexus-sample.csv`
+Different bidders require different slot configs and CSV structures, more examples:
+* AppNexus: `app/console generate:bidders-slots-json -b appnexus -f generate-bidders-slots-json/generate-bidders-slots-json-appnexus-sample.csv`,
+* Magnite (Rubicon): AppNexus: `app/console generate:bidders-slots-json -b magnite -f generate-bidders-slots-json/generate-bidders-slots-json-magnite-sample.csv`,
 
 ## Cron jobs
 
