@@ -14,7 +14,7 @@ composer install
 
 ## Configuration
 
-Duplicate [auth.sample.ini](./config/auth.sample.ini) file, rename it to remove `.sample`. Fill it with Google Ad Manager OAuth2 connection credentials (by visiting https://console.cloud.google.com/console and running `php ./GetRefreshToken.php` or ask other team member to use shared, GAM Tableau credentials. Remember to set `networkCode` to `5441`:
+Duplicate [auth.sample.ini](./config/auth.sample.ini) file, rename it to remove `.sample`. Fill it with Google Ad Manager OAuth2 connection credentials (by visiting https://console.cloud.google.com/console and running `php ./GenerateUserCredentials.php` or ask other team member to use shared, GAM Tableau credentials. Remember to set `networkCode` to `5441`:
 
 ```ini
 [AD_MANAGER]
