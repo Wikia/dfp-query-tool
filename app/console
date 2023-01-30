@@ -8,7 +8,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $app = new Silex\Application();
 
 $app->register(new Knp\Provider\ConsoleServiceProvider(), array(
-    'console.name'              => 'GamTableau',
+    'console.name'              => 'DfpQueryTool',
     'console.version'           => '1.0.0',
     'console.project_directory' => __DIR__.'/..'
 ));
