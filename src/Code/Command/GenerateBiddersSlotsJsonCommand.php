@@ -9,7 +9,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateBiddersSlotsJsonCommand extends Command
 {
-    const SUPPORTED_BIDDERS = [ 'appnexus', 'magnite', 'pubmatic', 'medianet', 'index-exchange' ];
+    const SUPPORTED_BIDDERS = [ 'appnexus', 'magnite', 'pubmatic', 'medianet', 'index-exchange', 'yahoossp' ];
     protected string $selectedBidder;
 
     public function __construct($app, $name = null)
@@ -96,7 +96,9 @@ class GenerateBiddersSlotsJsonCommand extends Command
                 return new MedianetSlotConfigGenerator();
             case 'index-exchange':
                 return new IndexExchangeSlotConfigGenerator();
-            default:
+			case 'yahoossp':
+				return new YahooSspSlotConfigGenerator();
+			default:
                 throw new \Exception('Unknown bidder slot config generator');
         }
     }
