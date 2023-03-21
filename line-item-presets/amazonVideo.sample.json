@@ -5,6 +5,7 @@
   "priceMap": "v_1e728sg,v_qw0cn4,v_1yq8740,v_30z9q8,v_14rg1s0,v_jebbb4,v_1ogn7y8,v_gexog0,v_1bxwjk0,v_weja4g,v_1qdbfgg,v_8ji77k,v_12iacjk,v_myx340,v_1ivme4g,v_9dgzcw,v_1h7otts,v_twmxog,v_1vn3pq8,v_16sykg,v_1694v7k,v_lpyww0,v_1ngfoxs,v_dyaa68,v_19uzl6o,v_xnhgcg,v_1ue5ji8,v_6gl8u8,v_10fde68,v_pob4lc,v_1jn39xc,v_cwtszk,v_1enal1c,v_rc8ow0,v_1ychr7k,v_2n8tts,v_14dplvk,v_jujnk0,v_1owvk74,v_gnobnk,v_1amggzk,v_v337k0,v_1rtraps,v_7824n4,v_134rfnk,v_nle680,v_1hk6bk0,v_hqdr0g,v_1bp5wcg,v_w5smww,v_1rdiygw,v_atwum8,v_u8hybk,v_9pszk,v_ksvrb4,v_ez4a9s,v_zia8lc,v_5ji39c,v_ojq9z4,v_bs8ydc,v_s5kzy8,v_4ajx1c,v_ipysxs,v_fql62o,v_wxvzsw,v_88w4qo,v_mob0n4,v_9wtp1c,v_sx1vr4,v_1q5o8w,v_lfcuf4,v_6rtse8,v_13ihvk0,v_nz4m4g,v_1hxwrgg,v_dno7pc,v_5s8qgw,v_cpyl1c,v_3ace0w,v_harvuo,v_716wow,v_a5kc8w,v_py58g,v_ffcmio,v_4gsnwg,v_adoidc,v_1fg0f0g,v_uwugow,v_1wnb8qo,v_beiigw,v_3kn7y8,v_gc4jk0,v_8ufi80,v_8zfaww,v_1hq9kw,v_e97l6o,v_6a19fk,v_d7r400,v_2975ds,v_y2bcw,v_17gu39c,v_k5s740,v_1lw8z5s,v_gylmo0,v_f5zi80,v_194rnk0,v_yv6oe8,v_1stytq8,v_4wej28,v_11n2m80,v_pfkhds,v_1knasxs,v_b55e68,v_1cvm680,v_scg7wg,v_1xes4jk,v_3ngcu8,v_15dx4w0,v_i2v8qo",
   "lineItemName": "News&Ratings Video - $%%element%%",
   "sizes": "640x480",
+  "isVideo": true,
   "sameAdvertiser": true,
   "type": "PRICE_PRIORITY",
   "priority": "10",
