@@ -15,7 +15,7 @@
   "adUnit": "",
   "keys": [
     "amznbid",
-    "amznsz"
+    "src"
   ],
   "operators": [
     "IS",
