@@ -39,6 +39,17 @@ class LineItemService {
 		$this->lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 	}
 
+	private function updateLineItem( $lineItem ) {
+		try {
+			$this->lineItemService->updateLineItems( [ $lineItem ] );
+		} catch (\Exception $exception) {
+			printf("Line item update error. Message:\n");
+			printf("%s\n", $exception->getMessage());
+			printf("Retrying...\n");
+			$this->lineItemService->updateLineItems( [ $lineItem ] );
+		}
+	}
+
 	public function create($form) {
 		$this->validateForm($form);
 
@@ -352,7 +363,7 @@ class LineItemService {
 
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
-			$this->lineItemService->updateLineItems( [ $lineItem ] );
+			$this->updateLineItem( $lineItem );
 		}
 
 		return $addedNewKeyValues;
@@ -412,7 +423,7 @@ class LineItemService {
 
 			$lineItem->setAllowOverbook( true );
 			$lineItem->setSkipInventoryCheck( true );
-			$this->lineItemService->updateLineItems( [ $lineItem ] );
+			$this->updateLineItem( $lineItem );
 		}
 
 		return $removedKeyValues;
@@ -423,7 +434,7 @@ class LineItemService {
 
 		$lineItem->setChildContentEligibility($eligibility);
 
-		$this->lineItemService->updateLineItems( [ $lineItem ] );
+		$this->updateLineItem( $lineItem );
 	}
 
 	public function alterSizes($lineItem, $sizes) {
@@ -432,7 +443,7 @@ class LineItemService {
 		$lineItem->setAllowOverbook(true);
 		$lineItem->setSkipInventoryCheck(true);
 
-		$this->lineItemService->updateLineItems( [ $lineItem ] );
+		$this->updateLineItem( $lineItem );
 	}
 
 	public function replaceInName($lineItem, $find, $replace) {
@@ -445,7 +456,7 @@ class LineItemService {
 
 		$lineItem->setName($newName);
 
-		$this->lineItemService->updateLineItems( [ $lineItem ] );
+		$this->updateLineItem( $lineItem );
 	}
 
 	public function renameKeyInLineItemTargeting($lineItem, $oldKeyId, $newKeyId) {
@@ -483,7 +494,7 @@ class LineItemService {
 			}
 		}
 
-		$this->lineItemService->updateLineItems( [ $lineItem ] );
+		$this->updateLineItem( $lineItem );
 	}
 
 	private function validateForm($form) {
