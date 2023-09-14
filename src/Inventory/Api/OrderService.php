@@ -2,14 +2,14 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202208\StatementBuilder;
-use Google\AdsApi\AdManager\v202208\Order;
+use Google\AdsApi\AdManager\Util\v202308\StatementBuilder;
+use Google\AdsApi\AdManager\v202308\Order;
 
 class OrderService {
 	private $orderService;
 
 	function __construct() {
-		$this->orderService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\OrderService::class);
+		$this->orderService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\OrderService::class);
 	}
 
 	public function getById($orderId) {

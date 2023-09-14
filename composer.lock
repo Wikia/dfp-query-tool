@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7b8d3fe16adecc10377274ea7133fbf5",
+    "content-hash": "651f999a3e88655cebd1b6d256f84d9d",
     "packages": [
         {
             "name": "dflydev/doctrine-orm-service-provider",
@@ -1245,16 +1245,16 @@
         },
         {
             "name": "googleads/googleads-php-lib",
-            "version": "58.0.0",
+            "version": "62.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleads/googleads-php-lib.git",
-                "reference": "265fbc46cf7349716d8018d7ae76dc2384f59be3"
+                "reference": "2514212c35427a744b92085228e5de5a2783cb9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/265fbc46cf7349716d8018d7ae76dc2384f59be3",
-                "reference": "265fbc46cf7349716d8018d7ae76dc2384f59be3",
+                "url": "https://api.github.com/repos/googleads/googleads-php-lib/zipball/2514212c35427a744b92085228e5de5a2783cb9e",
+                "reference": "2514212c35427a744b92085228e5de5a2783cb9e",
                 "shasum": ""
             },
             "require": {
@@ -1264,15 +1264,19 @@
                 "ext-soap": "*",
                 "google/auth": "^1.0.0",
                 "guzzlehttp/guzzle": "^6.0 || ^7.0",
-                "guzzlehttp/psr7": "^1.2",
-                "monolog/monolog": "^2.2.0",
-                "php": ">=7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "monolog/monolog": "^2.2.0 || ^3.0",
+                "php": ">=8",
                 "phpdocumentor/reflection-docblock": "^3.0.3 || ^4.0 || ^5.0",
-                "symfony/serializer": "^3.0.3 || ^4.4.0 || ^5.0.0"
+                "symfony/serializer": "^3.0.3 || ^4.4.0 || ^5.0.0 || ^6.0.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^9.5.2",
+                "react/http": "^1.2.0",
                 "squizlabs/php_codesniffer": "^2.9 || ^3.2"
+            },
+            "suggest": {
+                "react/http": "To run the Auth/GetRefreshToken.php example"
             },
             "type": "library",
             "autoload": {
@@ -1290,13 +1294,13 @@
                     "homepage": "https://github.com/googleads/googleads-php-lib/contributors"
                 }
             ],
-            "description": "Google Ads APIs Client Library for PHP (AdWords and Ad Manager)",
+            "description": "Google Ad Manager SOAP API Client Library for PHP",
             "homepage": "https://github.com/googleads/googleads-php-lib",
             "support": {
                 "issues": "https://github.com/googleads/googleads-php-lib/issues",
-                "source": "https://github.com/googleads/googleads-php-lib/tree/58.0.0"
+                "source": "https://github.com/googleads/googleads-php-lib/tree/62.0.0"
             },
-            "time": "2022-08-16T16:49:11+00:00"
+            "time": "2023-08-22T18:33:54+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
