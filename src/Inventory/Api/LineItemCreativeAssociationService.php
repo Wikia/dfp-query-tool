@@ -2,11 +2,11 @@
 
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\Util\v202208\StatementBuilder;
-use Google\AdsApi\AdManager\v202208\DeleteLineItemCreativeAssociations;
-use Google\AdsApi\AdManager\v202208\LineItemCreativeAssociation;
-use Google\AdsApi\AdManager\v202208\DeactivateLineItemCreativeAssociations;
-use Google\AdsApi\AdManager\v202208\Size;
+use Google\AdsApi\AdManager\Util\v202308\StatementBuilder;
+use Google\AdsApi\AdManager\v202308\DeleteLineItemCreativeAssociations;
+use Google\AdsApi\AdManager\v202308\LineItemCreativeAssociation;
+use Google\AdsApi\AdManager\v202308\DeactivateLineItemCreativeAssociations;
+use Google\AdsApi\AdManager\v202308\Size;
 
 
 class LineItemCreativeAssociationService {
@@ -39,7 +39,7 @@ class LineItemCreativeAssociationService {
 			if ( empty($lineItemId) ) {
 				return $this->getIncorrectLineItemResult();
 			} else {
-				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\LineItemCreativeAssociationService::class);
+				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
 				foreach ( $processedCreativeIds as $extractedCreativeId ) {
@@ -110,7 +110,7 @@ class LineItemCreativeAssociationService {
 			->withBindVariableValue('creativeId', $creativeId);
 
 		try {
-			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\LineItemCreativeAssociationService::class);
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\LineItemCreativeAssociationService::class);
 			$action = new DeactivateLineItemCreativeAssociations();
 
 			$result = $lineItemCreativeAssociationService
@@ -142,7 +142,7 @@ class LineItemCreativeAssociationService {
 			->withBindVariableValue('lineItemId', $lineItemId);
 
 		try {
-			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202208\LineItemCreativeAssociationService::class);
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\LineItemCreativeAssociationService::class);
 			$action = new DeleteLineItemCreativeAssociations();
 
 			$result = $lineItemCreativeAssociationService
