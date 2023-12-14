@@ -132,22 +132,26 @@ class CustomTargetingService
 			foreach ($values as $value) {
 				$statementBuilder->withBindVariableValue('name', trim($value));
 
-				$page = null;
-				for ($i = 0; $i < 10; $i++) {
-					$page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
+				if (str_starts_with($value, "id:") && is_numeric(substr($value, 3))) {
+                    $ids[] = substr($value, 3);
+                } else {
+                    $page = null;
+                    for ($i = 0; $i < 10; $i++) {
+                        $page = $customTargetingService->getCustomTargetingValuesByStatement($statementBuilder->toStatement());
 
-					if ($page) break;
-					echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
-				}
+                        if ($page) break;
+                        echo 'SOAP "getCustomTargetingKeysByStatement()" connection error - retrying (' . ($i + 1) . ")...\n";
+                    }
 
-				$results = $page->getResults();
-				if (!empty($results)) {
-					foreach ($results as $customTargetingValue) {
-						$ids[] = $customTargetingValue->getId();
-					}
-				} else {
-					throw new \Exception(sprintf('Value not found (<error>%s</error>) (for key: %s).', $value, $keyId));
-				}
+                    $results = $page->getResults();
+                    if (!empty($results)) {
+                        foreach ($results as $customTargetingValue) {
+                            $ids[] = $customTargetingValue->getId();
+                        }
+                    } else {
+                        throw new \Exception(sprintf('Value not found (<error>%s</error>) (for key: %s).', $value, $keyId));
+                    }
+                }
 			}
 		} catch (\Exception $e) {
 			throw new CustomTargetingException('Custom targeting error: ' . $e->getMessage());
