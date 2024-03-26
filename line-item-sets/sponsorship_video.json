@@ -1,0 +1,31 @@
+{
+  "orderId": "3290802676",
+  "creativeId": "138458833449,138459561514,138458833494,138458992559,138458992628,138458993249,138458993162,138459561568,138459561637,138459561655",
+  "iterator": "45.00,46.00,47.00,48.00,49.00,50.00",
+  "priceMap": "v_1hq9kw,v_e97l6o,v_6a19fk,v_d7r400,v_2975ds,v_gylmo0",
+  "lineItemName": "Sponsorship Amazon TAM/A9 Video (***Ad Partner***) - $%%element%%",
+  "sizes": "640x480",
+  "isVideo": true,
+  "sameAdvertiser": true,
+  "type": "SPONSORSHIP",
+  "priority": "4",
+  "start": "",
+  "end": "",
+  "rate": "%%element%%",
+  "adUnit": "",
+  "keys": [
+    "amznbid",
+    "amzniid",
+    "src"
+  ],
+  "operators": [
+    "IS",
+    "IS NOT",
+    "IS"
+  ],
+  "values": [
+    "%%priceMapElement%%",
+    "disabled",
+    "mobile,gpt"
+  ]
+}

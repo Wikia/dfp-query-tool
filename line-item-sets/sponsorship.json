@@ -1,0 +1,27 @@
+{
+  "orderId": "3289291649",
+  "creativeId": "138459292783,138458714408,138458714498,138459294223,138459294256,138459294400,138459294469,138459294520,138459294598,138459294955",
+  "iterator": "8.10,8.20,8.30,8.40,8.60,8.70,8.80,8.90,9.10,9.20,9.30,9.40,9.60,9.70,9.80,9.90",
+  "priceMap": "xc8wsg,1lmv4,m8p5hc,h8wglc,65cpa8,kkrl6o,9h7tvk,vobchs,pujvgg,er045c,t6f01s,6zbhfk,d32juo,za62gw,1zisjk,o6mb5s",
+  "lineItemName": "Sponsorship Amazon TAM/A9 Display (***Ad Partner***) - $%%element%%",
+  "sizes": "300x50,300x250,320x50,320x100,320x480,728x90,970x250",
+  "sameAdvertiser": true,
+  "type": "SPONSORSHIP",
+  "priority": "4",
+  "start": "",
+  "end": "",
+  "rate": "%%element%%",
+  "adUnit": "",
+  "keys": [
+    "amznbid",
+    "src"
+  ],
+  "operators": [
+    "IS",
+    "IS"
+  ],
+  "values": [
+    "%%priceMapElement%%",
+    "mobile,gpt"
+  ]
+}
