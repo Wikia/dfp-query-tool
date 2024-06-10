@@ -45,6 +45,7 @@ creatives
   creatives:find                               Finds all creatives with given text in snippet code.
 key-values
   key-values:get                               Get GAM ids of given key and its values
+  key-values:remove-values                     Remove values from given key
 line-items
   line-items:child-content-eligibility:update  Update Child Content Eligibility field in given order
   line-items:create                            Creates line items in the order (with associated creative)
@@ -86,6 +87,21 @@ Child Content Eligibility is an option in Google Ad Manager lines introduced and
 
 ```bash
 app/console line-items:child-content-eligibility:update comma,separated,order,ids
+```
+
+### Remove values from given key
+This command allows you to remove values from a given key. This command checks if any of the given values are being used.
+
+```bash
+app/console key-values:remove-values test_key test_value1, test_value2 
+```
+
+There are 2 options that we can use:
+
+```bash
+--dry-run  # Run without actually removing anything; to force the removal go with --dry-run=no
+
+--skip-line-item-check # Run without scanning if the key-values are being used in any line-item custom targeting
 ```
 
 ### Update key-values targeting pair
