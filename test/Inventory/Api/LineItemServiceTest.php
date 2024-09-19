@@ -1,13 +1,13 @@
 <?php
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\v202208\LineItem;
-use Google\AdsApi\AdManager\v202208\Targeting;
-use Google\AdsApi\AdManager\v202208\CustomCriteria;
-use Google\AdsApi\AdManager\v202208\CustomCriteriaSet;
-use Google\AdsApi\AdManager\v202208\LineItemPage;
-use Google\AdsApi\AdManager\v202208\Network;
-use Google\AdsApi\AdManager\v202208\NetworkService;
+use Google\AdsApi\AdManager\v202408\LineItem;
+use Google\AdsApi\AdManager\v202408\Targeting;
+use Google\AdsApi\AdManager\v202408\CustomCriteria;
+use Google\AdsApi\AdManager\v202408\CustomCriteriaSet;
+use Google\AdsApi\AdManager\v202408\LineItemPage;
+use Google\AdsApi\AdManager\v202408\Network;
+use Google\AdsApi\AdManager\v202408\NetworkService;
 
 use PHPUnit\Framework\TestCase;
 
@@ -47,7 +47,7 @@ class LineItemServiceTest extends TestCase {
     }
 
     private function createLineItemServiceMock($pageMock) {
-        $lineItemServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202208\LineItemService::class);
+        $lineItemServiceMock = $this->createStub(\Google\AdsApi\AdManager\v202408\LineItemService::class);
         $lineItemServiceMock->method('getLineItemsByStatement')
             ->willReturn($pageMock);
 
