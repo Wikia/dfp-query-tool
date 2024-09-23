@@ -57,7 +57,7 @@ class CustomTargetingService
             echo "WARNING! There were more than one IDs for a key\n";
         }
 
-        /** @var \Google\AdsApi\AdManager\v202308\CustomTargetingKey $customTargetingKey */
+        /** @var \Google\AdsApi\AdManager\v202408\CustomTargetingKey $customTargetingKey */
         $customTargetingKey = $results[0];
         return $customTargetingKey->getId();
     }
@@ -66,7 +66,7 @@ class CustomTargetingService
 		$values = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId');
@@ -123,7 +123,7 @@ class CustomTargetingService
 		$ids = [];
 
 		try {
-			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\CustomTargetingService::class);
+			$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\CustomTargetingService::class);
 
 			$statementBuilder = new StatementBuilder();
 			$statementBuilder->where('customTargetingKeyId = :customTargetingKeyId AND name = :name');
@@ -171,7 +171,7 @@ class CustomTargetingService
 		$addedValues = 0;
 		$packages = array_chunk($values, 200);
 
-		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202308\CustomTargetingService::class);
+		$customTargetingService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\CustomTargetingService::class);
 		foreach ($packages as $packageValues) {
 			$customTargetingValues = [];
 
