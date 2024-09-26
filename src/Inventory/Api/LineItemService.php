@@ -40,14 +40,19 @@ class LineItemService {
 	}
 
 	private function updateLineItem( $lineItem ) {
+		$payload = is_array($lineItem) ? $lineItem : [ $lineItem ];
 		try {
-			$this->lineItemService->updateLineItems( [ $lineItem ] );
+			$this->lineItemService->updateLineItems( $payload );
 		} catch (\Exception $exception) {
 			printf("Line item update error. Message:\n");
 			printf("%s\n", $exception->getMessage());
 			printf("Retrying...\n");
-			$this->lineItemService->updateLineItems( [ $lineItem ] );
+			$this->lineItemService->updateLineItems( $payload );
 		}
+	}
+
+	public function update( $lineItem ) {
+		$this->updateLineItem( $lineItem );
 	}
 
 	public function create($form) {
@@ -179,6 +184,20 @@ class LineItemService {
 		$statementBuilder->OrderBy('id ASC');
 		$statementBuilder->Limit(1000);
 		$statementBuilder->WithBindVariableValue('id', $orderId);
+
+		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
+
+		return $page->getResults();
+	}
+
+	public function getLineItemsByStatement($statement) {
+		return $this->lineItemService->getLineItemsByStatement($statement);
+	}
+
+	public function getLineItemsByIds($lineItemIds) {
+		$statementBuilder = new StatementBuilder();
+		$statementBuilder->Where('id IN (:ids) and isArchived = false');
+		$statementBuilder->WithBindVariableValue('ids', $lineItemIds);
 
 		$page = $this->lineItemService->getLineItemsByStatement($statementBuilder->toStatement());
 
