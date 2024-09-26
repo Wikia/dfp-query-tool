@@ -34,6 +34,7 @@ $console->add(new LineItem\Command\LineItemSizesAlterCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesUpdateCommand($app));
 $console->add(new LineItem\Command\LineItemKeyValuesRemoveCommand($app));
+$console->add(new LineItem\Command\LineItemUpdateCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyRenameCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesAddCommand($app));
 $console->add(new LineItem\Command\OrderLineItemsKeyValuesRemoveCommand($app));

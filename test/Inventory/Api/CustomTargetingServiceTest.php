@@ -1,8 +1,8 @@
 <?php
 namespace Inventory\Api;
 
-use Google\AdsApi\AdManager\v202208\CustomTargetingValue;
-use Google\AdsApi\AdManager\v202208\CustomTargetingValuePage;
+use Google\AdsApi\AdManager\v202408\CustomTargetingValue;
+use Google\AdsApi\AdManager\v202408\CustomTargetingValuePage;
 use PHPUnit\Framework\TestCase;
 
 class CustomTargetingServiceTest extends TestCase {
@@ -76,7 +76,7 @@ class CustomTargetingServiceTest extends TestCase {
     }
 
     private function createCustomTargetingServiceMock() {
-        return $this->createStub(\Google\AdsApi\AdManager\v202208\CustomTargetingService::class);
+        return $this->createStub(\Google\AdsApi\AdManager\v202408\CustomTargetingService::class);
     }
 
     private function createCustomTargetingValueMock() {
@@ -167,7 +167,7 @@ class CustomTargetingServiceTest extends TestCase {
     }
 
     private function createUpdateResultsMock() {
-        $updateResultMock = $this->createStub(\Google\AdsApi\AdManager\v202205\UpdateResult::class);
+        $updateResultMock = $this->createStub(\Google\AdsApi\AdManager\v202408\UpdateResult::class);
         $updateResultMock->method('getNumChanges')
             ->willReturn(7);
 
