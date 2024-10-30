@@ -59,6 +59,7 @@ order
   order:key-values:add                         Add key-values pair to all line items custom targeting in order
   order:key-values:remove                      Remove key-values pair from all line item custom targeting in order
   order:add-creatives                          Add new creatives to all line items in the order
+  order:override-creative-sizes                Overrides creative sizes in all line items in the order
 reports
   reports:fetch                                Downloads data to database.
 suggested-adunits
@@ -154,6 +155,32 @@ or the simpler version:
 ```bash
 app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID -s "SUFFIX"
 ```
+There is an option to add multiple creatives per line item in the order. The --multiple-creatives-per-line-item option
+allows for a positive integer to be passed to the command. This will create that many creatives per line item in the order.
+This option needs the --force-new-creative option to be passed in. Passing in a value of 5 for example, will create 5 new creative for each line item in the order.
+For example, you can run the following command
+```bash
+app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID --force-new-creative --multiple-creatives-per-line-item 5 
+```
+
+You can also pass in overridden creative sizes with the --override-creative-size option, and passing in single or command separated creatives sizes such as `1x1,300x250` or just `300x250` for a single size. 
+This option requires the --force-new-creative option to be turned on. Please note, that due to restrictions set in GAM and the GAM API, the new creative sizes MUST BE a subset of the
+line item sizes. For example, if the line item that you'll be attaching the new creatives to has sizes of 300x250,320x250, but you pass in a creatives size of 1x1 and 300x250, then the creative
+will NOT be linked with that line item. The reason for this is that the 1x1 size is not present on the line item, even though the 300x250 size is. More info on this issue, and the associated error can be found
+[here](https://developers.google.com/ad-manager/api/reference/v202308/OrderService.RequiredSizeError.Reason).
+
+Use the below command to add in creative size overrides:
+```bash
+app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID --force-new-creative --multiple-creatives-per-line-item 2 --override-creative-size '1x1,300x250'
+```
+
+Going off of the above option of having multiple creatives per line item, and the previously mentioned suffix option, there's also an option to append an index value at the end of each creative's name.
+This option is `--append-loop-index`. It does not require another option to be present, but it makes the most sense to activate when the `--multiple-creatives-per-line-item` option is added. If you just activate it,
+and don't add in the former option or add it in with a value of 1, then the index will always be 1. This will effectively add a '(1)' at the end of your creative name.
+
+For example, you can run the following command with the :
+```bash
+
 
 This way the new creative's names will be built based on the line-item name, its first creative placeholder size and given suffix, for example new creative's name can look like:
 `ztest MR 300x250 - 300x250 (test)`

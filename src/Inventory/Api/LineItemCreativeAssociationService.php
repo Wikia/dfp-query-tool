@@ -17,8 +17,10 @@ class LineItemCreativeAssociationService {
 	}
 
 	public function create( $creativeId, $lineItemId, $sizes ) {
+		printf("CreativeId: %s | lineItemId: %s | sizes: %s \n", $creativeId, $lineItemId, $sizes);
 
 		if ( empty($creativeId) ) {
+			printf("CreativeId was not set.");
 			return [
 				'creativeSet' => false
 			];
@@ -35,10 +37,14 @@ class LineItemCreativeAssociationService {
 		}
 
 		$processedCreativeIds = $this->processCreativeId( $creativeId );
+//		printf("Processed creativeIds are: %s\n", print_r($processedCreativeIds, true));
+
 		try {
 			if ( empty($lineItemId) ) {
+//				printf("LineItemId was not set.");
 				return $this->getIncorrectLineItemResult();
 			} else {
+//				printf("LineItemId was set.");
 				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
@@ -52,26 +58,34 @@ class LineItemCreativeAssociationService {
 					}
 
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
+//					printf("lineItemCreativeAssociations[] is:\n%s\n", print_r($lineItemCreativeAssociations, true));
 				}
 
 				$lica = null;
 				for ($i = 0; $i < 10; $i++) {
 					$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
 
-					if ($lica || isset($lica)) break;
+					if ($lica || isset($lica)) {
+//						printf("Network call was okay.");
+						break;
+					}
+					printf("Something messed up in the network call.");
 					echo 'SOAP "createLineItemCreativeAssociations()" connection error - retrying (' . ($i + 1) . ")...\n";
 				}
 
 				if ( !$lica || !isset($lica) ) {
+					printf("Line item - creative association not created");
 					$response['success'] = false;
 					$response['message'] = 'line item - creative association not created';
 				}
 			}
 		} catch ( \Exception $e ) {
+			printf("Some exception occurred");
 			$response['success'] = false;
 			$response['message'] = $e->getMessage();
 		}
 
+//		printf("Printing creativeAssociation response before returning:\n%s\n", print_r($response, true));
 		return $response;
 	}
 
@@ -84,6 +98,7 @@ class LineItemCreativeAssociationService {
 			$sizesOverride[] = new Size(intval($width), intval($height), false);
 		}
 
+//		printf("Overridden sizes: ", print_r($sizesOverride, true));
 		return $sizesOverride;
 	}
 
