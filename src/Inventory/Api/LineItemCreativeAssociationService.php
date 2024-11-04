@@ -39,14 +39,11 @@ class LineItemCreativeAssociationService {
 		}
 
 		$processedCreativeIds = $this->processCreativeId( $creativeId );
-//		printf("Processed creativeIds are: %s\n", print_r($processedCreativeIds, true));
 
 		try {
 			if ( empty($lineItemId) ) {
-//				printf("LineItemId was not set.");
 				return $this->getIncorrectLineItemResult();
 			} else {
-//				printf("LineItemId was set.");
 				$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\LineItemCreativeAssociationService::class);
 				$lineItemCreativeAssociations = [ ];
 
@@ -60,7 +57,6 @@ class LineItemCreativeAssociationService {
 					}
 
 					$lineItemCreativeAssociations[] = $lineItemCreativeAssociation;
-//					printf("lineItemCreativeAssociations[] is:\n%s\n", print_r($lineItemCreativeAssociations, true));
 				}
 
 				$lica = null;
@@ -68,7 +64,6 @@ class LineItemCreativeAssociationService {
 					$lica = $lineItemCreativeAssociationService->createLineItemCreativeAssociations( $lineItemCreativeAssociations );
 
 					if ($lica || isset($lica)) {
-//						printf("Network call was okay.");
 						break;
 					}
 					printf("Something messed up in the network call.");
@@ -87,7 +82,6 @@ class LineItemCreativeAssociationService {
 			$response['message'] = $e->getMessage();
 		}
 
-//		printf("Printing creativeAssociation response before returning:\n%s\n", print_r($response, true));
 		return $response;
 	}
 
@@ -100,7 +94,6 @@ class LineItemCreativeAssociationService {
 			$sizesOverride[] = new Size(intval($width), intval($height), false);
 		}
 
-//		printf("Overridden sizes: ", print_r($sizesOverride, true));
 		return $sizesOverride;
 	}
 
