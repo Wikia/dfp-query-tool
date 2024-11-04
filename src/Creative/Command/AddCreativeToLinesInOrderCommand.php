@@ -98,86 +98,85 @@ class AddCreativeToLinesInOrderCommand extends Command
 
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $orderId = $input->getOption('order');
-        $creativeTemplateId = $input->getOption('creative-template');
-        $creativeVariables = $input->getOption('creative-variables');
-        $overrideCreativeSize = $input->getOption('override-creative-size');
-		$multipleCreativesPerLineItem = intval($input->getOption('multiple-creatives-per-line-item')) ?? 1;
-        $creativeNameSuffix = $input->getOption('creative-suffix');
-        $forceNewCreative = !!$input->getOption('force-new-creative');
-        $appendLoopIndex = $input->getOption('append-loop-index');
-        $offsetCreativeNameLoopIndex = $input->getOption('offset-creative-name-loop-index') ?? 0;
+	protected function execute( InputInterface $input, OutputInterface $output ) {
+		$orderId = $input->getOption( 'order' );
+		$creativeTemplateId = $input->getOption( 'creative-template' );
+		$creativeVariables = $input->getOption( 'creative-variables' );
+		$overrideCreativeSize = $input->getOption( 'override-creative-size' );
+		$multipleCreativesPerLineItem = intval( $input->getOption( 'multiple-creatives-per-line-item' ) ) ?? 1;
+		$creativeNameSuffix = $input->getOption( 'creative-suffix' );
+		$forceNewCreative = !!$input->getOption( 'force-new-creative' );
+		$appendLoopIndex = $input->getOption( 'append-loop-index' );
+		$offsetCreativeNameLoopIndex = $input->getOption( 'offset-creative-name-loop-index' ) ?? 0;
 
-        if ( is_null($orderId) || intval($orderId) === 0 ) {
-            throw new InvalidOptionException('Invalid order ID');
-        }
+		if ( is_null( $orderId ) || intval( $orderId ) === 0 ) {
+			throw new InvalidOptionException( 'Invalid order ID' );
+		}
 
-        if ($multipleCreativesPerLineItem < 1) {
+		if ( $multipleCreativesPerLineItem < 1 ) {
 			throw new InvalidOptionException(
 				'The option "multiple-creatives-per-line-item" must be a positive integer.
 				You need to have at least 1 creative attached per line item.'
 			);
 		}
 
-        if (!$forceNewCreative && ($overrideCreativeSize || $multipleCreativesPerLineItem)) {
-			throw new InvalidOptionException('The options "override-creative-size" and "multiple-creatives-per-line-item" can only be used with the "force-new-creative" option.');
+		if ( !$forceNewCreative && ( $overrideCreativeSize || $multipleCreativesPerLineItem ) ) {
+			throw new InvalidOptionException( 'The options "override-creative-size" and "multiple-creatives-per-line-item" can only be used with the "force-new-creative" option.' );
 		}
 
-        if (!$appendLoopIndex && $offsetCreativeNameLoopIndex) {
-			throw new InvalidOptionException('The option "offset-creative-name-loop-index" can only be used with the "append-loop-index" option.');
+		if ( !$appendLoopIndex && $offsetCreativeNameLoopIndex ) {
+			throw new InvalidOptionException( 'The option "offset-creative-name-loop-index" can only be used with the "append-loop-index" option.' );
 		}
 
-        if (!is_numeric($offsetCreativeNameLoopIndex) || $offsetCreativeNameLoopIndex < 0) {
-        	throw new InvalidOptionException('The option "offset-creative-name-loop-index" must be a positive integer.');
+		if ( !is_numeric( $offsetCreativeNameLoopIndex ) || $offsetCreativeNameLoopIndex < 0 ) {
+			throw new InvalidOptionException( 'The option "offset-creative-name-loop-index" must be a positive integer.' );
 		}
 
-        if ( is_null($creativeTemplateId) || intval($creativeTemplateId) === 0 ) {
-            throw new InvalidOptionException('Invalid creative template ID');
-        }
+		if ( is_null( $creativeTemplateId ) || intval( $creativeTemplateId ) === 0 ) {
+			throw new InvalidOptionException( 'Invalid creative template ID' );
+		}
 
-        if ( !empty($creativeVariables) ) {
-            $creativeVariables = $this->parseCreativeVariables($creativeVariables);
-        }
+		if ( !empty( $creativeVariables ) ) {
+			$creativeVariables = $this->parseCreativeVariables( $creativeVariables );
+		}
 
-        printf("Order ID: %d\n", $orderId);
-        printf("Creative template ID: %d\n", $creativeTemplateId);
-        printf("Force new creative: %s\n", $forceNewCreative ? "true" : "false");
-        printf("Override Creative sizes: %s\n", $overrideCreativeSize);
-        printf("How many creatives will be added per lineItem? %s", ($multipleCreativesPerLineItem ?: 1));
+		printf( "Order ID: %d\n", $orderId );
+		printf( "Creative template ID: %d\n", $creativeTemplateId );
+		printf( "Force new creative: %s\n", $forceNewCreative ? "true" : "false" );
+		printf( "Override Creative sizes: %s\n", $overrideCreativeSize );
+		printf( "How many creatives will be added per lineItem? %s", ( $multipleCreativesPerLineItem ?: 1 ) );
 
-        $orderService = new OrderService();
-        $lineItemService = new LineItemService();
-        $creativeService = new CreativeService();
-        $lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
+		$orderService = new OrderService();
+		$lineItemService = new LineItemService();
+		$creativeService = new CreativeService();
+		$lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
 
-        $order = $orderService->getById($orderId);
-        $creativeForm = [
-            'advertiserId' => $order->getAdvertiserId(),
-            'creativeTemplateId' => $creativeTemplateId,
-            'variables' => $creativeVariables
-        ];
+		$order = $orderService->getById( $orderId );
+		$creativeForm = [
+			'advertiserId' => $order->getAdvertiserId(),
+			'creativeTemplateId' => $creativeTemplateId,
+			'variables' => $creativeVariables
+		];
 
-        $lineItems = $lineItemService->getLineItemsInOrder($orderId);
+		$lineItems = $lineItemService->getLineItemsInOrder( $orderId );
 
-        $createdCreatives = [];
-        $lineItemsWithNewCreatives = [];
+		$createdCreatives = [];
+		$lineItemsWithNewCreatives = [];
 		$failedLineItemsToCreatives = [];
-        $errorMsgs = [];
-        $creativeId = null;
+		$errorMsgs = [];
+		$creativeId = null;
 
-        printf("Adding creatives to %s line item(s)\n", count($lineItems));
+		printf( "Adding creatives to %s line item(s)\n", count( $lineItems ) );
 
 
-        foreach ($lineItems as $i => $singleLineItem) {
+		foreach ( $lineItems as $i => $singleLineItem ) {
 			$skipLineItemId = ( fn() => $this->id )->call( $singleLineItem );
 			if ( $skipLineItemId === 6799123339 ) {
-				printf("Found line item %s, skipping...\n", $skipLineItemId);
+				printf( "Found line item %s, skipping...\n", $skipLineItemId );
 				continue;
 			}
 
-			for ($creativeLoopIndex = 0; $creativeLoopIndex < $multipleCreativesPerLineItem; $creativeLoopIndex++) {
+			for ( $creativeLoopIndex = 0; $creativeLoopIndex < $multipleCreativesPerLineItem; $creativeLoopIndex++ ) {
 				try {
 					if ( $overrideCreativeSize ) {
 						$creativeForm[ 'sizes' ] = $overrideCreativeSize;
@@ -185,12 +184,12 @@ class AddCreativeToLinesInOrderCommand extends Command
 						$creativeForm[ 'sizes' ] = $this->getFirstCreativeSizeInString( $singleLineItem );
 					}
 
-					$creativeForm[ 'creativeName' ] = $this->buildCreativeName( $singleLineItem, $creativeNameSuffix, $creativeLoopIndex, $overrideCreativeSize, $appendLoopIndex, $offsetCreativeNameLoopIndex);
+					$creativeForm[ 'creativeName' ] = $this->buildCreativeName( $singleLineItem, $creativeNameSuffix, $creativeLoopIndex, $overrideCreativeSize, $appendLoopIndex, $offsetCreativeNameLoopIndex );
 					printf( "The creative name will be: %s\n", $creativeForm[ 'creativeName' ] );
 
 
-					if ($i === 0 ||  $forceNewCreative === true ) {
-                    	$creativeId = $creativeService->createFromTemplate( $creativeForm );
+					if ( $i === 0 || $forceNewCreative === true ) {
+						$creativeId = $creativeService->createFromTemplate( $creativeForm );
 						$createdCreatives[] = $creativeId;
 					}
 
@@ -202,28 +201,28 @@ class AddCreativeToLinesInOrderCommand extends Command
 							$lineItemsWithNewCreatives[] = $lineItemId;
 						} else {
 							$errorMsgs[] = $response[ 'message' ];
-							$failedLineItemsToCreatives[$singleLineItem->getId()][] = $creativeId;
+							$failedLineItemsToCreatives[ $singleLineItem->getId() ][] = $creativeId;
 						}
 					} else {
 						$errorMsgs[] = 'Could not create a creative';
 					}
 				} catch ( \Exception $e ) {
-					$failedLineItemsToCreatives[$singleLineItem->getId()][] = $creativeId;
+					$failedLineItemsToCreatives[ $singleLineItem->getId() ][] = $creativeId;
 					$errorMsgs[] = $e->getMessage();
 				}
 
 			}
-        }
+		}
 
-        printf( "\nCreated %d creative(s)\n", count($createdCreatives) );
-        printf( "Updated %d line item(s)\n", count(array_unique($lineItemsWithNewCreatives)));
+		printf( "\nCreated %d creative(s)\n", count( $createdCreatives ) );
+		printf( "Updated %d line item(s)\n", count( array_unique( $lineItemsWithNewCreatives ) ) );
 
-        if ( count($failedLineItemsToCreatives) > 0 ) {
-            printf( "\nFailed for %d line item(s)\n", count($failedLineItemsToCreatives) );
-            print_r( $failedLineItemsToCreatives );
-            print_r($errorMsgs);
-        }
-    }
+		if ( count( $failedLineItemsToCreatives ) > 0 ) {
+			printf( "\nFailed for %d line item(s)\n", count( $failedLineItemsToCreatives ) );
+			print_r( $failedLineItemsToCreatives );
+			print_r( $errorMsgs );
+		}
+	}
 
     private function getFirstCreativeSize($lineItem) {
         $creativePlaceholder = $lineItem->getCreativePlaceholders();
