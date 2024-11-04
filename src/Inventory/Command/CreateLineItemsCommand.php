@@ -45,9 +45,6 @@ class CreateLineItemsCommand extends Command {
 			printf( "PriceMap details not provided. Skipping priceMap details.\n" );
 		}
 
-//		printf( "=== Lines creation - Dry run stopping point. Will not send line item creation requests to GAM.  ===\n" );
-//		return;
-
 		$lineItemsService = new LineItemService();
 
 		$result = $lineItemsService->processLineItemsData( $data );
