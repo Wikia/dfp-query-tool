@@ -161,36 +161,13 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         $lineItems = $lineItemService->getLineItemsInOrder($orderId);
 
-        // Debug only
-//		$singleLineItem = null;
-//		$lineItemId = null;
-
-/*        foreach($lineItems as $lineItem => $lineItemValue) {
-			$lineItemId = (fn() => $this->id)->call($lineItemValue);
-        	if ($lineItemId === 6799123339) {
-				$singleLineItem = $lineItemValue;
-				printf("Debug for lineItem Id 6799123339:\n%s\n", print_r($lineItemValue, true));
-			}
-		}*/
-
-//      printf("Reprinting single lineItem for debugging:\n%s\n", print_r($singleLineItem, true));
-
-//		printf("First lineItem entry: %s", print_r($lineItems[0], true));
-//		printf("First lineItem's id: %s", (fn() => $this->id)->call($lineItems[0]));
-
-
         $createdCreatives = [];
         $lineItemsWithNewCreatives = [];
-        $failedLineItems = [];
         $errorMsgs = [];
         $creativeId = null;
 
         printf("Adding creatives to %s line item(s)\n", count($lineItems));
-//        return;
 
-		// 138250147348 - this one is 300x250
-//		$testCreativeIds =  array(138494323652, 138494911660, 138494911381, 138494051340, 138250147348);
-//		$testCreativeIds =  array(138250147348);
 		$failedLineItemsToCreatives = array();
 
         foreach ($lineItems as $i => $singleLineItem) {
@@ -207,23 +184,15 @@ class AddCreativeToLinesInOrderCommand extends Command
 					} else {
 						$creativeForm[ 'sizes' ] = $this->getFirstCreativeSizeInString( $singleLineItem );
 					}
-					printf( "Creative sizes for lineItem id %s: %s\n", $lineItemId, $creativeForm[ 'sizes' ] );
 
 					$creativeForm[ 'creativeName' ] = $this->buildCreativeName( $singleLineItem, $creativeNameSuffix, $creativeLoopIndex, $overrideCreativeSize, $appendLoopIndex, $offsetCreativeNameLoopIndex);
 					printf( "The creative name will be: %s\n", $creativeForm[ 'creativeName' ] );
 
-//                	return;
-//					continue;
 
-					if (/*$i === 0 || */ $forceNewCreative === true ) {
-//                	printf("forceNewCreative was true\n");
+					if ($i === 0 ||  $forceNewCreative === true ) {
                     	$creativeId = $creativeService->createFromTemplate( $creativeForm );
-						// FOR DEBUGGING ONLY
-//						$creativeId = $testCreativeIds[$creativeLoopIndex];
 						$createdCreatives[] = $creativeId;
 					}
-
-//                return;
 
 					if ( intval( $creativeId ) > 0 ) {
 						$lineItemId = $singleLineItem->getId();
