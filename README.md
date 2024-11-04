@@ -81,7 +81,7 @@ generate
 Prepare JSON based on [prebid20.sample.json](./line-item-presets/prebid20.sample.json), [prebid50.sample.json](./line-item-presets/prebid50.sample.json) or [amazonDisplay.sample.json](./line-item-presets/amazonDisplay.sample.json) and execute command:
 
 ```bash
-app/console line-item:create ./line-item-presets/<your-configuration>.json
+app/console line-items:create ./line-item-presets/<your-configuration>.json
 ``` 
 
 It will create multiple line items in the provided order with associated creative.
@@ -89,6 +89,29 @@ It will create multiple line items in the provided order with associated creativ
 WARNING 1. [prebid20.sample.json](./line-item-presets/prebid20.sample.json) is the default file, [prebid50.sample.json](./line-item-presets/prebid50.sample.json) is for bidders with `maxCpm` set to `EXTENDED_MAX_CPM`.
 
 WARNING 2. While creating video line items add `"isVideo": true,`
+
+Extra context for how the JSON files are constructed and what each field means
+- "orderId" - the order id that the line item will be created in
+- "iterator" - These are prices in dollars and cents. This is used as the main looping element
+- "priceMap" - An optional field which is mainly used for Amazon line item updates, since their prices are hashed.
+The price map has to have the same amount of elements in it as the iterator, otherwise an error is thrown. 
+  An example of a price map can be found in [this file](./line-item-presets/amazonDisplayPriority4-sponsorship.sample.json).
+- lineItemName - The name of the line item. You can add in %%element%% in the title, to include the price of the line item in the title if you want.
+  For example, if your title is "Fandom TAM/A9 Display - $%%element%%", and if the price of the line item is 5.00, then the full line item name will be
+  "Fandom TAM/A9 Display - $5.00"
+- "sizes" - This refers to the sizes that should be set on the line items that are created.
+- "sameAdvertiser" - TBD
+- "type" - The price type of the line item. This is the string version of the price type. This has to be set along with the "priority" field.
+- "priority" - The price type of the line item. This is the numeric version of the price type. This has to be set along with the "type" field.
+- "rate" - The actual price that'll be set on the order. This corresponds to the value from the "iterator" field when its value is set to "%%element%%", as its being looped through.
+For example, if the values in your "iterator" field as "5.00,5.05,5.10", then you'll have three line items created, with the price of 5.00 5.05 and 5.10 respectively.
+- keys - The key in the key/value pair in GAM that should be set on the line item. This goes hand in hand with the "operators" and "values" field in the JSON mapping.
+- operators - The operator that will be present on the key value pair. The two values can be "IS" and "IS_NOT", which basically means equal or not equals to. This field goes hand in hand with the "keys" and "values" fields.
+"values" - The values that will be set on each respective key. To sum all of this up, if your keys field is set to `"amznbid","src"`, your operators field is set to `"IS","IS"` and your values field is set to "%%priceMapElement%%","mobile,gpt"
+  and the iterator and priceMap element are 5.00 and y2bcw then your key values in GAM will be as follows:
+  - amznbid is any of y2bcw
+  - src is any of mobile, gpt
+  
 
 ### Update Child Content Eligibility
 
