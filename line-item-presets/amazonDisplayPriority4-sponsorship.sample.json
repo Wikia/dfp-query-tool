@@ -1,0 +1,26 @@
+{
+  "orderId": "3597244486",
+  "iterator": "5.00,5.05,5.10,5.15,5.20,5.25,5.30,5.35,5.40,5.45,5.50,5.55,5.60,5.65,5.70,5.75,5.80,5.85,5.90,5.95,6.00,6.05,6.10,6.15,6.20,6.25,6.30,6.35,6.40,6.45,6.50,6.55,6.60,6.65,6.70,6.75,6.80,6.85,6.90,6.95,7.00,7.05,7.10,7.15,7.20,7.25,7.30,7.35,7.40,7.45,7.50,7.55,7.60,7.65,7.70,7.75,7.80,7.85,7.90,7.95,8.00,8.50,9.00,9.50,10.00,10.50,11.00,11.50,12.00,12.50,13.00,13.50,14.00,14.50,15.00,15.50,16.00,16.50,17.00,17.50,18.00,18.50,19.00,19.50,20.00,21.00,22.00,23.00,24.00,25.00,26.00,27.00,28.00,29.00,30.00,31.00,32.00,33.00,34.00,35.00",
+  "priceMap": "y2bcw,1ds2ups,n55tz4,1tnxlvk,gtx2io,17gu39c,rxgtts,1ikdukg,5qdb7k,1asp7uo,k5s740,1wzsqgw,928fsw,zp5gjk,v9byf4,1lw8z5s,42fqww,1gwga9s,q9j9j4,1s001kw,f5zi80,15swiyo,tlee4g,1k8bev4,7eavi8,194rnk0,ihumtc,1vbv668,co35s0,13b06io,yv6oe8,1pi3p4w,1kjegw,1eejxts,nrmx34,1stytq8,fzyadc,16mvb40,r3i1og,1hqf2f4,4wej28,1cqmdj4,m3pcsg,1yxpw5c,b05lhc,11n2m80,x7943k,1nu64u8,38gyrk,1g2hi4g,pfkhds,1r619fk,ec0q2o,14yxqtc,u0ds74,1knasxs,7ta9kw,19jr1mo,iwu0w0,1vquk8w,b55e68,scg7wg,3ngcu8,i2v8qo,gexog0,weja4g,8ji77k,myx340,9dgzcw,twmxog,16sykg,lpyww0,dyaa68,xnhgcg,6gl8u8,pob4lc,cwtszk,rc8ow0,2n8tts,jujnk0,gnobnk,v337k0,7824n4,nle680,atwum8,9pszk,ez4a9s,5ji39c,bs8ydc,4ajx1c,fql62o,88w4qo,9wtp1c,1q5o8w,dno7pc,5s8qgw,cpyl1c,3ace0w,harvuo,716wow",
+  "lineItemName": "Fandom TAM/A9 Display - $%%element%%",
+  "sizes": "970x250,728x90,300x50,300x250,320x50,320x100,300x600,300x1050",
+  "sameAdvertiser": true,
+  "type": "SPONSORSHIP",
+  "priority": "4",
+  "start": "",
+  "end": "",
+  "rate": "%%element%%",
+  "adUnit": "",
+  "keys": [
+    "amznbid",
+    "src"
+  ],
+  "operators": [
+    "IS",
+    "IS"
+  ],
+  "values": [
+    "%%priceMapElement%%",
+    "mobile,gpt"
+  ]
+}
