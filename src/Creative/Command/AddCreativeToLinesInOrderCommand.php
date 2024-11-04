@@ -163,12 +163,12 @@ class AddCreativeToLinesInOrderCommand extends Command
 
         $createdCreatives = [];
         $lineItemsWithNewCreatives = [];
+		$failedLineItemsToCreatives = [];
         $errorMsgs = [];
         $creativeId = null;
 
         printf("Adding creatives to %s line item(s)\n", count($lineItems));
 
-		$failedLineItemsToCreatives = array();
 
         foreach ($lineItems as $i => $singleLineItem) {
 			$skipLineItemId = ( fn() => $this->id )->call( $singleLineItem );
