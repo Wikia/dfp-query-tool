@@ -3,6 +3,7 @@
 namespace Inventory\Api;
 
 use Google\AdsApi\AdManager\Util\v202408\StatementBuilder;
+use Google\AdsApi\AdManager\v202408\Creative;
 use Google\AdsApi\AdManager\v202408\Size;
 use Google\AdsApi\AdManager\v202408\TemplateCreative;
 use Google\AdsApi\AdManager\v202408\CreativeTemplateService;
@@ -33,6 +34,27 @@ class CreativeService {
 		$result = $this->creativeService->createCreatives([$creative]);
 
 		return $result[0]->getId();
+	}
+
+	/**
+	 * @throws \Exception
+	 * An exception gets thrown when the creative with a creativeId
+	 * is not found in the GAM instance.
+	 */
+	public function getCreativeById( $creativeId): Creative {
+		// Create a statement to select the creative
+    	$statementBuilder = (new StatementBuilder())
+			->where('id = :creativeId')
+			->withBindVariableValue('creativeId', $creativeId);
+
+		// Fetch the creative
+		$creatives = $this->creativeService->getCreativesByStatement($statementBuilder->toStatement());
+
+		if ($creatives->getResults() !== null) {
+			return $creatives->getResults()[0]; // Return the first (and only) creative found
+		} else {
+			throw new \Exception("No creative found with ID: $creativeId");
+		}
 	}
 
 	public function find($output, $fragments = [])
@@ -173,5 +195,16 @@ class CreativeService {
 		}
 
 		$creative->setCreativeTemplateVariableValues($creativeTemplateVariables);
+	}
+
+	/**
+	 * @throws \Google\AdsApi\AdManager\v202408\ApiException
+	 */
+	public function updateCreativeSize(/*\Google\AdsApi\AdManager\v202408\Creative*/ $creative, $overrideSizes ) {
+		// Modify creative size
+		$creative->setSize($overrideSizes);
+
+		$this->creativeService->updateCreatives([$creative]);
+		printf("Updated creative sizes for creativeId: %s\n", $creative->getId());
 	}
 }

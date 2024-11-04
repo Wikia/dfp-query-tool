@@ -11,9 +11,11 @@ use Google\AdsApi\AdManager\v202408\Size;
 
 class LineItemCreativeAssociationService {
 	private $customTargetingService;
+	private $creativeService;
 
 	public function __construct() {
 		$this->customTargetingService = new CustomTargetingService();
+		$this->creativeService = new CreativeService();
 	}
 
 	public function create( $creativeId, $lineItemId, $sizes ) {
@@ -178,4 +180,58 @@ class LineItemCreativeAssociationService {
 
 		return $response;
 	}
+
+	public function getLineItemCreativeAssociations( $lineItemId): \Google\AdsApi\AdManager\v202408\LineItemCreativeAssociationPage {
+		$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\LineItemCreativeAssociationService::class);
+
+		$statementBuilder = (new StatementBuilder())
+			->where('lineItemId = :lineItemId')
+			->withBindVariableValue('lineItemId', $lineItemId);
+		$associations = $lineItemCreativeAssociationService->getLineItemCreativeAssociationsByStatement($statementBuilder->toStatement());
+
+		return $associations;
+	}
+
+	public function overrideAllLineItemCreativeSizes($lineItemId, $sizes) {
+		$associations = $this->getLineItemCreativeAssociations($lineItemId);
+
+		$overrideSizes = $this->getOverrideSizes($sizes);
+
+		$associationResults = $associations->getResults();
+
+		if ($associationResults !== null) {
+			$updatedAssociations = [];
+
+			foreach ($associations->getResults() as $association) {
+				// Modify the line item association size.
+				// This changes the override sizes in the line item to creative screen in GAM
+				$association->setSizes($overrideSizes);
+
+				// Set the updated association object in the updatedAssociations array,
+				// so that it can be updated in one batched API call later down the line.
+				$updatedAssociations[] = $association;
+			}
+		}
+
+		// If there were updated associations, update them in one batched API call
+		if (!empty($updatedAssociations)) {
+			$lineItemCreativeAssociationService = AdManagerService::get(\Google\AdsApi\AdManager\v202408\LineItemCreativeAssociationService::class);
+
+			try {
+				// Use the GAM API to update all the associations that were updated and placed in the updatedAssociations array
+				$result = $lineItemCreativeAssociationService->updateLineItemCreativeAssociations( $updatedAssociations );
+
+				printf("Updated %s/%s line item associations for lineItem %s \n", count($result), count($associationResults), $lineItemId);
+				foreach ( $result as $updatedAssociation ) {
+					printf( "Updated association for creative ID '%d' with line item ID '%d'.\n",
+						$updatedAssociation->getCreativeId(),
+						$updatedAssociation->getLineItemId());
+				}
+			} catch ( \Exception $e ) {
+				printf( "Error updating size override associations for line item %s: %s\n", $lineItemId, $e->getMessage() );
+			}
+		}
+
+	}
+
 }

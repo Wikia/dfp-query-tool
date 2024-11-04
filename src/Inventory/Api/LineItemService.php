@@ -178,6 +178,9 @@ class LineItemService {
 		];
 	}
 
+	/**
+	 * @return \Google\AdsApi\AdManager\v202408\LineItem[]
+	 */
 	public function getLineItemsInOrder($orderId) {
 		$statementBuilder = new StatementBuilder();
 		$statementBuilder->Where('orderId = :id and isArchived = false');

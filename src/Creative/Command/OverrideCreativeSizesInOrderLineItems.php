@@ -7,11 +7,9 @@ use Inventory\Api\LineItemService;
 use Inventory\Api\LineItemCreativeAssociationService;
 use Inventory\Api\OrderService;
 use Knp\Command\Command;
-use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Google\AdsApi\AdManager\v202408\LineItem;
 
 class OverrideCreativeSizesInOrderLineItems extends Command
 {
@@ -42,5 +40,20 @@ class OverrideCreativeSizesInOrderLineItems extends Command
 
 		printf("Order ID: %s\n", $orderId);
 		printf("Sizes: %s\n", $sizes);
+
+		$lineItemService = new LineItemService();
+		$lineItemCreativeAssociationService = new LineItemCreativeAssociationService();
+
+		$lineItemsInOrder = $lineItemService->getLineItemsInOrder($orderId);
+
+		if ($lineItemsInOrder !== null) {
+			printf("Found %s lineItems in order %s\n", count($lineItemsInOrder), $orderId);
+			foreach ( $lineItemsInOrder as $lineItem ) {
+				$lineItemId = $lineItem->getId();
+				$lineItemCreativeAssociationService->overrideAllLineItemCreativeSizes( $lineItemId, $sizes );
+			}
+		} else {
+			printf("No line items found in order %s\n", $orderId);
+		}
 	}
 }
