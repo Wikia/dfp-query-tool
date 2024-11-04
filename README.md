@@ -103,14 +103,14 @@ The price map has to have the same amount of elements in it as the iterator, oth
 - "sameAdvertiser" - TBD
 - "type" - The price type of the line item. This is the string version of the price type. This has to be set along with the "priority" field.
 - "priority" - The price type of the line item. This is the numeric version of the price type. This has to be set along with the "type" field.
-- "rate" - The actual price that'll be set on the order. This corresponds to the value from the "iterator" field when its value is set to "%%element%%", as its being looped through.
-For example, if the values in your "iterator" field as "5.00,5.05,5.10", then you'll have three line items created, with the price of 5.00 5.05 and 5.10 respectively.
-- keys - The key in the key/value pair in GAM that should be set on the line item. This goes hand in hand with the "operators" and "values" field in the JSON mapping.
-- operators - The operator that will be present on the key value pair. The two values can be "IS" and "IS_NOT", which basically means equal or not equals to. This field goes hand in hand with the "keys" and "values" fields.
-"values" - The values that will be set on each respective key. To sum all of this up, if your keys field is set to `"amznbid","src"`, your operators field is set to `"IS","IS"` and your values field is set to "%%priceMapElement%%","mobile,gpt"
-  and the iterator and priceMap element are 5.00 and y2bcw then your key values in GAM will be as follows:
-  - amznbid is any of y2bcw
-  - src is any of mobile, gpt
+- "rate" - The actual price that'll be set on the order. This corresponds to the value from the `iterator` field when its value is set to `%%element%%`, as its being looped through.
+For example, if the values in your `iterator` field as `5.00,5.05,5.10`, then you'll have three line items created, with the price of 5.00 5.05 and 5.10 respectively.
+- keys - The key in the key/value pair in GAM that should be set on the line item. This goes hand in hand with the `operators` and `values` field in the JSON mapping.
+- operators - The operator that will be present on the key value pair. The two values can be "IS" and "IS_NOT", which basically means equal or not equals to. This field goes hand in hand with the `keys` and `values` fields.
+"values" - The values that will be set on each respective key. To sum all of this up, if your keys field is set to `"amznbid","src"`, your operators field is set to `"IS","IS"` and your values field is set to `%%priceMapElement%%`,`mobile,gpt`
+  and the iterator and priceMap element are `5.00` and `y2bcw` then your key values in GAM will be as follows:
+  - `amznbid` is any of `y2bcw`
+  - `src` is any of `mobile` `gpt`
   
 
 ### Update Child Content Eligibility
