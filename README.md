@@ -28,6 +28,14 @@ clientSecret = "clientSecretHash"
 refreshToken = "refreshTokenHash"
 ```
 
+If the google cloud console login doesn't work, you can try visiting a specific project in the console.cloud.google.com by using [this link](https://console.cloud.google.com/apis/credentials?project=fandom-oauth-login).
+This will send you to the fandom-oauth-login project, where you can generate new credentials or access existing ones. You should see the clientId and clientSecret under the `Dfp Query Tool` **OAuth 2.0 Client IDs** section.
+
+If you try visiting this link, and you can't access it, get redirect to a different page, or just get a blank screen, then reach out to OPS to get access. You can send them the above link. They should know how to get you access.
+
+Once you have access and have filled out the above, you can run the `GetRefreshToken.php` script with ```php GetRefreshToken.php``` to get the refreshToken.
+Place the token in the `auth.ini` file (which should just be a copy of the `auth.sample.ini` file), and you should be good to go.
+
 ## Browser usage
 
 Project can be hosted and used via internet browser, but this approach is inefective: web forms are synchronous and they report timeouts during more complex tasks. Also lack of progress and error log makes it harder to use.
