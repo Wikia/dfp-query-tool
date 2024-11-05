@@ -207,11 +207,13 @@ app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID --force-new-
 
 Going off of the above option of having multiple creatives per line item, and the previously mentioned suffix option, there's also an option to append an index value at the end of each creative's name.
 This option is `--append-loop-index`. It does not require another option to be present, but it makes the most sense to activate when the `--multiple-creatives-per-line-item` option is added. If you just activate it,
-and don't add in the former option or add it in with a value of 1, then the index will always be 1. This will effectively add a '(1)' at the end of your creative name.
+and don't add in the former option or add it in with a value of 1, then the index will always be 1. This will effectively add a '(1)' at the end of your creative name. If the `--multiple-creatives-per-line-item` option is added
+with a value of 2 for example, then two creatives will be added to each line item, and the index of (1) and (2) will be appended to the end of each creative name. The index is offset by 1, so that we don't start counting from 0.
 
 For example, you can run the following command with the :
 ```bash
-
+app/console order:add-creatives -o ORDER_ID -c CREATIVE_TEMPLATE_ID --force-new-creative --multiple-creatives-per-line-item 2 --override-creative-size '1x1,300x250' --append-loop-index
+```
 
 This way the new creative's names will be built based on the line-item name, its first creative placeholder size and given suffix, for example new creative's name can look like:
 `ztest MR 300x250 - 300x250 (test)`
