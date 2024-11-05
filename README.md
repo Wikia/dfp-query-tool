@@ -270,7 +270,7 @@ If the built image somehow does not get pushed to the k8s check the latest versi
 
 In order to get to the k8s dashboard you need to use [Valut](https://wikia-inc.atlassian.net/wiki/spaces/OPS/pages/132317429/Vault%2BFor%2BEngineers) to get the dashboard-user token.
 
-When adding a new command, with a new php file to the app/console file, make sure to run `composer install'. You may get some odd errors about the php file not being found, if you do not do this.
+When adding a new command, with a new php file to the app/console file, make sure to run `composer install`. You may get some odd errors about the php file not being found, if you do not do this.
 
 ## Development
 
