@@ -20,6 +20,7 @@ $console->add(new Creative\Command\AssociateCreativesInOrderCommand($app));
 $console->add(new Creative\Command\CreativeCommand($app));
 $console->add(new Creative\Command\DeactivateAssociatedCreativesInOrderCommand($app));
 $console->add(new Creative\Command\RemoveCreativesInOrderCommand($app));
+$console->add(new Creative\Command\OverrideCreativeSizesInOrderLineItems($app));
 
 $console->add(new Inventory\Command\ArchiveAdUnitsCommand($app));
 $console->add(new Inventory\Command\ChildContentEligibilityUpdateCommand($app));
